@@ -1,4 +1,7 @@
-﻿# common 라이브러리 정의
+﻿# Boost 라이브러리 찾기
+find_package(Boost REQUIRED)
+
+# common 라이브러리 정의
 add_library(common
  "Common.h"
  "Common.cpp"
@@ -10,4 +13,12 @@ add_library(common
 target_include_directories(common 
 	PUBLIC 
 		${CMAKE_CURRENT_SOURCE_DIR}
+		${Boost_INCLUDE_DIRS}
+)
+
+# common.lib에 해당 라이브러리들을 링크한다.
+# PUBLIC : common.lib에서 링크한 라이브러리들이 common.lib를 사용하는 프로젝트에게도 링크된다.
+target_link_libraries(common 
+	PUBLIC 
+		${Boost_LIBRARIES}
 )

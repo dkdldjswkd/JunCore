@@ -47,7 +47,7 @@ public:
 
     void Wait()
     {
-        ASSERT(_thread);
+        //ASSERT(_thread);
 
         _thread->join();
         delete _thread;

@@ -23,6 +23,53 @@ public:
 	}
 
 public:
+	void Close()
+	{
+		if (_closed.exchange(true))
+			return;
+
+		boost::system::error_code err;
+		_acceptor.close(err);
+	}
+
+	bool Bind()
+	{
+		boost::system::error_code errorCode;
+		_acceptor.open(_endpoint.protocol(), errorCode);
+		if (errorCode)
+		{
+			// TC_LOG_INFO("network", "Failed to open acceptor {}", errorCode.message());
+			return false;
+		}
+
+#if TRINITY_PLATFORM != TRINITY_PLATFORM_WINDOWS // todo
+		_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true), errorCode);
+		if (errorCode)
+		{
+			TC_LOG_INFO("network", "Failed to set reuse_address option on acceptor {}", errorCode.message());
+			return false;
+		}
+#endif
+
+		_acceptor.bind(_endpoint, errorCode);
+		if (errorCode)
+		{
+			// TC_LOG_INFO("network", "Could not bind to {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
+			return false;
+		}
+
+		_acceptor.listen(JUNCORE_MAX_LISTEN_CONNECTIONS, errorCode);
+		if (errorCode)
+		{
+			// TC_LOG_INFO("network", "Failed to start listening on {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
+			return false;
+		}
+
+		return true;
+	}
+
+	void SetSocketFactory(std::function<std::pair<tcp::socket*, uint32>()> func) { _socketFactory = func; }
+
 /*
 	template<class T>
 	void AsyncAccept()
@@ -77,52 +124,6 @@ public:
 		);
 	}
 
-	bool Bind()
-	{
-		boost::system::error_code errorCode;
-		_acceptor.open(_endpoint.protocol(), errorCode);
-		if (errorCode)
-		{
-			// TC_LOG_INFO("network", "Failed to open acceptor {}", errorCode.message());
-			return false;
-		}
-
-#if TRINITY_PLATFORM != TRINITY_PLATFORM_WINDOWS // todo
-		_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true), errorCode);
-		if (errorCode)
-		{
-			TC_LOG_INFO("network", "Failed to set reuse_address option on acceptor {}", errorCode.message());
-			return false;
-		}
-#endif
-
-		_acceptor.bind(_endpoint, errorCode);
-		if (errorCode)
-		{
-			// TC_LOG_INFO("network", "Could not bind to {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
-			return false;
-		}
-
-		_acceptor.listen(JUNCORE_MAX_LISTEN_CONNECTIONS, errorCode);
-		if (errorCode)
-		{
-			// TC_LOG_INFO("network", "Failed to start listening on {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
-			return false;
-		}
-
-		return true;
-	}
-
-	void Close()
-	{
-		if (_closed.exchange(true))
-			return;
-
-		boost::system::error_code err;
-		_acceptor.close(err);
-	}
-
-	void SetSocketFactory(std::function<std::pair<tcp::socket*, uint32>()> func) { _socketFactory = func; }
 */
 
 private:

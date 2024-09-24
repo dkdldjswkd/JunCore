@@ -9,7 +9,10 @@ add_library(game
  "Server/WorldSocket.cpp"
  "Server/WorldSocketMgr.h"
  "Server/WorldSocketMgr.cpp"
- "Server/WorldPacket.h")
+ "Server/WorldPacket.h"
+ "World/World.h"
+ "World/World.cpp"
+)
 
 # game에 해당 디렉터리들을 포함한다.
 # PUBLIC : game을(를) 사용하는 프로젝트에도 포함된다.

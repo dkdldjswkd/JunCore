@@ -1,6 +1,8 @@
 #ifndef JUNCORE_COMMON_H
 #define JUNCORE_COMMON_H
 
+#include "Define.h"
+
 enum AccountTypes
 {
     SEC_PLAYER = 0,

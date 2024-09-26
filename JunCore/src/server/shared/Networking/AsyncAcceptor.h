@@ -38,7 +38,7 @@ public:
 		_acceptor.open(_endpoint.protocol(), errorCode);
 		if (errorCode)
 		{
-			// TC_LOG_INFO("network", "Failed to open acceptor {}", errorCode.message());
+			// // TC_LOG_INFO("network", "Failed to open acceptor {}", errorCode.message());
 			return false;
 		}
 
@@ -46,7 +46,7 @@ public:
 		_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true), errorCode);
 		if (errorCode)
 		{
-			TC_LOG_INFO("network", "Failed to set reuse_address option on acceptor {}", errorCode.message());
+			// TC_LOG_INFO("network", "Failed to set reuse_address option on acceptor {}", errorCode.message());
 			return false;
 		}
 #endif
@@ -54,14 +54,14 @@ public:
 		_acceptor.bind(_endpoint, errorCode);
 		if (errorCode)
 		{
-			// TC_LOG_INFO("network", "Could not bind to {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
+			// // TC_LOG_INFO("network", "Could not bind to {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
 			return false;
 		}
 
 		_acceptor.listen(JUNCORE_MAX_LISTEN_CONNECTIONS, errorCode);
 		if (errorCode)
 		{
-			// TC_LOG_INFO("network", "Failed to start listening on {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
+			// // TC_LOG_INFO("network", "Failed to start listening on {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
 			return false;
 		}
 
@@ -84,7 +84,7 @@ public:
 					}
 					catch (boost::system::system_error const& err)
 					{
-						// TC_LOG_INFO("network", "Failed to retrieve client's remote address {}", err.what());
+						// // TC_LOG_INFO("network", "Failed to retrieve client's remote address {}", err.what());
 					}
 				}
 
@@ -114,7 +114,7 @@ public:
 					}
 					catch (boost::system::system_error const& err)
 					{
-						TC_LOG_INFO("network", "Failed to initialize client's socket {}", err.what());
+						// TC_LOG_INFO("network", "Failed to initialize client's socket {}", err.what());
 					}
 				}
 

@@ -102,7 +102,7 @@ public:
         _socket.shutdown(boost::asio::socket_base::shutdown_send, shutdownError);
 
         // todo : log
-        // if (shutdownError) TC_LOG_DEBUG("network", "Socket::CloseSocket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
+        // if (shutdownError) // TC_LOG_DEBUG("network", "Socket::CloseSocket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
 
         OnClose();
     }
@@ -140,17 +140,22 @@ protected:
             this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 #endif
 
-        return false;
-    }
+		return false;
+	}
 
-    void SetNoDelay(bool enable)
-    {
-        boost::system::error_code err;
-        _socket.set_option(tcp::no_delay(enable), err);
-        if (err)
-            TC_LOG_DEBUG("network", "Socket::SetNoDelay: failed to set_option(boost::asio::ip::tcp::no_delay) for {} - {} ({})",
-                GetRemoteIpAddress().to_string(), err.value(), err.message());
-    }
+	//void SetNoDelay(bool enable)
+	//{
+	//	boost::system::error_code err;
+	//	_socket.set_option(tcp::no_delay(enable), err);
+
+ //       // todo : error handling
+	//	//if (err)
+	//	//{
+	//	//	// TC_LOG_DEBUG("network", "Socket::SetNoDelay: failed to set_option(boost::asio::ip::tcp::no_delay) for {} - {} ({})",
+	//	//}
+
+	//	GetRemoteIpAddress().to_string(), err.value(), err.message());
+	//}
 
 private:
     void ReadHandlerInternal(boost::system::error_code error, size_t transferredBytes)

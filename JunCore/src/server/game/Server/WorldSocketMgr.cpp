@@ -1,25 +1,9 @@
-#include "WorldSocketMgr.h"
+//#include "Config.h"
+//#include "NetworkThread.h"
+//#include "ScriptMgr.h"
 #include "WorldSocket.h"
-
-static void OnSocketAccept(tcp::socket&& sock, uint32 threadIndex)
-{
-    sWorldSocketMgr.OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
-}
-
-class WorldSocketThread : public NetworkThread<WorldSocket>
-{
-public:
-    void SocketAdded(std::shared_ptr<WorldSocket> sock) override
-    {
-        //sock->SetSendBufferSize(sWorldSocketMgr.GetApplicationSendBufferSize());
-        //sScriptMgr->OnSocketOpen(sock);
-    }
-
-    void SocketRemoved(std::shared_ptr<WorldSocket> sock) override
-    {
-        //sScriptMgr->OnSocketClose(sock);
-    }
-};
+#include "WorldSocketMgr.h"
+#include <boost/system/error_code.hpp>
 
 WorldSocketMgr::WorldSocketMgr() : BaseSocketMgr(), _socketSystemSendBufferSize(-1), _socketApplicationSendBufferSize(65536), _tcpNoDelay(true)
 {
@@ -62,41 +46,69 @@ void WorldSocketMgr::StopNetwork()
 {
     BaseSocketMgr::StopNetwork();
 
+    // todo
     //sScriptMgr->OnNetworkStop();
 }
 
+// todo
 void WorldSocketMgr::OnSocketOpen(tcp::socket&& sock, uint32 threadIndex)
 {
-    // set some options here
-    if (_socketSystemSendBufferSize >= 0)
-    {
-        boost::system::error_code err;
-        sock.set_option(boost::asio::socket_base::send_buffer_size(_socketSystemSendBufferSize), err);
-        if (err && err != boost::system::errc::not_supported)
-        {
-            //TC_LOG_ERROR("misc", "WorldSocketMgr::OnSocketOpen sock.set_option(boost::asio::socket_base::send_buffer_size) err = {}", err.message());
-            return;
-        }
-    }
+    //// set some options here
+    //if (_socketSystemSendBufferSize >= 0)
+    //{
+    //    boost::system::error_code err;
+    //    sock.set_option(boost::asio::socket_base::send_buffer_size(_socketSystemSendBufferSize), err);
+    //    if (err && err != boost::system::errc::not_supported)
+    //    {
+    //        TC_LOG_ERROR("misc", "WorldSocketMgr::OnSocketOpen sock.set_option(boost::asio::socket_base::send_buffer_size) err = {}", err.message());
+    //        return;
+    //    }
+    //}
 
-    // Set TCP_NODELAY.
-    if (_tcpNoDelay)
-    {
-        boost::system::error_code err;
-        sock.set_option(boost::asio::ip::tcp::no_delay(true), err);
-        if (err)
-        {
-            //TC_LOG_ERROR("misc", "WorldSocketMgr::OnSocketOpen sock.set_option(boost::asio::ip::tcp::no_delay) err = {}", err.message());
-            return;
-        }
-    }
+    //// Set TCP_NODELAY.
+    //if (_tcpNoDelay)
+    //{
+    //    boost::system::error_code err;
+    //    sock.set_option(boost::asio::ip::tcp::no_delay(true), err);
+    //    if (err)
+    //    {
+    //        TC_LOG_ERROR("misc", "WorldSocketMgr::OnSocketOpen sock.set_option(boost::asio::ip::tcp::no_delay) err = {}", err.message());
+    //        return;
+    //    }
+    //}
 
-    //sock->m_OutBufferSize = static_cast<size_t> (m_SockOutUBuff);
+    ////sock->m_OutBufferSize = static_cast<size_t> (m_SockOutUBuff);
 
-    BaseSocketMgr::OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
+    //BaseSocketMgr::OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
 }
 
 NetworkThread<WorldSocket>* WorldSocketMgr::CreateThreads() const
 {
-    return new WorldSocketThread[GetNetworkThreadCount()];
+    // todo
+
+    return new NetworkThread<WorldSocket>(); // 아래 코드로 변경 필요
+    // return new WorldSocketThread[GetNetworkThreadCount()];
 }
+
+
+//static void OnSocketAccept(tcp::socket&& sock, uint32 threadIndex)
+//{
+//    sWorldSocketMgr.OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
+//}
+//
+//class WorldSocketThread : public NetworkThread<WorldSocket>
+//{
+//public:
+//    void SocketAdded(std::shared_ptr<WorldSocket> sock) override
+//    {
+//        sock->SetSendBufferSize(sWorldSocketMgr.GetApplicationSendBufferSize());
+//        sScriptMgr->OnSocketOpen(sock);
+//    }
+//
+//    void SocketRemoved(std::shared_ptr<WorldSocket> sock) override
+//    {
+//        sScriptMgr->OnSocketClose(sock);
+//    }
+//};
+//
+//

@@ -91,20 +91,20 @@
 //
 //#include <boost/asio/ip/address.hpp>
 //
-//TC_GAME_API std::atomic<bool> World::m_stopEvent(false);
-//TC_GAME_API uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
+// std::atomic<bool> World::m_stopEvent(false);
+// uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
 //
-//TC_GAME_API std::atomic<uint32> World::m_worldLoopCounter(0);
+// std::atomic<uint32> World::m_worldLoopCounter(0);
 //
-//TC_GAME_API float World::m_MaxVisibleDistanceOnContinents = DEFAULT_VISIBILITY_DISTANCE;
-//TC_GAME_API float World::m_MaxVisibleDistanceInInstances  = DEFAULT_VISIBILITY_INSTANCE;
-//TC_GAME_API float World::m_MaxVisibleDistanceInBG         = DEFAULT_VISIBILITY_BGARENAS;
-//TC_GAME_API float World::m_MaxVisibleDistanceInArenas     = DEFAULT_VISIBILITY_BGARENAS;
+// float World::m_MaxVisibleDistanceOnContinents = DEFAULT_VISIBILITY_DISTANCE;
+// float World::m_MaxVisibleDistanceInInstances  = DEFAULT_VISIBILITY_INSTANCE;
+// float World::m_MaxVisibleDistanceInBG         = DEFAULT_VISIBILITY_BGARENAS;
+// float World::m_MaxVisibleDistanceInArenas     = DEFAULT_VISIBILITY_BGARENAS;
 //
-//TC_GAME_API int32 World::m_visibility_notify_periodOnContinents = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
-//TC_GAME_API int32 World::m_visibility_notify_periodInInstances  = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
-//TC_GAME_API int32 World::m_visibility_notify_periodInBG         = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
-//TC_GAME_API int32 World::m_visibility_notify_periodInArenas     = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
+// int32 World::m_visibility_notify_periodOnContinents = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
+// int32 World::m_visibility_notify_periodInInstances  = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
+// int32 World::m_visibility_notify_periodInBG         = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
+// int32 World::m_visibility_notify_periodInArenas     = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
 //
 ///// World constructor
 //World::World()
@@ -360,7 +360,7 @@
 //    {
 //        AddQueuedPlayer(s);
 //        UpdateMaxSessionCounters();
-//        TC_LOG_INFO("misc", "PlayerQueue: Account id {} is in Queue Position ({}).", s->GetAccountId(), ++QueueSize);
+//        // TC_LOG_INFO("misc", "PlayerQueue: Account id {} is in Queue Position ({}).", s->GetAccountId(), ++QueueSize);
 //        return;
 //    }
 //
@@ -374,7 +374,7 @@
 //        float popu = (float)GetActiveSessionCount();              // updated number of users on the server
 //        popu /= pLimit;
 //        popu *= 2;
-//        TC_LOG_INFO("misc", "Server Population ({}).", popu);
+//        // TC_LOG_INFO("misc", "Server Population ({}).", popu);
 //    }
 //}
 //
@@ -479,7 +479,7 @@
 //        if (!sConfigMgr->Reload(configErrors))
 //        {
 //            for (std::string const& configError : configErrors)
-//                TC_LOG_ERROR("misc", "World settings reload fail: {}.", configError);
+//                // TC_LOG_ERROR("misc", "World settings reload fail: {}.", configError);
 //
 //            return;
 //        }
@@ -505,27 +505,27 @@
 //    rate_values[RATE_HEALTH]      = sConfigMgr->GetFloatDefault("Rate.Health", 1.0f);
 //    if (rate_values[RATE_HEALTH] < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "Rate.Health ({}) must be > 0. Using 1 instead.", rate_values[RATE_HEALTH]);
+//        // TC_LOG_ERROR("server.loading", "Rate.Health ({}) must be > 0. Using 1 instead.", rate_values[RATE_HEALTH]);
 //        rate_values[RATE_HEALTH] = 1;
 //    }
 //    rate_values[RATE_POWER_MANA]  = sConfigMgr->GetFloatDefault("Rate.Mana", 1.0f);
 //    if (rate_values[RATE_POWER_MANA] < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "Rate.Mana ({}) must be > 0. Using 1 instead.", rate_values[RATE_POWER_MANA]);
+//        // TC_LOG_ERROR("server.loading", "Rate.Mana ({}) must be > 0. Using 1 instead.", rate_values[RATE_POWER_MANA]);
 //        rate_values[RATE_POWER_MANA] = 1;
 //    }
 //    rate_values[RATE_POWER_RAGE_INCOME] = sConfigMgr->GetFloatDefault("Rate.Rage.Income", 1.0f);
 //    rate_values[RATE_POWER_RAGE_LOSS]   = sConfigMgr->GetFloatDefault("Rate.Rage.Loss", 1.0f);
 //    if (rate_values[RATE_POWER_RAGE_LOSS] < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "Rate.Rage.Loss ({}) must be > 0. Using 1 instead.", rate_values[RATE_POWER_RAGE_LOSS]);
+//        // TC_LOG_ERROR("server.loading", "Rate.Rage.Loss ({}) must be > 0. Using 1 instead.", rate_values[RATE_POWER_RAGE_LOSS]);
 //        rate_values[RATE_POWER_RAGE_LOSS] = 1;
 //    }
 //    rate_values[RATE_POWER_RUNICPOWER_INCOME] = sConfigMgr->GetFloatDefault("Rate.RunicPower.Income", 1.0f);
 //    rate_values[RATE_POWER_RUNICPOWER_LOSS]   = sConfigMgr->GetFloatDefault("Rate.RunicPower.Loss", 1.0f);
 //    if (rate_values[RATE_POWER_RUNICPOWER_LOSS] < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "Rate.RunicPower.Loss ({}) must be > 0. Using 1 instead.", rate_values[RATE_POWER_RUNICPOWER_LOSS]);
+//        // TC_LOG_ERROR("server.loading", "Rate.RunicPower.Loss ({}) must be > 0. Using 1 instead.", rate_values[RATE_POWER_RUNICPOWER_LOSS]);
 //        rate_values[RATE_POWER_RUNICPOWER_LOSS] = 1;
 //    }
 //    rate_values[RATE_POWER_FOCUS]  = sConfigMgr->GetFloatDefault("Rate.Focus", 1.0f);
@@ -554,7 +554,7 @@
 //    rate_values[RATE_REPAIRCOST]  = sConfigMgr->GetFloatDefault("Rate.RepairCost", 1.0f);
 //    if (rate_values[RATE_REPAIRCOST] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "Rate.RepairCost ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_REPAIRCOST]);
+//        // TC_LOG_ERROR("server.loading", "Rate.RepairCost ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_REPAIRCOST]);
 //        rate_values[RATE_REPAIRCOST] = 0.0f;
 //    }
 //    rate_values[RATE_REPUTATION_GAIN]  = sConfigMgr->GetFloatDefault("Rate.Reputation.Gain", 1.0f);
@@ -590,13 +590,13 @@
 //    rate_values[RATE_TALENT] = sConfigMgr->GetFloatDefault("Rate.Talent", 1.0f);
 //    if (rate_values[RATE_TALENT] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "Rate.Talent ({}) must be > 0. Using 1 instead.", rate_values[RATE_TALENT]);
+//        // TC_LOG_ERROR("server.loading", "Rate.Talent ({}) must be > 0. Using 1 instead.", rate_values[RATE_TALENT]);
 //        rate_values[RATE_TALENT] = 1.0f;
 //    }
 //    rate_values[RATE_MOVESPEED] = sConfigMgr->GetFloatDefault("Rate.MoveSpeed", 1.0f);
 //    if (rate_values[RATE_MOVESPEED] < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "Rate.MoveSpeed ({}) must be > 0. Using 1 instead.", rate_values[RATE_MOVESPEED]);
+//        // TC_LOG_ERROR("server.loading", "Rate.MoveSpeed ({}) must be > 0. Using 1 instead.", rate_values[RATE_MOVESPEED]);
 //        rate_values[RATE_MOVESPEED] = 1.0f;
 //    }
 //    for (uint8 i = 0; i < MAX_MOVE_TYPE; ++i) playerBaseMoveSpeed[i] = baseMoveSpeed[i] * rate_values[RATE_MOVESPEED];
@@ -605,12 +605,12 @@
 //    rate_values[RATE_DURABILITY_LOSS_ON_DEATH]  = sConfigMgr->GetFloatDefault("DurabilityLoss.OnDeath", 10.0f);
 //    if (rate_values[RATE_DURABILITY_LOSS_ON_DEATH] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "DurabilityLoss.OnDeath ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_ON_DEATH]);
+//        // TC_LOG_ERROR("server.loading", "DurabilityLoss.OnDeath ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_ON_DEATH]);
 //        rate_values[RATE_DURABILITY_LOSS_ON_DEATH] = 0.0f;
 //    }
 //    if (rate_values[RATE_DURABILITY_LOSS_ON_DEATH] > 100.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "DurabilityLoss.OnDeath ({}) must be <= 100. Using 100.0 instead.", rate_values[RATE_DURABILITY_LOSS_ON_DEATH]);
+//        // TC_LOG_ERROR("server.loading", "DurabilityLoss.OnDeath ({}) must be <= 100. Using 100.0 instead.", rate_values[RATE_DURABILITY_LOSS_ON_DEATH]);
 //        rate_values[RATE_DURABILITY_LOSS_ON_DEATH] = 0.0f;
 //    }
 //    rate_values[RATE_DURABILITY_LOSS_ON_DEATH] = rate_values[RATE_DURABILITY_LOSS_ON_DEATH] / 100.0f;
@@ -618,37 +618,37 @@
 //    rate_values[RATE_DURABILITY_LOSS_DAMAGE] = sConfigMgr->GetFloatDefault("DurabilityLossChance.Damage", 0.5f);
 //    if (rate_values[RATE_DURABILITY_LOSS_DAMAGE] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "DurabilityLossChance.Damage ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_DAMAGE]);
+//        // TC_LOG_ERROR("server.loading", "DurabilityLossChance.Damage ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_DAMAGE]);
 //        rate_values[RATE_DURABILITY_LOSS_DAMAGE] = 0.0f;
 //    }
 //    rate_values[RATE_DURABILITY_LOSS_ABSORB] = sConfigMgr->GetFloatDefault("DurabilityLossChance.Absorb", 0.5f);
 //    if (rate_values[RATE_DURABILITY_LOSS_ABSORB] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "DurabilityLossChance.Absorb ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_ABSORB]);
+//        // TC_LOG_ERROR("server.loading", "DurabilityLossChance.Absorb ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_ABSORB]);
 //        rate_values[RATE_DURABILITY_LOSS_ABSORB] = 0.0f;
 //    }
 //    rate_values[RATE_DURABILITY_LOSS_PARRY] = sConfigMgr->GetFloatDefault("DurabilityLossChance.Parry", 0.05f);
 //    if (rate_values[RATE_DURABILITY_LOSS_PARRY] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "DurabilityLossChance.Parry ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_PARRY]);
+//        // TC_LOG_ERROR("server.loading", "DurabilityLossChance.Parry ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_PARRY]);
 //        rate_values[RATE_DURABILITY_LOSS_PARRY] = 0.0f;
 //    }
 //    rate_values[RATE_DURABILITY_LOSS_BLOCK] = sConfigMgr->GetFloatDefault("DurabilityLossChance.Block", 0.05f);
 //    if (rate_values[RATE_DURABILITY_LOSS_BLOCK] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "DurabilityLossChance.Block ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_BLOCK]);
+//        // TC_LOG_ERROR("server.loading", "DurabilityLossChance.Block ({}) must be >=0. Using 0.0 instead.", rate_values[RATE_DURABILITY_LOSS_BLOCK]);
 //        rate_values[RATE_DURABILITY_LOSS_BLOCK] = 0.0f;
 //    }
 //    rate_values[RATE_MONEY_QUEST] = sConfigMgr->GetFloatDefault("Rate.Quest.Money.Reward", 1.0f);
 //    if (rate_values[RATE_MONEY_QUEST] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "Rate.Quest.Money.Reward ({}) must be >=0. Using 0 instead.", rate_values[RATE_MONEY_QUEST]);
+//        // TC_LOG_ERROR("server.loading", "Rate.Quest.Money.Reward ({}) must be >=0. Using 0 instead.", rate_values[RATE_MONEY_QUEST]);
 //        rate_values[RATE_MONEY_QUEST] = 0.0f;
 //    }
 //    rate_values[RATE_MONEY_MAX_LEVEL_QUEST] = sConfigMgr->GetFloatDefault("Rate.Quest.Money.Max.Level.Reward", 1.0f);
 //    if (rate_values[RATE_MONEY_MAX_LEVEL_QUEST] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "Rate.Quest.Money.Max.Level.Reward ({}) must be >=0. Using 0 instead.", rate_values[RATE_MONEY_MAX_LEVEL_QUEST]);
+//        // TC_LOG_ERROR("server.loading", "Rate.Quest.Money.Max.Level.Reward ({}) must be >=0. Using 0 instead.", rate_values[RATE_MONEY_MAX_LEVEL_QUEST]);
 //        rate_values[RATE_MONEY_MAX_LEVEL_QUEST] = 0.0f;
 //    }
 //    ///- Read other configuration items from the config file
@@ -658,7 +658,7 @@
 //    m_int_configs[CONFIG_COMPRESSION] = sConfigMgr->GetIntDefault("Compression", 1);
 //    if (m_int_configs[CONFIG_COMPRESSION] < 1 || m_int_configs[CONFIG_COMPRESSION] > 9)
 //    {
-//        TC_LOG_ERROR("server.loading", "Compression level ({}) must be in range 1..9. Using default compression level (1).", m_int_configs[CONFIG_COMPRESSION]);
+//        // TC_LOG_ERROR("server.loading", "Compression level ({}) must be in range 1..9. Using default compression level (1).", m_int_configs[CONFIG_COMPRESSION]);
 //        m_int_configs[CONFIG_COMPRESSION] = 1;
 //    }
 //    m_bool_configs[CONFIG_ADDON_CHANNEL] = sConfigMgr->GetBoolDefault("AddonChannel", true);
@@ -668,7 +668,7 @@
 //    m_int_configs[CONFIG_AUCTION_SEARCH_DELAY] = sConfigMgr->GetIntDefault("Auction.SearchDelay", 300);
 //    if (m_int_configs[CONFIG_AUCTION_SEARCH_DELAY] < 100 || m_int_configs[CONFIG_AUCTION_SEARCH_DELAY] > 10000)
 //    {
-//        TC_LOG_ERROR("server.loading", "Auction.SearchDelay ({}) must be between 100 and 10000. Using default of 300ms", m_int_configs[CONFIG_AUCTION_SEARCH_DELAY]);
+//        // TC_LOG_ERROR("server.loading", "Auction.SearchDelay ({}) must be between 100 and 10000. Using default of 300ms", m_int_configs[CONFIG_AUCTION_SEARCH_DELAY]);
 //        m_int_configs[CONFIG_AUCTION_SEARCH_DELAY] = 300;
 //    }
 //    m_int_configs[CONFIG_CHAT_CHANNEL_LEVEL_REQ] = sConfigMgr->GetIntDefault("ChatLevelReq.Channel", 1);
@@ -688,13 +688,13 @@
 //    m_bool_configs[CONFIG_BASEMAP_LOAD_GRIDS] = sConfigMgr->GetBoolDefault("BaseMapLoadAllGrids", false);
 //    if (m_bool_configs[CONFIG_BASEMAP_LOAD_GRIDS] && m_bool_configs[CONFIG_GRID_UNLOAD])
 //    {
-//        TC_LOG_ERROR("server.loading", "BaseMapLoadAllGrids enabled, but GridUnload also enabled. GridUnload must be disabled to enable base map pre-loading. Base map pre-loading disabled");
+//        // TC_LOG_ERROR("server.loading", "BaseMapLoadAllGrids enabled, but GridUnload also enabled. GridUnload must be disabled to enable base map pre-loading. Base map pre-loading disabled");
 //        m_bool_configs[CONFIG_BASEMAP_LOAD_GRIDS] = false;
 //    }
 //    m_bool_configs[CONFIG_INSTANCEMAP_LOAD_GRIDS] = sConfigMgr->GetBoolDefault("InstanceMapLoadAllGrids", false);
 //    if (m_bool_configs[CONFIG_INSTANCEMAP_LOAD_GRIDS] && m_bool_configs[CONFIG_GRID_UNLOAD])
 //    {
-//        TC_LOG_ERROR("server.loading", "InstanceMapLoadAllGrids enabled, but GridUnload also enabled. GridUnload must be disabled to enable instance map pre-loading. Instance map pre-loading disabled");
+//        // TC_LOG_ERROR("server.loading", "InstanceMapLoadAllGrids enabled, but GridUnload also enabled. GridUnload must be disabled to enable instance map pre-loading. Instance map pre-loading disabled");
 //        m_bool_configs[CONFIG_INSTANCEMAP_LOAD_GRIDS] = false;
 //    }
 //    m_int_configs[CONFIG_INTERVAL_SAVE] = sConfigMgr->GetIntDefault("PlayerSaveInterval", 15 * MINUTE * IN_MILLISECONDS);
@@ -704,14 +704,14 @@
 //    m_int_configs[CONFIG_MIN_LEVEL_STAT_SAVE] = sConfigMgr->GetIntDefault("PlayerSave.Stats.MinLevel", 0);
 //    if (m_int_configs[CONFIG_MIN_LEVEL_STAT_SAVE] > MAX_LEVEL)
 //    {
-//        TC_LOG_ERROR("server.loading", "PlayerSave.Stats.MinLevel ({}) must be in range 0..80. Using default, do not save character stats (0).", m_int_configs[CONFIG_MIN_LEVEL_STAT_SAVE]);
+//        // TC_LOG_ERROR("server.loading", "PlayerSave.Stats.MinLevel ({}) must be in range 0..80. Using default, do not save character stats (0).", m_int_configs[CONFIG_MIN_LEVEL_STAT_SAVE]);
 //        m_int_configs[CONFIG_MIN_LEVEL_STAT_SAVE] = 0;
 //    }
 //
 //    m_int_configs[CONFIG_INTERVAL_GRIDCLEAN] = sConfigMgr->GetIntDefault("GridCleanUpDelay", 5 * MINUTE * IN_MILLISECONDS);
 //    if (m_int_configs[CONFIG_INTERVAL_GRIDCLEAN] < MIN_GRID_DELAY)
 //    {
-//        TC_LOG_ERROR("server.loading", "GridCleanUpDelay ({}) must be greater {}. Use this minimal value.", m_int_configs[CONFIG_INTERVAL_GRIDCLEAN], MIN_GRID_DELAY);
+//        // TC_LOG_ERROR("server.loading", "GridCleanUpDelay ({}) must be greater {}. Use this minimal value.", m_int_configs[CONFIG_INTERVAL_GRIDCLEAN], MIN_GRID_DELAY);
 //        m_int_configs[CONFIG_INTERVAL_GRIDCLEAN] = MIN_GRID_DELAY;
 //    }
 //    if (reload)
@@ -720,7 +720,7 @@
 //    m_int_configs[CONFIG_INTERVAL_MAPUPDATE] = sConfigMgr->GetIntDefault("MapUpdateInterval", 10);
 //    if (m_int_configs[CONFIG_INTERVAL_MAPUPDATE] < MIN_MAP_UPDATE_DELAY)
 //    {
-//        TC_LOG_ERROR("server.loading", "MapUpdateInterval ({}) must be greater {}. Use this minimal value.", m_int_configs[CONFIG_INTERVAL_MAPUPDATE], MIN_MAP_UPDATE_DELAY);
+//        // TC_LOG_ERROR("server.loading", "MapUpdateInterval ({}) must be greater {}. Use this minimal value.", m_int_configs[CONFIG_INTERVAL_MAPUPDATE], MIN_MAP_UPDATE_DELAY);
 //        m_int_configs[CONFIG_INTERVAL_MAPUPDATE] = MIN_MAP_UPDATE_DELAY;
 //    }
 //    if (reload)
@@ -732,7 +732,7 @@
 //    {
 //        uint32 val = sConfigMgr->GetIntDefault("WorldServerPort", 8085);
 //        if (val != m_int_configs[CONFIG_PORT_WORLD])
-//            TC_LOG_ERROR("server.loading", "WorldServerPort option can't be changed at worldserver.conf reload, using current value ({}).", m_int_configs[CONFIG_PORT_WORLD]);
+//            // TC_LOG_ERROR("server.loading", "WorldServerPort option can't be changed at worldserver.conf reload, using current value ({}).", m_int_configs[CONFIG_PORT_WORLD]);
 //    }
 //    else
 //        m_int_configs[CONFIG_PORT_WORLD] = sConfigMgr->GetIntDefault("WorldServerPort", 8085);
@@ -749,21 +749,21 @@
 //    m_int_configs[CONFIG_MIN_QUEST_SCALED_XP_RATIO] = sConfigMgr->GetIntDefault("MinQuestScaledXPRatio", 0);
 //    if (m_int_configs[CONFIG_MIN_QUEST_SCALED_XP_RATIO] > 100)
 //    {
-//        TC_LOG_ERROR("server.loading", "MinQuestScaledXPRatio ({}) must be in range 0..100. Set to 0.", m_int_configs[CONFIG_MIN_QUEST_SCALED_XP_RATIO]);
+//        // TC_LOG_ERROR("server.loading", "MinQuestScaledXPRatio ({}) must be in range 0..100. Set to 0.", m_int_configs[CONFIG_MIN_QUEST_SCALED_XP_RATIO]);
 //        m_int_configs[CONFIG_MIN_QUEST_SCALED_XP_RATIO] = 0;
 //    }
 //
 //    m_int_configs[CONFIG_MIN_CREATURE_SCALED_XP_RATIO] = sConfigMgr->GetIntDefault("MinCreatureScaledXPRatio", 0);
 //    if (m_int_configs[CONFIG_MIN_CREATURE_SCALED_XP_RATIO] > 100)
 //    {
-//        TC_LOG_ERROR("server.loading", "MinCreatureScaledXPRatio ({}) must be in range 0..100. Set to 0.", m_int_configs[CONFIG_MIN_CREATURE_SCALED_XP_RATIO]);
+//        // TC_LOG_ERROR("server.loading", "MinCreatureScaledXPRatio ({}) must be in range 0..100. Set to 0.", m_int_configs[CONFIG_MIN_CREATURE_SCALED_XP_RATIO]);
 //        m_int_configs[CONFIG_MIN_CREATURE_SCALED_XP_RATIO] = 0;
 //    }
 //
 //    m_int_configs[CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO] = sConfigMgr->GetIntDefault("MinDiscoveredScaledXPRatio", 0);
 //    if (m_int_configs[CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO] > 100)
 //    {
-//        TC_LOG_ERROR("server.loading", "MinDiscoveredScaledXPRatio ({}) must be in range 0..100. Set to 0.", m_int_configs[CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO]);
+//        // TC_LOG_ERROR("server.loading", "MinDiscoveredScaledXPRatio ({}) must be in range 0..100. Set to 0.", m_int_configs[CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO]);
 //        m_int_configs[CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO] = 0;
 //    }
 //
@@ -776,7 +776,7 @@
 //    {
 //        uint32 val = sConfigMgr->GetIntDefault("GameType", 0);
 //        if (val != m_int_configs[CONFIG_GAME_TYPE])
-//            TC_LOG_ERROR("server.loading", "GameType option can't be changed at worldserver.conf reload, using current value ({}).", m_int_configs[CONFIG_GAME_TYPE]);
+//            // TC_LOG_ERROR("server.loading", "GameType option can't be changed at worldserver.conf reload, using current value ({}).", m_int_configs[CONFIG_GAME_TYPE]);
 //    }
 //    else
 //        m_int_configs[CONFIG_GAME_TYPE] = sConfigMgr->GetIntDefault("GameType", 0);
@@ -785,7 +785,7 @@
 //    {
 //        uint32 val = sConfigMgr->GetIntDefault("RealmZone", REALM_ZONE_DEVELOPMENT);
 //        if (val != m_int_configs[CONFIG_REALM_ZONE])
-//            TC_LOG_ERROR("server.loading", "RealmZone option can't be changed at worldserver.conf reload, using current value ({}).", m_int_configs[CONFIG_REALM_ZONE]);
+//            // TC_LOG_ERROR("server.loading", "RealmZone option can't be changed at worldserver.conf reload, using current value ({}).", m_int_configs[CONFIG_REALM_ZONE]);
 //    }
 //    else
 //        m_int_configs[CONFIG_REALM_ZONE] = sConfigMgr->GetIntDefault("RealmZone", REALM_ZONE_DEVELOPMENT);
@@ -803,21 +803,21 @@
 //    m_int_configs[CONFIG_MIN_PLAYER_NAME]                     = sConfigMgr->GetIntDefault ("MinPlayerName",  2);
 //    if (m_int_configs[CONFIG_MIN_PLAYER_NAME] < 1 || m_int_configs[CONFIG_MIN_PLAYER_NAME] > MAX_PLAYER_NAME)
 //    {
-//        TC_LOG_ERROR("server.loading", "MinPlayerName ({}) must be in range 1..{}. Set to 2.", m_int_configs[CONFIG_MIN_PLAYER_NAME], MAX_PLAYER_NAME);
+//        // TC_LOG_ERROR("server.loading", "MinPlayerName ({}) must be in range 1..{}. Set to 2.", m_int_configs[CONFIG_MIN_PLAYER_NAME], MAX_PLAYER_NAME);
 //        m_int_configs[CONFIG_MIN_PLAYER_NAME] = 2;
 //    }
 //
 //    m_int_configs[CONFIG_MIN_CHARTER_NAME]                    = sConfigMgr->GetIntDefault ("MinCharterName", 2);
 //    if (m_int_configs[CONFIG_MIN_CHARTER_NAME] < 1 || m_int_configs[CONFIG_MIN_CHARTER_NAME] > MAX_CHARTER_NAME)
 //    {
-//        TC_LOG_ERROR("server.loading", "MinCharterName ({}) must be in range 1..{}. Set to 2.", m_int_configs[CONFIG_MIN_CHARTER_NAME], MAX_CHARTER_NAME);
+//        // TC_LOG_ERROR("server.loading", "MinCharterName ({}) must be in range 1..{}. Set to 2.", m_int_configs[CONFIG_MIN_CHARTER_NAME], MAX_CHARTER_NAME);
 //        m_int_configs[CONFIG_MIN_CHARTER_NAME] = 2;
 //    }
 //
 //    m_int_configs[CONFIG_MIN_PET_NAME]                        = sConfigMgr->GetIntDefault ("MinPetName",     2);
 //    if (m_int_configs[CONFIG_MIN_PET_NAME] < 1 || m_int_configs[CONFIG_MIN_PET_NAME] > MAX_PET_NAME)
 //    {
-//        TC_LOG_ERROR("server.loading", "MinPetName ({}) must be in range 1..{}. Set to 2.", m_int_configs[CONFIG_MIN_PET_NAME], MAX_PET_NAME);
+//        // TC_LOG_ERROR("server.loading", "MinPetName ({}) must be in range 1..{}. Set to 2.", m_int_configs[CONFIG_MIN_PET_NAME], MAX_PET_NAME);
 //        m_int_configs[CONFIG_MIN_PET_NAME] = 2;
 //    }
 //
@@ -833,7 +833,7 @@
 //    m_int_configs[CONFIG_CHARACTERS_PER_REALM] = sConfigMgr->GetIntDefault("CharactersPerRealm", MAX_CHARACTERS_PER_REALM);
 //    if (m_int_configs[CONFIG_CHARACTERS_PER_REALM] < 1 || m_int_configs[CONFIG_CHARACTERS_PER_REALM] > MAX_CHARACTERS_PER_REALM)
 //    {
-//        TC_LOG_ERROR("server.loading", "CharactersPerRealm ({}) must be in range 1..{}. Set to {}.", m_int_configs[CONFIG_CHARACTERS_PER_REALM], MAX_CHARACTERS_PER_REALM, MAX_CHARACTERS_PER_REALM);
+//        // TC_LOG_ERROR("server.loading", "CharactersPerRealm ({}) must be in range 1..{}. Set to {}.", m_int_configs[CONFIG_CHARACTERS_PER_REALM], MAX_CHARACTERS_PER_REALM, MAX_CHARACTERS_PER_REALM);
 //        m_int_configs[CONFIG_CHARACTERS_PER_REALM] = MAX_CHARACTERS_PER_REALM;
 //    }
 //
@@ -841,14 +841,14 @@
 //    m_int_configs[CONFIG_CHARACTERS_PER_ACCOUNT] = sConfigMgr->GetIntDefault("CharactersPerAccount", 50);
 //    if (m_int_configs[CONFIG_CHARACTERS_PER_ACCOUNT] < m_int_configs[CONFIG_CHARACTERS_PER_REALM])
 //    {
-//        TC_LOG_ERROR("server.loading", "CharactersPerAccount ({}) can't be less than CharactersPerRealm ({}).", m_int_configs[CONFIG_CHARACTERS_PER_ACCOUNT], m_int_configs[CONFIG_CHARACTERS_PER_REALM]);
+//        // TC_LOG_ERROR("server.loading", "CharactersPerAccount ({}) can't be less than CharactersPerRealm ({}).", m_int_configs[CONFIG_CHARACTERS_PER_ACCOUNT], m_int_configs[CONFIG_CHARACTERS_PER_REALM]);
 //        m_int_configs[CONFIG_CHARACTERS_PER_ACCOUNT] = m_int_configs[CONFIG_CHARACTERS_PER_REALM];
 //    }
 //
 //    m_int_configs[CONFIG_DEATH_KNIGHTS_PER_REALM] = sConfigMgr->GetIntDefault("DeathKnightsPerRealm", 1);
 //    if (int32(m_int_configs[CONFIG_DEATH_KNIGHTS_PER_REALM]) < 0 || m_int_configs[CONFIG_DEATH_KNIGHTS_PER_REALM] > 10)
 //    {
-//        TC_LOG_ERROR("server.loading", "DeathKnightsPerRealm ({}) must be in range 0..10. Set to 1.", m_int_configs[CONFIG_DEATH_KNIGHTS_PER_REALM]);
+//        // TC_LOG_ERROR("server.loading", "DeathKnightsPerRealm ({}) must be in range 0..10. Set to 1.", m_int_configs[CONFIG_DEATH_KNIGHTS_PER_REALM]);
 //        m_int_configs[CONFIG_DEATH_KNIGHTS_PER_REALM] = 1;
 //    }
 //
@@ -857,7 +857,7 @@
 //    m_int_configs[CONFIG_SKIP_CINEMATICS] = sConfigMgr->GetIntDefault("SkipCinematics", 0);
 //    if (int32(m_int_configs[CONFIG_SKIP_CINEMATICS]) < 0 || m_int_configs[CONFIG_SKIP_CINEMATICS] > 2)
 //    {
-//        TC_LOG_ERROR("server.loading", "SkipCinematics ({}) must be in range 0..2. Set to 0.", m_int_configs[CONFIG_SKIP_CINEMATICS]);
+//        // TC_LOG_ERROR("server.loading", "SkipCinematics ({}) must be in range 0..2. Set to 0.", m_int_configs[CONFIG_SKIP_CINEMATICS]);
 //        m_int_configs[CONFIG_SKIP_CINEMATICS] = 0;
 //    }
 //
@@ -865,14 +865,14 @@
 //    {
 //        uint32 val = sConfigMgr->GetIntDefault("MaxPlayerLevel", DEFAULT_MAX_LEVEL);
 //        if (val != m_int_configs[CONFIG_MAX_PLAYER_LEVEL])
-//            TC_LOG_ERROR("server.loading", "MaxPlayerLevel option can't be changed at config reload, using current value ({}).", m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
+//            // TC_LOG_ERROR("server.loading", "MaxPlayerLevel option can't be changed at config reload, using current value ({}).", m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
 //    }
 //    else
 //        m_int_configs[CONFIG_MAX_PLAYER_LEVEL] = sConfigMgr->GetIntDefault("MaxPlayerLevel", DEFAULT_MAX_LEVEL);
 //
 //    if (m_int_configs[CONFIG_MAX_PLAYER_LEVEL] > MAX_LEVEL)
 //    {
-//        TC_LOG_ERROR("server.loading", "MaxPlayerLevel ({}) must be in range 1..{}. Set to {}.", m_int_configs[CONFIG_MAX_PLAYER_LEVEL], MAX_LEVEL, MAX_LEVEL);
+//        // TC_LOG_ERROR("server.loading", "MaxPlayerLevel ({}) must be in range 1..{}. Set to {}.", m_int_configs[CONFIG_MAX_PLAYER_LEVEL], MAX_LEVEL, MAX_LEVEL);
 //        m_int_configs[CONFIG_MAX_PLAYER_LEVEL] = MAX_LEVEL;
 //    }
 //
@@ -881,25 +881,25 @@
 //    m_int_configs[CONFIG_START_PLAYER_LEVEL] = sConfigMgr->GetIntDefault("StartPlayerLevel", 1);
 //    if (m_int_configs[CONFIG_START_PLAYER_LEVEL] < 1)
 //    {
-//        TC_LOG_ERROR("server.loading", "StartPlayerLevel ({}) must be in range 1..MaxPlayerLevel({}). Set to 1.", m_int_configs[CONFIG_START_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
+//        // TC_LOG_ERROR("server.loading", "StartPlayerLevel ({}) must be in range 1..MaxPlayerLevel({}). Set to 1.", m_int_configs[CONFIG_START_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
 //        m_int_configs[CONFIG_START_PLAYER_LEVEL] = 1;
 //    }
 //    else if (m_int_configs[CONFIG_START_PLAYER_LEVEL] > m_int_configs[CONFIG_MAX_PLAYER_LEVEL])
 //    {
-//        TC_LOG_ERROR("server.loading", "StartPlayerLevel ({}) must be in range 1..MaxPlayerLevel({}). Set to {}.", m_int_configs[CONFIG_START_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
+//        // TC_LOG_ERROR("server.loading", "StartPlayerLevel ({}) must be in range 1..MaxPlayerLevel({}). Set to {}.", m_int_configs[CONFIG_START_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
 //        m_int_configs[CONFIG_START_PLAYER_LEVEL] = m_int_configs[CONFIG_MAX_PLAYER_LEVEL];
 //    }
 //
 //    m_int_configs[CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL] = sConfigMgr->GetIntDefault("StartDeathKnightPlayerLevel", 55);
 //    if (m_int_configs[CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL] < 1)
 //    {
-//        TC_LOG_ERROR("server.loading", "StartDeathKnightPlayerLevel ({}) must be in range 1..MaxPlayerLevel({}). Set to 55.",
+//        // TC_LOG_ERROR("server.loading", "StartDeathKnightPlayerLevel ({}) must be in range 1..MaxPlayerLevel({}). Set to 55.",
 //            m_int_configs[CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
 //        m_int_configs[CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL] = 55;
 //    }
 //    else if (m_int_configs[CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL] > m_int_configs[CONFIG_MAX_PLAYER_LEVEL])
 //    {
-//        TC_LOG_ERROR("server.loading", "StartDeathKnightPlayerLevel ({}) must be in range 1..MaxPlayerLevel({}). Set to {}.",
+//        // TC_LOG_ERROR("server.loading", "StartDeathKnightPlayerLevel ({}) must be in range 1..MaxPlayerLevel({}). Set to {}.",
 //            m_int_configs[CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
 //        m_int_configs[CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL] = m_int_configs[CONFIG_MAX_PLAYER_LEVEL];
 //    }
@@ -907,12 +907,12 @@
 //    m_int_configs[CONFIG_START_PLAYER_MONEY] = sConfigMgr->GetIntDefault("StartPlayerMoney", 0);
 //    if (int32(m_int_configs[CONFIG_START_PLAYER_MONEY]) < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "StartPlayerMoney ({}) must be in range 0..{}. Set to {}.", m_int_configs[CONFIG_START_PLAYER_MONEY], MAX_MONEY_AMOUNT, 0);
+//        // TC_LOG_ERROR("server.loading", "StartPlayerMoney ({}) must be in range 0..{}. Set to {}.", m_int_configs[CONFIG_START_PLAYER_MONEY], MAX_MONEY_AMOUNT, 0);
 //        m_int_configs[CONFIG_START_PLAYER_MONEY] = 0;
 //    }
 //    else if (m_int_configs[CONFIG_START_PLAYER_MONEY] > MAX_MONEY_AMOUNT)
 //    {
-//        TC_LOG_ERROR("server.loading", "StartPlayerMoney ({}) must be in range 0..{}. Set to {}.",
+//        // TC_LOG_ERROR("server.loading", "StartPlayerMoney ({}) must be in range 0..{}. Set to {}.",
 //            m_int_configs[CONFIG_START_PLAYER_MONEY], MAX_MONEY_AMOUNT, MAX_MONEY_AMOUNT);
 //        m_int_configs[CONFIG_START_PLAYER_MONEY] = MAX_MONEY_AMOUNT;
 //    }
@@ -920,20 +920,20 @@
 //    m_int_configs[CONFIG_MAX_HONOR_POINTS] = sConfigMgr->GetIntDefault("MaxHonorPoints", 75000);
 //    if (int32(m_int_configs[CONFIG_MAX_HONOR_POINTS]) < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "MaxHonorPoints ({}) can't be negative. Set to 0.", m_int_configs[CONFIG_MAX_HONOR_POINTS]);
+//        // TC_LOG_ERROR("server.loading", "MaxHonorPoints ({}) can't be negative. Set to 0.", m_int_configs[CONFIG_MAX_HONOR_POINTS]);
 //        m_int_configs[CONFIG_MAX_HONOR_POINTS] = 0;
 //    }
 //
 //    m_int_configs[CONFIG_START_HONOR_POINTS] = sConfigMgr->GetIntDefault("StartHonorPoints", 0);
 //    if (int32(m_int_configs[CONFIG_START_HONOR_POINTS]) < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "StartHonorPoints ({}) must be in range 0..MaxHonorPoints({}). Set to {}.",
+//        // TC_LOG_ERROR("server.loading", "StartHonorPoints ({}) must be in range 0..MaxHonorPoints({}). Set to {}.",
 //            m_int_configs[CONFIG_START_HONOR_POINTS], m_int_configs[CONFIG_MAX_HONOR_POINTS], 0);
 //        m_int_configs[CONFIG_START_HONOR_POINTS] = 0;
 //    }
 //    else if (m_int_configs[CONFIG_START_HONOR_POINTS] > m_int_configs[CONFIG_MAX_HONOR_POINTS])
 //    {
-//        TC_LOG_ERROR("server.loading", "StartHonorPoints ({}) must be in range 0..MaxHonorPoints({}). Set to {}.",
+//        // TC_LOG_ERROR("server.loading", "StartHonorPoints ({}) must be in range 0..MaxHonorPoints({}). Set to {}.",
 //            m_int_configs[CONFIG_START_HONOR_POINTS], m_int_configs[CONFIG_MAX_HONOR_POINTS], m_int_configs[CONFIG_MAX_HONOR_POINTS]);
 //        m_int_configs[CONFIG_START_HONOR_POINTS] = m_int_configs[CONFIG_MAX_HONOR_POINTS];
 //    }
@@ -941,20 +941,20 @@
 //    m_int_configs[CONFIG_MAX_ARENA_POINTS] = sConfigMgr->GetIntDefault("MaxArenaPoints", 10000);
 //    if (int32(m_int_configs[CONFIG_MAX_ARENA_POINTS]) < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "MaxArenaPoints ({}) can't be negative. Set to 0.", m_int_configs[CONFIG_MAX_ARENA_POINTS]);
+//        // TC_LOG_ERROR("server.loading", "MaxArenaPoints ({}) can't be negative. Set to 0.", m_int_configs[CONFIG_MAX_ARENA_POINTS]);
 //        m_int_configs[CONFIG_MAX_ARENA_POINTS] = 0;
 //    }
 //
 //    m_int_configs[CONFIG_START_ARENA_POINTS] = sConfigMgr->GetIntDefault("StartArenaPoints", 0);
 //    if (int32(m_int_configs[CONFIG_START_ARENA_POINTS]) < 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "StartArenaPoints ({}) must be in range 0..MaxArenaPoints({}). Set to {}.",
+//        // TC_LOG_ERROR("server.loading", "StartArenaPoints ({}) must be in range 0..MaxArenaPoints({}). Set to {}.",
 //            m_int_configs[CONFIG_START_ARENA_POINTS], m_int_configs[CONFIG_MAX_ARENA_POINTS], 0);
 //        m_int_configs[CONFIG_START_ARENA_POINTS] = 0;
 //    }
 //    else if (m_int_configs[CONFIG_START_ARENA_POINTS] > m_int_configs[CONFIG_MAX_ARENA_POINTS])
 //    {
-//        TC_LOG_ERROR("server.loading", "StartArenaPoints ({}) must be in range 0..MaxArenaPoints({}). Set to {}.",
+//        // TC_LOG_ERROR("server.loading", "StartArenaPoints ({}) must be in range 0..MaxArenaPoints({}). Set to {}.",
 //            m_int_configs[CONFIG_START_ARENA_POINTS], m_int_configs[CONFIG_MAX_ARENA_POINTS], m_int_configs[CONFIG_MAX_ARENA_POINTS]);
 //        m_int_configs[CONFIG_START_ARENA_POINTS] = m_int_configs[CONFIG_MAX_ARENA_POINTS];
 //    }
@@ -962,7 +962,7 @@
 //    m_int_configs[CONFIG_MAX_RECRUIT_A_FRIEND_BONUS_PLAYER_LEVEL] = sConfigMgr->GetIntDefault("RecruitAFriend.MaxLevel", 60);
 //    if (m_int_configs[CONFIG_MAX_RECRUIT_A_FRIEND_BONUS_PLAYER_LEVEL] > m_int_configs[CONFIG_MAX_PLAYER_LEVEL])
 //    {
-//        TC_LOG_ERROR("server.loading", "RecruitAFriend.MaxLevel ({}) must be in the range 0..MaxLevel({}). Set to {}.",
+//        // TC_LOG_ERROR("server.loading", "RecruitAFriend.MaxLevel ({}) must be in the range 0..MaxLevel({}). Set to {}.",
 //            m_int_configs[CONFIG_MAX_RECRUIT_A_FRIEND_BONUS_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL], 60);
 //        m_int_configs[CONFIG_MAX_RECRUIT_A_FRIEND_BONUS_PLAYER_LEVEL] = 60;
 //    }
@@ -981,14 +981,14 @@
 //    m_int_configs[CONFIG_DAILY_QUEST_RESET_TIME_HOUR] = sConfigMgr->GetIntDefault("Quests.DailyResetTime", 3);
 //    if (m_int_configs[CONFIG_DAILY_QUEST_RESET_TIME_HOUR] > 23)
 //    {
-//        TC_LOG_ERROR("server.loading", "Quests.DailyResetTime ({}) must be in range 0..23. Set to 3.", m_int_configs[CONFIG_DAILY_QUEST_RESET_TIME_HOUR]);
+//        // TC_LOG_ERROR("server.loading", "Quests.DailyResetTime ({}) must be in range 0..23. Set to 3.", m_int_configs[CONFIG_DAILY_QUEST_RESET_TIME_HOUR]);
 //        m_int_configs[CONFIG_DAILY_QUEST_RESET_TIME_HOUR] = 3;
 //    }
 //
 //    m_int_configs[CONFIG_WEEKLY_QUEST_RESET_TIME_WDAY] = sConfigMgr->GetIntDefault("Quests.WeeklyResetWDay", 3);
 //    if (m_int_configs[CONFIG_WEEKLY_QUEST_RESET_TIME_WDAY] > 6)
 //    {
-//        TC_LOG_ERROR("server.loading", "Quests.WeeklyResetDay ({}) must be in range 0..6. Set to 3 (Wednesday).", m_int_configs[CONFIG_WEEKLY_QUEST_RESET_TIME_WDAY]);
+//        // TC_LOG_ERROR("server.loading", "Quests.WeeklyResetDay ({}) must be in range 0..6. Set to 3 (Wednesday).", m_int_configs[CONFIG_WEEKLY_QUEST_RESET_TIME_WDAY]);
 //        m_int_configs[CONFIG_WEEKLY_QUEST_RESET_TIME_WDAY] = 3;
 //    }
 //
@@ -996,7 +996,7 @@
 //    m_int_configs[CONFIG_MIN_PETITION_SIGNS] = sConfigMgr->GetIntDefault("MinPetitionSigns", 9);
 //    if (m_int_configs[CONFIG_MIN_PETITION_SIGNS] > 9)
 //    {
-//        TC_LOG_ERROR("server.loading", "MinPetitionSigns ({}) must be in range 0..9. Set to 9.", m_int_configs[CONFIG_MIN_PETITION_SIGNS]);
+//        // TC_LOG_ERROR("server.loading", "MinPetitionSigns ({}) must be in range 0..9. Set to 9.", m_int_configs[CONFIG_MIN_PETITION_SIGNS]);
 //        m_int_configs[CONFIG_MIN_PETITION_SIGNS] = 9;
 //    }
 //
@@ -1011,13 +1011,13 @@
 //    m_int_configs[CONFIG_START_GM_LEVEL]        = sConfigMgr->GetIntDefault("GM.StartLevel", 1);
 //    if (m_int_configs[CONFIG_START_GM_LEVEL] < m_int_configs[CONFIG_START_PLAYER_LEVEL])
 //    {
-//        TC_LOG_ERROR("server.loading", "GM.StartLevel ({}) must be in range StartPlayerLevel({})..{}. Set to {}.",
+//        // TC_LOG_ERROR("server.loading", "GM.StartLevel ({}) must be in range StartPlayerLevel({})..{}. Set to {}.",
 //            m_int_configs[CONFIG_START_GM_LEVEL], m_int_configs[CONFIG_START_PLAYER_LEVEL], MAX_LEVEL, m_int_configs[CONFIG_START_PLAYER_LEVEL]);
 //        m_int_configs[CONFIG_START_GM_LEVEL] = m_int_configs[CONFIG_START_PLAYER_LEVEL];
 //    }
 //    else if (m_int_configs[CONFIG_START_GM_LEVEL] > MAX_LEVEL)
 //    {
-//        TC_LOG_ERROR("server.loading", "GM.StartLevel ({}) must be in range 1..{}. Set to {}.", m_int_configs[CONFIG_START_GM_LEVEL], MAX_LEVEL, MAX_LEVEL);
+//        // TC_LOG_ERROR("server.loading", "GM.StartLevel ({}) must be in range 1..{}. Set to {}.", m_int_configs[CONFIG_START_GM_LEVEL], MAX_LEVEL, MAX_LEVEL);
 //        m_int_configs[CONFIG_START_GM_LEVEL] = MAX_LEVEL;
 //    }
 //    m_bool_configs[CONFIG_ALLOW_GM_GROUP]       = sConfigMgr->GetBoolDefault("GM.AllowInvite", false);
@@ -1031,14 +1031,14 @@
 //    m_int_configs[CONFIG_CLEAN_OLD_MAIL_TIME] = sConfigMgr->GetIntDefault("CleanOldMailTime", 4);
 //    if (m_int_configs[CONFIG_CLEAN_OLD_MAIL_TIME] > 23)
 //    {
-//        TC_LOG_ERROR("server.loading", "CleanOldMailTime ({}) must be an hour, between 0 and 23. Set to 4.", m_int_configs[CONFIG_CLEAN_OLD_MAIL_TIME]);
+//        // TC_LOG_ERROR("server.loading", "CleanOldMailTime ({}) must be an hour, between 0 and 23. Set to 4.", m_int_configs[CONFIG_CLEAN_OLD_MAIL_TIME]);
 //        m_int_configs[CONFIG_CLEAN_OLD_MAIL_TIME] = 4;
 //    }
 //
 //    m_int_configs[CONFIG_UPTIME_UPDATE] = sConfigMgr->GetIntDefault("UpdateUptimeInterval", 10);
 //    if (int32(m_int_configs[CONFIG_UPTIME_UPDATE]) <= 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "UpdateUptimeInterval ({}) must be > 0, set to default 10.", m_int_configs[CONFIG_UPTIME_UPDATE]);
+//        // TC_LOG_ERROR("server.loading", "UpdateUptimeInterval ({}) must be > 0, set to default 10.", m_int_configs[CONFIG_UPTIME_UPDATE]);
 //        m_int_configs[CONFIG_UPTIME_UPDATE] = 10;
 //    }
 //    if (reload)
@@ -1051,7 +1051,7 @@
 //    m_int_configs[CONFIG_LOGDB_CLEARINTERVAL] = sConfigMgr->GetIntDefault("LogDB.Opt.ClearInterval", 10);
 //    if (int32(m_int_configs[CONFIG_LOGDB_CLEARINTERVAL]) <= 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "LogDB.Opt.ClearInterval ({}) must be > 0, set to default 10.", m_int_configs[CONFIG_LOGDB_CLEARINTERVAL]);
+//        // TC_LOG_ERROR("server.loading", "LogDB.Opt.ClearInterval ({}) must be > 0, set to default 10.", m_int_configs[CONFIG_LOGDB_CLEARINTERVAL]);
 //        m_int_configs[CONFIG_LOGDB_CLEARINTERVAL] = 10;
 //    }
 //    if (reload)
@@ -1060,7 +1060,7 @@
 //        m_timers[WUPDATE_CLEANDB].Reset();
 //    }
 //    m_int_configs[CONFIG_LOGDB_CLEARTIME] = sConfigMgr->GetIntDefault("LogDB.Opt.ClearTime", 1209600); // 14 days default
-//    TC_LOG_INFO("server.loading", "Will clear `logs` table of entries older than {} seconds every {} minutes.",
+//    // TC_LOG_INFO("server.loading", "Will clear `logs` table of entries older than {} seconds every {} minutes.",
 //        m_int_configs[CONFIG_LOGDB_CLEARTIME], m_int_configs[CONFIG_LOGDB_CLEARINTERVAL]);
 //
 //    m_int_configs[CONFIG_SKILL_CHANCE_ORANGE] = sConfigMgr->GetIntDefault("SkillChance.Orange", 100);
@@ -1085,7 +1085,7 @@
 //    m_int_configs[CONFIG_MAX_OVERSPEED_PINGS] = sConfigMgr->GetIntDefault("MaxOverspeedPings", 2);
 //    if (m_int_configs[CONFIG_MAX_OVERSPEED_PINGS] != 0 && m_int_configs[CONFIG_MAX_OVERSPEED_PINGS] < 2)
 //    {
-//        TC_LOG_ERROR("server.loading", "MaxOverspeedPings ({}) must be in range 2..infinity (or 0 to disable check). Set to 2.", m_int_configs[CONFIG_MAX_OVERSPEED_PINGS]);
+//        // TC_LOG_ERROR("server.loading", "MaxOverspeedPings ({}) must be in range 2..infinity (or 0 to disable check). Set to 2.", m_int_configs[CONFIG_MAX_OVERSPEED_PINGS]);
 //        m_int_configs[CONFIG_MAX_OVERSPEED_PINGS] = 2;
 //    }
 //
@@ -1099,7 +1099,7 @@
 //    {
 //        uint32 val = sConfigMgr->GetIntDefault("Expansion", 2);
 //        if (val != m_int_configs[CONFIG_EXPANSION])
-//            TC_LOG_ERROR("server.loading", "Expansion option can't be changed at worldserver.conf reload, using current value ({}).", m_int_configs[CONFIG_EXPANSION]);
+//            // TC_LOG_ERROR("server.loading", "Expansion option can't be changed at worldserver.conf reload, using current value ({}).", m_int_configs[CONFIG_EXPANSION]);
 //    }
 //    else
 //        m_int_configs[CONFIG_EXPANSION] = sConfigMgr->GetIntDefault("Expansion", 2);
@@ -1135,21 +1135,21 @@
 //    m_int_configs[CONFIG_RANDOM_BG_RESET_HOUR] = sConfigMgr->GetIntDefault("Battleground.Random.ResetHour", 6);
 //    if (m_int_configs[CONFIG_RANDOM_BG_RESET_HOUR] > 23)
 //    {
-//        TC_LOG_ERROR("server.loading", "Battleground.Random.ResetHour ({}) can't be load. Set to 6.", m_int_configs[CONFIG_RANDOM_BG_RESET_HOUR]);
+//        // TC_LOG_ERROR("server.loading", "Battleground.Random.ResetHour ({}) can't be load. Set to 6.", m_int_configs[CONFIG_RANDOM_BG_RESET_HOUR]);
 //        m_int_configs[CONFIG_RANDOM_BG_RESET_HOUR] = 6;
 //    }
 //
 //    m_int_configs[CONFIG_CALENDAR_DELETE_OLD_EVENTS_HOUR] = sConfigMgr->GetIntDefault("Calendar.DeleteOldEventsHour", 6);
 //    if (m_int_configs[CONFIG_CALENDAR_DELETE_OLD_EVENTS_HOUR] > 23)
 //    {
-//        TC_LOG_ERROR("misc", "Calendar.DeleteOldEventsHour ({}) can't be load. Set to 6.", m_int_configs[CONFIG_CALENDAR_DELETE_OLD_EVENTS_HOUR]);
+//        // TC_LOG_ERROR("misc", "Calendar.DeleteOldEventsHour ({}) can't be load. Set to 6.", m_int_configs[CONFIG_CALENDAR_DELETE_OLD_EVENTS_HOUR]);
 //        m_int_configs[CONFIG_CALENDAR_DELETE_OLD_EVENTS_HOUR] = 6;
 //    }
 //
 //    m_int_configs[CONFIG_GUILD_RESET_HOUR] = sConfigMgr->GetIntDefault("Guild.ResetHour", 6);
 //    if (m_int_configs[CONFIG_GUILD_RESET_HOUR] > 23)
 //    {
-//        TC_LOG_ERROR("misc", "Guild.ResetHour ({}) can't be load. Set to 6.", m_int_configs[CONFIG_GUILD_RESET_HOUR]);
+//        // TC_LOG_ERROR("misc", "Guild.ResetHour ({}) can't be load. Set to 6.", m_int_configs[CONFIG_GUILD_RESET_HOUR]);
 //        m_int_configs[CONFIG_GUILD_RESET_HOUR] = 6;
 //    }
 //
@@ -1193,12 +1193,12 @@
 //    m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK]                    = sConfigMgr->GetIntDefault("Battleground.ReportAFK", 3);
 //    if (m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK] < 1)
 //    {
-//        TC_LOG_ERROR("server.loading", "Battleground.ReportAFK ({}) must be >0. Using 3 instead.", m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK]);
+//        // TC_LOG_ERROR("server.loading", "Battleground.ReportAFK ({}) must be >0. Using 3 instead.", m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK]);
 //        m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK] = 3;
 //    }
 //    if (m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK] > 9)
 //    {
-//        TC_LOG_ERROR("server.loading", "Battleground.ReportAFK ({}) must be <10. Using 3 instead.", m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK]);
+//        // TC_LOG_ERROR("server.loading", "Battleground.ReportAFK ({}) must be <10. Using 3 instead.", m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK]);
 //        m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK] = 3;
 //    }
 //    m_int_configs[CONFIG_BATTLEGROUND_INVITATION_TYPE]               = sConfigMgr->GetIntDefault ("Battleground.InvitationType", 0);
@@ -1234,9 +1234,9 @@
 //        if (clientCacheId > 0)
 //            m_int_configs[CONFIG_CLIENTCACHE_VERSION] = clientCacheId;
 //        else
-//            TC_LOG_ERROR("server.loading", "ClientCacheVersion can't be negative {}, ignored.", clientCacheId);
+//            // TC_LOG_ERROR("server.loading", "ClientCacheVersion can't be negative {}, ignored.", clientCacheId);
 //    }
-//    TC_LOG_INFO("server.loading", "Client cache version set to: {}", m_int_configs[CONFIG_CLIENTCACHE_VERSION]);
+//    // TC_LOG_INFO("server.loading", "Client cache version set to: {}", m_int_configs[CONFIG_CLIENTCACHE_VERSION]);
 //
 //    m_int_configs[CONFIG_GUILD_EVENT_LOG_COUNT] = sConfigMgr->GetIntDefault("Guild.EventLogRecordsCount", GUILD_EVENTLOG_MAX_RECORDS);
 //    if (m_int_configs[CONFIG_GUILD_EVENT_LOG_COUNT] > GUILD_EVENTLOG_MAX_RECORDS)
@@ -1249,12 +1249,12 @@
 //    m_MaxVisibleDistanceOnContinents = sConfigMgr->GetFloatDefault("Visibility.Distance.Continents", DEFAULT_VISIBILITY_DISTANCE);
 //    if (m_MaxVisibleDistanceOnContinents < 45*sWorld->getRate(RATE_CREATURE_AGGRO))
 //    {
-//        TC_LOG_ERROR("server.loading", "Visibility.Distance.Continents can't be less max aggro radius {}", 45*sWorld->getRate(RATE_CREATURE_AGGRO));
+//        // TC_LOG_ERROR("server.loading", "Visibility.Distance.Continents can't be less max aggro radius {}", 45*sWorld->getRate(RATE_CREATURE_AGGRO));
 //        m_MaxVisibleDistanceOnContinents = 45*sWorld->getRate(RATE_CREATURE_AGGRO);
 //    }
 //    else if (m_MaxVisibleDistanceOnContinents > MAX_VISIBILITY_DISTANCE)
 //    {
-//        TC_LOG_ERROR("server.loading", "Visibility.Distance.Continents can't be greater {}", MAX_VISIBILITY_DISTANCE);
+//        // TC_LOG_ERROR("server.loading", "Visibility.Distance.Continents can't be greater {}", MAX_VISIBILITY_DISTANCE);
 //        m_MaxVisibleDistanceOnContinents = MAX_VISIBILITY_DISTANCE;
 //    }
 //
@@ -1262,12 +1262,12 @@
 //    m_MaxVisibleDistanceInInstances = sConfigMgr->GetFloatDefault("Visibility.Distance.Instances", DEFAULT_VISIBILITY_INSTANCE);
 //    if (m_MaxVisibleDistanceInInstances < 45*sWorld->getRate(RATE_CREATURE_AGGRO))
 //    {
-//        TC_LOG_ERROR("server.loading", "Visibility.Distance.Instances can't be less max aggro radius {}", 45*sWorld->getRate(RATE_CREATURE_AGGRO));
+//        // TC_LOG_ERROR("server.loading", "Visibility.Distance.Instances can't be less max aggro radius {}", 45*sWorld->getRate(RATE_CREATURE_AGGRO));
 //        m_MaxVisibleDistanceInInstances = 45*sWorld->getRate(RATE_CREATURE_AGGRO);
 //    }
 //    else if (m_MaxVisibleDistanceInInstances > MAX_VISIBILITY_DISTANCE)
 //    {
-//        TC_LOG_ERROR("server.loading", "Visibility.Distance.Instances can't be greater {}", MAX_VISIBILITY_DISTANCE);
+//        // TC_LOG_ERROR("server.loading", "Visibility.Distance.Instances can't be greater {}", MAX_VISIBILITY_DISTANCE);
 //        m_MaxVisibleDistanceInInstances = MAX_VISIBILITY_DISTANCE;
 //    }
 //
@@ -1275,12 +1275,12 @@
 //    m_MaxVisibleDistanceInBG = sConfigMgr->GetFloatDefault("Visibility.Distance.BG", DEFAULT_VISIBILITY_BGARENAS);
 //    if (m_MaxVisibleDistanceInBG < 45*sWorld->getRate(RATE_CREATURE_AGGRO))
 //    {
-//        TC_LOG_ERROR("server.loading", "Visibility.Distance.BG can't be less max aggro radius {}", 45*sWorld->getRate(RATE_CREATURE_AGGRO));
+//        // TC_LOG_ERROR("server.loading", "Visibility.Distance.BG can't be less max aggro radius {}", 45*sWorld->getRate(RATE_CREATURE_AGGRO));
 //        m_MaxVisibleDistanceInBG = 45*sWorld->getRate(RATE_CREATURE_AGGRO);
 //    }
 //    else if (m_MaxVisibleDistanceInBG > MAX_VISIBILITY_DISTANCE)
 //    {
-//        TC_LOG_ERROR("server.loading", "Visibility.Distance.BG can't be greater {}", MAX_VISIBILITY_DISTANCE);
+//        // TC_LOG_ERROR("server.loading", "Visibility.Distance.BG can't be greater {}", MAX_VISIBILITY_DISTANCE);
 //        m_MaxVisibleDistanceInBG = MAX_VISIBILITY_DISTANCE;
 //    }
 //
@@ -1288,12 +1288,12 @@
 //    m_MaxVisibleDistanceInArenas = sConfigMgr->GetFloatDefault("Visibility.Distance.Arenas", DEFAULT_VISIBILITY_BGARENAS);
 //    if (m_MaxVisibleDistanceInArenas < 45*sWorld->getRate(RATE_CREATURE_AGGRO))
 //    {
-//        TC_LOG_ERROR("server.loading", "Visibility.Distance.Arenas can't be less max aggro radius {}", 45*sWorld->getRate(RATE_CREATURE_AGGRO));
+//        // TC_LOG_ERROR("server.loading", "Visibility.Distance.Arenas can't be less max aggro radius {}", 45*sWorld->getRate(RATE_CREATURE_AGGRO));
 //        m_MaxVisibleDistanceInArenas = 45*sWorld->getRate(RATE_CREATURE_AGGRO);
 //    }
 //    else if (m_MaxVisibleDistanceInArenas > MAX_VISIBILITY_DISTANCE)
 //    {
-//        TC_LOG_ERROR("server.loading", "Visibility.Distance.Arenas can't be greater {}", MAX_VISIBILITY_DISTANCE);
+//        // TC_LOG_ERROR("server.loading", "Visibility.Distance.Arenas can't be greater {}", MAX_VISIBILITY_DISTANCE);
 //        m_MaxVisibleDistanceInArenas = MAX_VISIBILITY_DISTANCE;
 //    }
 //
@@ -1313,17 +1313,17 @@
 //    m_int_configs[CONFIG_NO_GRAY_AGGRO_BELOW] = sConfigMgr->GetIntDefault("NoGrayAggro.Below", 0);
 //    if (m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE] > m_int_configs[CONFIG_MAX_PLAYER_LEVEL])
 //    {
-//       TC_LOG_ERROR("server.loading", "NoGrayAggro.Above ({}) must be in range 0..{}. Set to {}.", m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE], m_int_configs[CONFIG_MAX_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
+//       // TC_LOG_ERROR("server.loading", "NoGrayAggro.Above ({}) must be in range 0..{}. Set to {}.", m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE], m_int_configs[CONFIG_MAX_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
 //       m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE] = m_int_configs[CONFIG_MAX_PLAYER_LEVEL];
 //    }
 //    if (m_int_configs[CONFIG_NO_GRAY_AGGRO_BELOW] > m_int_configs[CONFIG_MAX_PLAYER_LEVEL])
 //    {
-//       TC_LOG_ERROR("server.loading", "NoGrayAggro.Below ({}) must be in range 0..{}. Set to {}.", m_int_configs[CONFIG_NO_GRAY_AGGRO_BELOW], m_int_configs[CONFIG_MAX_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
+//       // TC_LOG_ERROR("server.loading", "NoGrayAggro.Below ({}) must be in range 0..{}. Set to {}.", m_int_configs[CONFIG_NO_GRAY_AGGRO_BELOW], m_int_configs[CONFIG_MAX_PLAYER_LEVEL], m_int_configs[CONFIG_MAX_PLAYER_LEVEL]);
 //       m_int_configs[CONFIG_NO_GRAY_AGGRO_BELOW] = m_int_configs[CONFIG_MAX_PLAYER_LEVEL];
 //    }
 //    if (m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE] > 0 && m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE] < m_int_configs[CONFIG_NO_GRAY_AGGRO_BELOW])
 //    {
-//       TC_LOG_ERROR("server.loading", "NoGrayAggro.Below ({}) cannot be greater than NoGrayAggro.Above ({}). Set to {}.", m_int_configs[CONFIG_NO_GRAY_AGGRO_BELOW], m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE], m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE]);
+//       // TC_LOG_ERROR("server.loading", "NoGrayAggro.Below ({}) cannot be greater than NoGrayAggro.Above ({}). Set to {}.", m_int_configs[CONFIG_NO_GRAY_AGGRO_BELOW], m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE], m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE]);
 //       m_int_configs[CONFIG_NO_GRAY_AGGRO_BELOW] = m_int_configs[CONFIG_NO_GRAY_AGGRO_ABOVE];
 //    }
 //
@@ -1332,39 +1332,39 @@
 //    m_int_configs[CONFIG_RESPAWN_DYNAMICMODE] = sConfigMgr->GetIntDefault("Respawn.DynamicMode", 0);
 //    if (m_int_configs[CONFIG_RESPAWN_DYNAMICMODE] > 1)
 //    {
-//        TC_LOG_ERROR("server.loading", "Invalid value for Respawn.DynamicMode ({}). Set to 0.", m_int_configs[CONFIG_RESPAWN_DYNAMICMODE]);
+//        // TC_LOG_ERROR("server.loading", "Invalid value for Respawn.DynamicMode ({}). Set to 0.", m_int_configs[CONFIG_RESPAWN_DYNAMICMODE]);
 //        m_int_configs[CONFIG_RESPAWN_DYNAMICMODE] = 0;
 //    }
 //    m_bool_configs[CONFIG_RESPAWN_DYNAMIC_ESCORTNPC] = sConfigMgr->GetBoolDefault("Respawn.DynamicEscortNPC", false);
 //    m_int_configs[CONFIG_RESPAWN_GUIDWARNLEVEL] = sConfigMgr->GetIntDefault("Respawn.GuidWarnLevel", 12000000);
 //    if (m_int_configs[CONFIG_RESPAWN_GUIDWARNLEVEL] > 16777215)
 //    {
-//        TC_LOG_ERROR("server.loading", "Respawn.GuidWarnLevel ({}) cannot be greater than maximum GUID (16777215). Set to 12000000.", m_int_configs[CONFIG_RESPAWN_GUIDWARNLEVEL]);
+//        // TC_LOG_ERROR("server.loading", "Respawn.GuidWarnLevel ({}) cannot be greater than maximum GUID (16777215). Set to 12000000.", m_int_configs[CONFIG_RESPAWN_GUIDWARNLEVEL]);
 //        m_int_configs[CONFIG_RESPAWN_GUIDWARNLEVEL] = 12000000;
 //    }
 //    m_int_configs[CONFIG_RESPAWN_GUIDALERTLEVEL] = sConfigMgr->GetIntDefault("Respawn.GuidAlertLevel", 16000000);
 //    if (m_int_configs[CONFIG_RESPAWN_GUIDALERTLEVEL] > 16777215)
 //    {
-//        TC_LOG_ERROR("server.loading", "Respawn.GuidWarnLevel ({}) cannot be greater than maximum GUID (16777215). Set to 16000000.", m_int_configs[CONFIG_RESPAWN_GUIDALERTLEVEL]);
+//        // TC_LOG_ERROR("server.loading", "Respawn.GuidWarnLevel ({}) cannot be greater than maximum GUID (16777215). Set to 16000000.", m_int_configs[CONFIG_RESPAWN_GUIDALERTLEVEL]);
 //        m_int_configs[CONFIG_RESPAWN_GUIDALERTLEVEL] = 16000000;
 //    }
 //    m_int_configs[CONFIG_RESPAWN_RESTARTQUIETTIME] = sConfigMgr->GetIntDefault("Respawn.RestartQuietTime", 3);
 //    if (m_int_configs[CONFIG_RESPAWN_RESTARTQUIETTIME] > 23)
 //    {
-//        TC_LOG_ERROR("server.loading", "Respawn.RestartQuietTime ({}) must be an hour, between 0 and 23. Set to 3.", m_int_configs[CONFIG_RESPAWN_RESTARTQUIETTIME]);
+//        // TC_LOG_ERROR("server.loading", "Respawn.RestartQuietTime ({}) must be an hour, between 0 and 23. Set to 3.", m_int_configs[CONFIG_RESPAWN_RESTARTQUIETTIME]);
 //        m_int_configs[CONFIG_RESPAWN_RESTARTQUIETTIME] = 3;
 //    }
 //    m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_CREATURE] = sConfigMgr->GetFloatDefault("Respawn.DynamicRateCreature", 10.0f);
 //    if (m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_CREATURE] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "Respawn.DynamicRateCreature ({}) must be positive. Set to 10.", m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_CREATURE]);
+//        // TC_LOG_ERROR("server.loading", "Respawn.DynamicRateCreature ({}) must be positive. Set to 10.", m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_CREATURE]);
 //        m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_CREATURE] = 10.0f;
 //    }
 //    m_int_configs[CONFIG_RESPAWN_DYNAMICMINIMUM_CREATURE] = sConfigMgr->GetIntDefault("Respawn.DynamicMinimumCreature", 10);
 //    m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_GAMEOBJECT] = sConfigMgr->GetFloatDefault("Respawn.DynamicRateGameObject", 10.0f);
 //    if (m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_GAMEOBJECT] < 0.0f)
 //    {
-//        TC_LOG_ERROR("server.loading", "Respawn.DynamicRateGameObject ({}) must be positive. Set to 10.", m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_GAMEOBJECT]);
+//        // TC_LOG_ERROR("server.loading", "Respawn.DynamicRateGameObject ({}) must be positive. Set to 10.", m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_GAMEOBJECT]);
 //        m_float_configs[CONFIG_RESPAWN_DYNAMICRATE_GAMEOBJECT] = 10.0f;
 //    }
 //    m_int_configs[CONFIG_RESPAWN_DYNAMICMINIMUM_GAMEOBJECT] = sConfigMgr->GetIntDefault("Respawn.DynamicMinimumGameObject", 10);
@@ -1388,16 +1388,16 @@
 //    if (reload)
 //    {
 //        if (dataPath != m_dataPath)
-//            TC_LOG_ERROR("server.loading", "DataDir option can't be changed at worldserver.conf reload, using current value ({}).", m_dataPath);
+//            // TC_LOG_ERROR("server.loading", "DataDir option can't be changed at worldserver.conf reload, using current value ({}).", m_dataPath);
 //    }
 //    else
 //    {
 //        m_dataPath = dataPath;
-//        TC_LOG_INFO("server.loading", "Using DataDir {}", m_dataPath);
+//        // TC_LOG_INFO("server.loading", "Using DataDir {}", m_dataPath);
 //    }
 //
 //    m_bool_configs[CONFIG_ENABLE_MMAPS] = sConfigMgr->GetBoolDefault("mmap.enablePathFinding", true);
-//    TC_LOG_INFO("server.loading", "WORLD: MMap data directory is: {}mmaps", m_dataPath);
+//    // TC_LOG_INFO("server.loading", "WORLD: MMap data directory is: {}mmaps", m_dataPath);
 //
 //    m_bool_configs[CONFIG_VMAP_INDOOR_CHECK] = sConfigMgr->GetBoolDefault("vmap.enableIndoorCheck", false);
 //    bool enableIndoor = sConfigMgr->GetBoolDefault("vmap.enableIndoorCheck", true);
@@ -1405,12 +1405,12 @@
 //    bool enableHeight = sConfigMgr->GetBoolDefault("vmap.enableHeight", true);
 //
 //    if (!enableHeight)
-//        TC_LOG_ERROR("server.loading", "VMap height checking disabled! Creatures movements and other various things WILL be broken! Expect no support.");
+//        // TC_LOG_ERROR("server.loading", "VMap height checking disabled! Creatures movements and other various things WILL be broken! Expect no support.");
 //
 //    VMAP::VMapFactory::createOrGetVMapManager()->setEnableLineOfSightCalc(enableLOS);
 //    VMAP::VMapFactory::createOrGetVMapManager()->setEnableHeightCalc(enableHeight);
-//    TC_LOG_INFO("server.loading", "VMap support included. LineOfSight: {}, getHeight: {}, indoorCheck: {}", enableLOS, enableHeight, enableIndoor);
-//    TC_LOG_INFO("server.loading", "VMap data directory is: {}vmaps", m_dataPath);
+//    // TC_LOG_INFO("server.loading", "VMap support included. LineOfSight: {}, getHeight: {}, indoorCheck: {}", enableLOS, enableHeight, enableIndoor);
+//    // TC_LOG_INFO("server.loading", "VMap data directory is: {}vmaps", m_dataPath);
 //
 //    m_int_configs[CONFIG_MAX_WHO] = sConfigMgr->GetIntDefault("MaxWhoListReturns", 49);
 //    m_bool_configs[CONFIG_START_ALL_SPELLS] = sConfigMgr->GetBoolDefault("PlayerStart.AllSpells", false);
@@ -1590,7 +1590,7 @@
 //            !MapManager::ExistMapAndVMap(530, 10349.6f, -6357.29f) ||
 //            !MapManager::ExistMapAndVMap(530, -3961.64f, -13931.2f))))
 //    {
-//        TC_LOG_FATAL("server.loading", "Unable to load critical files - server shutting down !!!");
+//        // TC_LOG_FATAL("server.loading", "Unable to load critical files - server shutting down !!!");
 //        exit(1);
 //    }
 //
@@ -1602,7 +1602,7 @@
 //
 //    ///- Loading strings. Getting no records means core load has to be canceled because no error message can be output.
 //
-//    TC_LOG_INFO("server.loading", "Loading Trinity strings...");
+//    // TC_LOG_INFO("server.loading", "Loading Trinity strings...");
 //    if (!sObjectMgr->LoadTrinityStrings())
 //        exit(1);                                            // Error message displayed in function already
 //
@@ -1616,7 +1616,7 @@
 //    LoginDatabase.PExecute("UPDATE realmlist SET icon = {}, timezone = {} WHERE id = '{}'", server_type, realm_zone, realm.Id.Realm);      // One-time query
 //
 //    ///- Load the DBC files
-//    TC_LOG_INFO("server.loading", "Initialize data stores...");
+//    // TC_LOG_INFO("server.loading", "Initialize data stores...");
 //    LoadDBCStores(m_dataPath);
 //    DetectDBCLang();
 //
@@ -1636,55 +1636,55 @@
 //    MMAP::MMapManager* mmmgr = MMAP::MMapFactory::createOrGetMMapManager();
 //    mmmgr->InitializeThreadUnsafe(mapIds);
 //
-//    TC_LOG_INFO("server.loading", "Initializing PlayerDump tables...");
+//    // TC_LOG_INFO("server.loading", "Initializing PlayerDump tables...");
 //    PlayerDump::InitializeTables();
 //
 //    ///- Initialize static helper structures
 //    AIRegistry::Initialize();
 //
-//    TC_LOG_INFO("server.loading", "Loading SpellInfo store...");
+//    // TC_LOG_INFO("server.loading", "Loading SpellInfo store...");
 //    sSpellMgr->LoadSpellInfoStore();
 //
-//    TC_LOG_INFO("server.loading", "Loading SpellInfo corrections...");
+//    // TC_LOG_INFO("server.loading", "Loading SpellInfo corrections...");
 //    sSpellMgr->LoadSpellInfoCorrections();
 //
-//    TC_LOG_INFO("server.loading", "Loading SkillLineAbilityMultiMap Data...");
+//    // TC_LOG_INFO("server.loading", "Loading SkillLineAbilityMultiMap Data...");
 //    sSpellMgr->LoadSkillLineAbilityMap();
 //
-//    TC_LOG_INFO("server.loading", "Loading SpellInfo custom attributes...");
+//    // TC_LOG_INFO("server.loading", "Loading SpellInfo custom attributes...");
 //    sSpellMgr->LoadSpellInfoCustomAttributes();
 //
-//    TC_LOG_INFO("server.loading", "Loading SpellInfo diminishing infos...");
+//    // TC_LOG_INFO("server.loading", "Loading SpellInfo diminishing infos...");
 //    sSpellMgr->LoadSpellInfoDiminishing();
 //
-//    TC_LOG_INFO("server.loading", "Loading SpellInfo immunity infos...");
+//    // TC_LOG_INFO("server.loading", "Loading SpellInfo immunity infos...");
 //    sSpellMgr->LoadSpellInfoImmunities();
 //
-//    TC_LOG_INFO("server.loading", "Loading Player Totem models...");
+//    // TC_LOG_INFO("server.loading", "Loading Player Totem models...");
 //    sObjectMgr->LoadPlayerTotemModels();
 //
-//    TC_LOG_INFO("server.loading", "Loading GameObject models...");
+//    // TC_LOG_INFO("server.loading", "Loading GameObject models...");
 //    LoadGameObjectModelList(m_dataPath);
 //
-//    TC_LOG_INFO("server.loading", "Loading Script Names...");
+//    // TC_LOG_INFO("server.loading", "Loading Script Names...");
 //    sObjectMgr->LoadScriptNames();
 //
-//    TC_LOG_INFO("server.loading", "Loading Instance Template...");
+//    // TC_LOG_INFO("server.loading", "Loading Instance Template...");
 //    sObjectMgr->LoadInstanceTemplate();
 //
 //    // Must be called before `respawn` data
-//    TC_LOG_INFO("server.loading", "Loading instances...");
+//    // TC_LOG_INFO("server.loading", "Loading instances...");
 //    sInstanceSaveMgr->LoadInstances();
 //
 //    // Load before guilds and arena teams
-//    TC_LOG_INFO("server.loading", "Loading character cache store...");
+//    // TC_LOG_INFO("server.loading", "Loading character cache store...");
 //    sCharacterCache->LoadCharacterCacheStorage();
 //
-//    TC_LOG_INFO("server.loading", "Loading Broadcast texts...");
+//    // TC_LOG_INFO("server.loading", "Loading Broadcast texts...");
 //    sObjectMgr->LoadBroadcastTexts();
 //    sObjectMgr->LoadBroadcastTextLocales();
 //
-//    TC_LOG_INFO("server.loading", "Loading Localization strings...");
+//    // TC_LOG_INFO("server.loading", "Loading Localization strings...");
 //    uint32 oldMSTime = getMSTime();
 //    sObjectMgr->LoadCreatureLocales();
 //    sObjectMgr->LoadGameObjectLocales();
@@ -1700,368 +1700,368 @@
 //    sObjectMgr->LoadQuestGreetingLocales();
 //
 //    sObjectMgr->SetDBCLocaleIndex(GetDefaultDbcLocale());        // Get once for all the locale index of DBC language (console/broadcasts)
-//    TC_LOG_INFO("server.loading", ">> Localization strings loaded in {} ms", GetMSTimeDiffToNow(oldMSTime));
+//    // TC_LOG_INFO("server.loading", ">> Localization strings loaded in {} ms", GetMSTimeDiffToNow(oldMSTime));
 //
-//    TC_LOG_INFO("server.loading", "Loading Account Roles and Permissions...");
+//    // TC_LOG_INFO("server.loading", "Loading Account Roles and Permissions...");
 //    sAccountMgr->LoadRBAC();
 //
-//    TC_LOG_INFO("server.loading", "Loading Page Texts...");
+//    // TC_LOG_INFO("server.loading", "Loading Page Texts...");
 //    sObjectMgr->LoadPageTexts();
 //
-//    TC_LOG_INFO("server.loading", "Loading Game Object Templates...");         // must be after LoadPageTexts
+//    // TC_LOG_INFO("server.loading", "Loading Game Object Templates...");         // must be after LoadPageTexts
 //    sObjectMgr->LoadGameObjectTemplate();
 //
-//    TC_LOG_INFO("server.loading", "Loading Game Object template addons...");
+//    // TC_LOG_INFO("server.loading", "Loading Game Object template addons...");
 //    sObjectMgr->LoadGameObjectTemplateAddons();
 //
-//    TC_LOG_INFO("server.loading", "Loading Transport templates...");
+//    // TC_LOG_INFO("server.loading", "Loading Transport templates...");
 //    sTransportMgr->LoadTransportTemplates();
 //
-//    TC_LOG_INFO("server.loading", "Loading Transport animations and rotations...");
+//    // TC_LOG_INFO("server.loading", "Loading Transport animations and rotations...");
 //    sTransportMgr->LoadTransportAnimationAndRotation();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spell Rank Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Spell Rank Data...");
 //    sSpellMgr->LoadSpellRanks();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spell Required Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Spell Required Data...");
 //    sSpellMgr->LoadSpellRequired();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spell Group types...");
+//    // TC_LOG_INFO("server.loading", "Loading Spell Group types...");
 //    sSpellMgr->LoadSpellGroups();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spell Learn Skills...");
+//    // TC_LOG_INFO("server.loading", "Loading Spell Learn Skills...");
 //    sSpellMgr->LoadSpellLearnSkills();                           // must be after LoadSpellRanks
 //
-//    TC_LOG_INFO("server.loading", "Loading SpellInfo SpellSpecific and AuraState...");
+//    // TC_LOG_INFO("server.loading", "Loading SpellInfo SpellSpecific and AuraState...");
 //    sSpellMgr->LoadSpellInfoSpellSpecificAndAuraState();         // must be after LoadSpellRanks
 //
-//    TC_LOG_INFO("server.loading", "Loading Spell Learn Spells...");
+//    // TC_LOG_INFO("server.loading", "Loading Spell Learn Spells...");
 //    sSpellMgr->LoadSpellLearnSpells();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spell Proc conditions and data...");
+//    // TC_LOG_INFO("server.loading", "Loading Spell Proc conditions and data...");
 //    sSpellMgr->LoadSpellProcs();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spell Bonus Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Spell Bonus Data...");
 //    sSpellMgr->LoadSpellBonuses();
 //
-//    TC_LOG_INFO("server.loading", "Loading Aggro Spells Definitions...");
+//    // TC_LOG_INFO("server.loading", "Loading Aggro Spells Definitions...");
 //    sSpellMgr->LoadSpellThreats();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spell Group Stack Rules...");
+//    // TC_LOG_INFO("server.loading", "Loading Spell Group Stack Rules...");
 //    sSpellMgr->LoadSpellGroupStackRules();
 //
-//    TC_LOG_INFO("server.loading", "Loading NPC Texts...");
+//    // TC_LOG_INFO("server.loading", "Loading NPC Texts...");
 //    sObjectMgr->LoadGossipText();
 //
-//    TC_LOG_INFO("server.loading", "Loading Enchant Spells Proc datas...");
+//    // TC_LOG_INFO("server.loading", "Loading Enchant Spells Proc datas...");
 //    sSpellMgr->LoadSpellEnchantProcData();
 //
-//    TC_LOG_INFO("server.loading", "Loading Item Random Enchantments Table...");
+//    // TC_LOG_INFO("server.loading", "Loading Item Random Enchantments Table...");
 //    LoadRandomEnchantmentsTable();
 //
-//    TC_LOG_INFO("server.loading", "Loading Disables");                         // must be before loading quests and items
+//    // TC_LOG_INFO("server.loading", "Loading Disables");                         // must be before loading quests and items
 //    DisableMgr::LoadDisables();
 //
-//    TC_LOG_INFO("server.loading", "Loading Items...");                         // must be after LoadRandomEnchantmentsTable and LoadPageTexts
+//    // TC_LOG_INFO("server.loading", "Loading Items...");                         // must be after LoadRandomEnchantmentsTable and LoadPageTexts
 //    sObjectMgr->LoadItemTemplates();
 //
-//    TC_LOG_INFO("server.loading", "Loading Item set names...");                // must be after LoadItemPrototypes
+//    // TC_LOG_INFO("server.loading", "Loading Item set names...");                // must be after LoadItemPrototypes
 //    sObjectMgr->LoadItemSetNames();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Model Based Info Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Model Based Info Data...");
 //    sObjectMgr->LoadCreatureModelInfo();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature templates...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature templates...");
 //    sObjectMgr->LoadCreatureTemplates();
 //
-//    TC_LOG_INFO("server.loading", "Loading Equipment templates...");           // must be after LoadCreatureTemplates
+//    // TC_LOG_INFO("server.loading", "Loading Equipment templates...");           // must be after LoadCreatureTemplates
 //    sObjectMgr->LoadEquipmentTemplates();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature template addons...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature template addons...");
 //    sObjectMgr->LoadCreatureTemplateAddons();
 //
-//    TC_LOG_INFO("server.loading", "Loading Reputation Reward Rates...");
+//    // TC_LOG_INFO("server.loading", "Loading Reputation Reward Rates...");
 //    sObjectMgr->LoadReputationRewardRate();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Reputation OnKill Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Reputation OnKill Data...");
 //    sObjectMgr->LoadReputationOnKill();
 //
-//    TC_LOG_INFO("server.loading", "Loading Reputation Spillover Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Reputation Spillover Data...");
 //    sObjectMgr->LoadReputationSpilloverTemplate();
 //
-//    TC_LOG_INFO("server.loading", "Loading Points Of Interest Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Points Of Interest Data...");
 //    sObjectMgr->LoadPointsOfInterest();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Base Stats...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Base Stats...");
 //    sObjectMgr->LoadCreatureClassLevelStats();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spawn Group Templates...");
+//    // TC_LOG_INFO("server.loading", "Loading Spawn Group Templates...");
 //    sObjectMgr->LoadSpawnGroupTemplates();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Data...");
 //    sObjectMgr->LoadCreatures();
 //
-//    TC_LOG_INFO("server.loading", "Loading Temporary Summon Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Temporary Summon Data...");
 //    sObjectMgr->LoadTempSummons();                               // must be after LoadCreatureTemplates() and LoadGameObjectTemplates()
 //
-//    TC_LOG_INFO("server.loading", "Loading pet levelup spells...");
+//    // TC_LOG_INFO("server.loading", "Loading pet levelup spells...");
 //    sSpellMgr->LoadPetLevelupSpellMap();
 //
-//    TC_LOG_INFO("server.loading", "Loading pet default spells additional to levelup spells...");
+//    // TC_LOG_INFO("server.loading", "Loading pet default spells additional to levelup spells...");
 //    sSpellMgr->LoadPetDefaultSpells();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Addon Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Addon Data...");
 //    sObjectMgr->LoadCreatureAddons();                            // must be after LoadCreatureTemplates() and LoadCreatures()
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Movement Overrides...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Movement Overrides...");
 //    sObjectMgr->LoadCreatureMovementOverrides();                 // must be after LoadCreatures()
 //
-//    TC_LOG_INFO("server.loading", "Loading Gameobject Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Gameobject Data...");
 //    sObjectMgr->LoadGameObjects();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spawn Group Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Spawn Group Data...");
 //    sObjectMgr->LoadSpawnGroups();
 //
-//    TC_LOG_INFO("server.loading", "Loading instance spawn groups...");
+//    // TC_LOG_INFO("server.loading", "Loading instance spawn groups...");
 //    sObjectMgr->LoadInstanceSpawnGroups();
 //
-//    TC_LOG_INFO("server.loading", "Loading GameObject Addon Data...");
+//    // TC_LOG_INFO("server.loading", "Loading GameObject Addon Data...");
 //    sObjectMgr->LoadGameObjectAddons();                          // must be after LoadGameObjects()
 //
-//    TC_LOG_INFO("server.loading", "Loading GameObject faction and flags overrides...");
+//    // TC_LOG_INFO("server.loading", "Loading GameObject faction and flags overrides...");
 //    sObjectMgr->LoadGameObjectOverrides();                       // must be after LoadGameObjects()
 //
-//    TC_LOG_INFO("server.loading", "Loading GameObject Quest Items...");
+//    // TC_LOG_INFO("server.loading", "Loading GameObject Quest Items...");
 //    sObjectMgr->LoadGameObjectQuestItems();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Quest Items...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Quest Items...");
 //    sObjectMgr->LoadCreatureQuestItems();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Linked Respawn...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Linked Respawn...");
 //    sObjectMgr->LoadLinkedRespawn();                             // must be after LoadCreatures(), LoadGameObjects()
 //
-//    TC_LOG_INFO("server.loading", "Loading Weather Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Weather Data...");
 //    WeatherMgr::LoadWeatherData();
 //
-//    TC_LOG_INFO("server.loading", "Loading Quests...");
+//    // TC_LOG_INFO("server.loading", "Loading Quests...");
 //    sObjectMgr->LoadQuests();                                    // must be loaded after DBCs, creature_template, item_template, gameobject tables
 //
-//    TC_LOG_INFO("server.loading", "Checking Quest Disables");
+//    // TC_LOG_INFO("server.loading", "Checking Quest Disables");
 //    DisableMgr::CheckQuestDisables();                           // must be after loading quests
 //
-//    TC_LOG_INFO("server.loading", "Loading Quest POI");
+//    // TC_LOG_INFO("server.loading", "Loading Quest POI");
 //    sObjectMgr->LoadQuestPOI();
 //
-//    TC_LOG_INFO("server.loading", "Loading Quests Starters and Enders...");
+//    // TC_LOG_INFO("server.loading", "Loading Quests Starters and Enders...");
 //    sObjectMgr->LoadQuestStartersAndEnders();                    // must be after quest load
 //
-//    TC_LOG_INFO("server.loading", "Loading Quests Greetings...");
+//    // TC_LOG_INFO("server.loading", "Loading Quests Greetings...");
 //    sObjectMgr->LoadQuestGreetings();                           // must be loaded after creature_template, gameobject_template tables
 //
-//    TC_LOG_INFO("server.loading", "Loading Objects Pooling Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Objects Pooling Data...");
 //    sPoolMgr->LoadFromDB();
-//    TC_LOG_INFO("server.loading", "Loading Quest Pooling Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Quest Pooling Data...");
 //    sQuestPoolMgr->LoadFromDB();                                // must be after quest templates
 //
-//    TC_LOG_INFO("server.loading", "Loading Game Event Data...");               // must be after loading pools fully
+//    // TC_LOG_INFO("server.loading", "Loading Game Event Data...");               // must be after loading pools fully
 //    sGameEventMgr->LoadHolidayDates();                           // Must be after loading DBC
 //    sGameEventMgr->LoadFromDB();                                 // Must be after loading holiday dates
 //
-//    TC_LOG_INFO("server.loading", "Loading UNIT_NPC_FLAG_SPELLCLICK Data..."); // must be after LoadQuests
+//    // TC_LOG_INFO("server.loading", "Loading UNIT_NPC_FLAG_SPELLCLICK Data..."); // must be after LoadQuests
 //    sObjectMgr->LoadNPCSpellClickSpells();
 //
-//    TC_LOG_INFO("server.loading", "Loading Vehicle Templates...");
+//    // TC_LOG_INFO("server.loading", "Loading Vehicle Templates...");
 //    sObjectMgr->LoadVehicleTemplate();                          // must be after LoadCreatureTemplates()
 //
-//    TC_LOG_INFO("server.loading", "Loading Vehicle Template Accessories...");
+//    // TC_LOG_INFO("server.loading", "Loading Vehicle Template Accessories...");
 //    sObjectMgr->LoadVehicleTemplateAccessories();                // must be after LoadCreatureTemplates() and LoadNPCSpellClickSpells()
 //
-//    TC_LOG_INFO("server.loading", "Loading Vehicle Accessories...");
+//    // TC_LOG_INFO("server.loading", "Loading Vehicle Accessories...");
 //    sObjectMgr->LoadVehicleAccessories();                       // must be after LoadCreatureTemplates() and LoadNPCSpellClickSpells()
 //
-//    TC_LOG_INFO("server.loading", "Loading Vehicle Seat Addon Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Vehicle Seat Addon Data...");
 //    sObjectMgr->LoadVehicleSeatAddon();                         // must be after loading DBC
 //
-//    TC_LOG_INFO("server.loading", "Loading SpellArea Data...");                // must be after quest load
+//    // TC_LOG_INFO("server.loading", "Loading SpellArea Data...");                // must be after quest load
 //    sSpellMgr->LoadSpellAreas();
 //
-//    TC_LOG_INFO("server.loading", "Loading Area Trigger Teleports definitions...");
+//    // TC_LOG_INFO("server.loading", "Loading Area Trigger Teleports definitions...");
 //    sObjectMgr->LoadAreaTriggerTeleports();
 //
-//    TC_LOG_INFO("server.loading", "Loading Access Requirements...");
+//    // TC_LOG_INFO("server.loading", "Loading Access Requirements...");
 //    sObjectMgr->LoadAccessRequirements();                        // must be after item template load
 //
-//    TC_LOG_INFO("server.loading", "Loading Quest Area Triggers...");
+//    // TC_LOG_INFO("server.loading", "Loading Quest Area Triggers...");
 //    sObjectMgr->LoadQuestAreaTriggers();                         // must be after LoadQuests
 //
-//    TC_LOG_INFO("server.loading", "Loading Tavern Area Triggers...");
+//    // TC_LOG_INFO("server.loading", "Loading Tavern Area Triggers...");
 //    sObjectMgr->LoadTavernAreaTriggers();
 //
-//    TC_LOG_INFO("server.loading", "Loading AreaTrigger script names...");
+//    // TC_LOG_INFO("server.loading", "Loading AreaTrigger script names...");
 //    sObjectMgr->LoadAreaTriggerScripts();
 //
-//    TC_LOG_INFO("server.loading", "Loading LFG entrance positions..."); // Must be after areatriggers
+//    // TC_LOG_INFO("server.loading", "Loading LFG entrance positions..."); // Must be after areatriggers
 //    sLFGMgr->LoadLFGDungeons();
 //
-//    TC_LOG_INFO("server.loading", "Loading Dungeon boss data...");
+//    // TC_LOG_INFO("server.loading", "Loading Dungeon boss data...");
 //    sObjectMgr->LoadInstanceEncounters();
 //
-//    TC_LOG_INFO("server.loading", "Loading LFG rewards...");
+//    // TC_LOG_INFO("server.loading", "Loading LFG rewards...");
 //    sLFGMgr->LoadRewards();
 //
-//    TC_LOG_INFO("server.loading", "Loading Graveyard-zone links...");
+//    // TC_LOG_INFO("server.loading", "Loading Graveyard-zone links...");
 //    sObjectMgr->LoadGraveyardZones();
 //
-//    TC_LOG_INFO("server.loading", "Loading spell pet auras...");
+//    // TC_LOG_INFO("server.loading", "Loading spell pet auras...");
 //    sSpellMgr->LoadSpellPetAuras();
 //
-//    TC_LOG_INFO("server.loading", "Loading Spell target coordinates...");
+//    // TC_LOG_INFO("server.loading", "Loading Spell target coordinates...");
 //    sSpellMgr->LoadSpellTargetPositions();
 //
-//    TC_LOG_INFO("server.loading", "Loading enchant custom attributes...");
+//    // TC_LOG_INFO("server.loading", "Loading enchant custom attributes...");
 //    sSpellMgr->LoadEnchantCustomAttr();
 //
-//    TC_LOG_INFO("server.loading", "Loading linked spells...");
+//    // TC_LOG_INFO("server.loading", "Loading linked spells...");
 //    sSpellMgr->LoadSpellLinked();
 //
-//    TC_LOG_INFO("server.loading", "Loading Player Create Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Player Create Data...");
 //    sObjectMgr->LoadPlayerInfo();
 //
-//    TC_LOG_INFO("server.loading", "Loading Exploration BaseXP Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Exploration BaseXP Data...");
 //    sObjectMgr->LoadExplorationBaseXP();
 //
-//    TC_LOG_INFO("server.loading", "Loading Pet Name Parts...");
+//    // TC_LOG_INFO("server.loading", "Loading Pet Name Parts...");
 //    sObjectMgr->LoadPetNames();
 //
 //    CharacterDatabaseCleaner::CleanDatabase();
 //
-//    TC_LOG_INFO("server.loading", "Loading the max pet number...");
+//    // TC_LOG_INFO("server.loading", "Loading the max pet number...");
 //    sObjectMgr->LoadPetNumber();
 //
-//    TC_LOG_INFO("server.loading", "Loading pet level stats...");
+//    // TC_LOG_INFO("server.loading", "Loading pet level stats...");
 //    sObjectMgr->LoadPetLevelInfo();
 //
-//    TC_LOG_INFO("server.loading", "Loading Player level dependent mail rewards...");
+//    // TC_LOG_INFO("server.loading", "Loading Player level dependent mail rewards...");
 //    sObjectMgr->LoadMailLevelRewards();
 //
 //    // Loot tables
 //    LoadLootTables();
 //
-//    TC_LOG_INFO("server.loading", "Loading Skill Discovery Table...");
+//    // TC_LOG_INFO("server.loading", "Loading Skill Discovery Table...");
 //    LoadSkillDiscoveryTable();
 //
-//    TC_LOG_INFO("server.loading", "Loading Skill Extra Item Table...");
+//    // TC_LOG_INFO("server.loading", "Loading Skill Extra Item Table...");
 //    LoadSkillExtraItemTable();
 //
-//    TC_LOG_INFO("server.loading", "Loading Skill Perfection Data Table...");
+//    // TC_LOG_INFO("server.loading", "Loading Skill Perfection Data Table...");
 //    LoadSkillPerfectItemTable();
 //
-//    TC_LOG_INFO("server.loading", "Loading Skill Fishing base level requirements...");
+//    // TC_LOG_INFO("server.loading", "Loading Skill Fishing base level requirements...");
 //    sObjectMgr->LoadFishingBaseSkillLevel();
 //
-//    TC_LOG_INFO("server.loading", "Loading Achievements...");
+//    // TC_LOG_INFO("server.loading", "Loading Achievements...");
 //    sAchievementMgr->LoadAchievementReferenceList();
-//    TC_LOG_INFO("server.loading", "Loading Achievement Criteria Lists...");
+//    // TC_LOG_INFO("server.loading", "Loading Achievement Criteria Lists...");
 //    sAchievementMgr->LoadAchievementCriteriaList();
-//    TC_LOG_INFO("server.loading", "Loading Achievement Criteria Data...");
+//    // TC_LOG_INFO("server.loading", "Loading Achievement Criteria Data...");
 //    sAchievementMgr->LoadAchievementCriteriaData();
-//    TC_LOG_INFO("server.loading", "Loading Achievement Rewards...");
+//    // TC_LOG_INFO("server.loading", "Loading Achievement Rewards...");
 //    sAchievementMgr->LoadRewards();
-//    TC_LOG_INFO("server.loading", "Loading Achievement Reward Locales...");
+//    // TC_LOG_INFO("server.loading", "Loading Achievement Reward Locales...");
 //    sAchievementMgr->LoadRewardLocales();
-//    TC_LOG_INFO("server.loading", "Loading Completed Achievements...");
+//    // TC_LOG_INFO("server.loading", "Loading Completed Achievements...");
 //    sAchievementMgr->LoadCompletedAchievements();
 //
 //    ///- Load dynamic data tables from the database
-//    TC_LOG_INFO("server.loading", "Loading Item Auctions...");
+//    // TC_LOG_INFO("server.loading", "Loading Item Auctions...");
 //    sAuctionMgr->LoadAuctionItems();
 //
-//    TC_LOG_INFO("server.loading", "Loading Auctions...");
+//    // TC_LOG_INFO("server.loading", "Loading Auctions...");
 //    sAuctionMgr->LoadAuctions();
 //
-//    TC_LOG_INFO("server.loading", "Loading Guilds...");
+//    // TC_LOG_INFO("server.loading", "Loading Guilds...");
 //    sGuildMgr->LoadGuilds();
 //
-//    TC_LOG_INFO("server.loading", "Loading ArenaTeams...");
+//    // TC_LOG_INFO("server.loading", "Loading ArenaTeams...");
 //    sArenaTeamMgr->LoadArenaTeams();
 //
-//    TC_LOG_INFO("server.loading", "Loading Groups...");
+//    // TC_LOG_INFO("server.loading", "Loading Groups...");
 //    sGroupMgr->LoadGroups();
 //
-//    TC_LOG_INFO("server.loading", "Loading ReservedNames...");
+//    // TC_LOG_INFO("server.loading", "Loading ReservedNames...");
 //    sObjectMgr->LoadReservedPlayersNames();
 //
-//    TC_LOG_INFO("server.loading", "Loading GameObjects for quests...");
+//    // TC_LOG_INFO("server.loading", "Loading GameObjects for quests...");
 //    sObjectMgr->LoadGameObjectForQuests();
 //
-//    TC_LOG_INFO("server.loading", "Loading BattleMasters...");
+//    // TC_LOG_INFO("server.loading", "Loading BattleMasters...");
 //    sBattlegroundMgr->LoadBattleMastersEntry();                 // must be after load CreatureTemplate
 //
-//    TC_LOG_INFO("server.loading", "Loading GameTeleports...");
+//    // TC_LOG_INFO("server.loading", "Loading GameTeleports...");
 //    sObjectMgr->LoadGameTele();
 //
-//    TC_LOG_INFO("server.loading", "Loading Trainers...");       // must be after LoadCreatureTemplates
+//    // TC_LOG_INFO("server.loading", "Loading Trainers...");       // must be after LoadCreatureTemplates
 //    sObjectMgr->LoadTrainers();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature default trainers...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature default trainers...");
 //    sObjectMgr->LoadCreatureDefaultTrainers();
 //
-//    TC_LOG_INFO("server.loading", "Loading Gossip menu...");
+//    // TC_LOG_INFO("server.loading", "Loading Gossip menu...");
 //    sObjectMgr->LoadGossipMenu();
 //
-//    TC_LOG_INFO("server.loading", "Loading Gossip menu options...");
+//    // TC_LOG_INFO("server.loading", "Loading Gossip menu options...");
 //    sObjectMgr->LoadGossipMenuItems();                           // must be after LoadTrainers
 //
-//    TC_LOG_INFO("server.loading", "Loading Vendors...");
+//    // TC_LOG_INFO("server.loading", "Loading Vendors...");
 //    sObjectMgr->LoadVendors();                                   // must be after load CreatureTemplate and ItemTemplate
 //
-//    TC_LOG_INFO("server.loading", "Loading Waypoints...");
+//    // TC_LOG_INFO("server.loading", "Loading Waypoints...");
 //    sWaypointMgr->Load();
 //
-//    TC_LOG_INFO("server.loading", "Loading SmartAI Waypoints...");
+//    // TC_LOG_INFO("server.loading", "Loading SmartAI Waypoints...");
 //    sSmartWaypointMgr->LoadFromDB();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Formations...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Formations...");
 //    sFormationMgr->LoadCreatureFormations();
 //
-//    TC_LOG_INFO("server.loading", "Loading World States...");              // must be loaded before battleground, outdoor PvP and conditions
+//    // TC_LOG_INFO("server.loading", "Loading World States...");              // must be loaded before battleground, outdoor PvP and conditions
 //    LoadWorldStates();
 //
-//    TC_LOG_INFO("server.loading", "Loading Conditions...");
+//    // TC_LOG_INFO("server.loading", "Loading Conditions...");
 //    sConditionMgr->LoadConditions();
 //
-//    TC_LOG_INFO("server.loading", "Loading faction change achievement pairs...");
+//    // TC_LOG_INFO("server.loading", "Loading faction change achievement pairs...");
 //    sObjectMgr->LoadFactionChangeAchievements();
 //
-//    TC_LOG_INFO("server.loading", "Loading faction change spell pairs...");
+//    // TC_LOG_INFO("server.loading", "Loading faction change spell pairs...");
 //    sObjectMgr->LoadFactionChangeSpells();
 //
-//    TC_LOG_INFO("server.loading", "Loading faction change quest pairs...");
+//    // TC_LOG_INFO("server.loading", "Loading faction change quest pairs...");
 //    sObjectMgr->LoadFactionChangeQuests();
 //
-//    TC_LOG_INFO("server.loading", "Loading faction change item pairs...");
+//    // TC_LOG_INFO("server.loading", "Loading faction change item pairs...");
 //    sObjectMgr->LoadFactionChangeItems();
 //
-//    TC_LOG_INFO("server.loading", "Loading faction change reputation pairs...");
+//    // TC_LOG_INFO("server.loading", "Loading faction change reputation pairs...");
 //    sObjectMgr->LoadFactionChangeReputations();
 //
-//    TC_LOG_INFO("server.loading", "Loading faction change title pairs...");
+//    // TC_LOG_INFO("server.loading", "Loading faction change title pairs...");
 //    sObjectMgr->LoadFactionChangeTitles();
 //
-//    TC_LOG_INFO("server.loading", "Loading GM tickets...");
+//    // TC_LOG_INFO("server.loading", "Loading GM tickets...");
 //    sTicketMgr->LoadTickets();
 //
-//    TC_LOG_INFO("server.loading", "Loading GM surveys...");
+//    // TC_LOG_INFO("server.loading", "Loading GM surveys...");
 //    sTicketMgr->LoadSurveys();
 //
-//    TC_LOG_INFO("server.loading", "Loading client addons...");
+//    // TC_LOG_INFO("server.loading", "Loading client addons...");
 //    AddonMgr::LoadFromDB();
 //
 //    ///- Handle outdated emails (delete/return)
-//    TC_LOG_INFO("server.loading", "Returning old mails...");
+//    // TC_LOG_INFO("server.loading", "Returning old mails...");
 //    sObjectMgr->ReturnOrDeleteOldMails(false);
 //
-//    TC_LOG_INFO("server.loading", "Loading Autobroadcasts...");
+//    // TC_LOG_INFO("server.loading", "Loading Autobroadcasts...");
 //    LoadAutobroadcasts();
 //
 //    ///- Load and initialize scripts
@@ -2069,45 +2069,45 @@
 //    sObjectMgr->LoadEventScripts();                              // must be after load Creature/Gameobject(Template/Data)
 //    sObjectMgr->LoadWaypointScripts();
 //
-//    TC_LOG_INFO("server.loading", "Loading spell script names...");
+//    // TC_LOG_INFO("server.loading", "Loading spell script names...");
 //    sObjectMgr->LoadSpellScriptNames();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Texts...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Texts...");
 //    sCreatureTextMgr->LoadCreatureTexts();
 //
-//    TC_LOG_INFO("server.loading", "Loading Creature Text Locales...");
+//    // TC_LOG_INFO("server.loading", "Loading Creature Text Locales...");
 //    sCreatureTextMgr->LoadCreatureTextLocales();
 //
-//    TC_LOG_INFO("server.loading", "Initializing Scripts...");
+//    // TC_LOG_INFO("server.loading", "Initializing Scripts...");
 //    sScriptMgr->Initialize();
 //    sScriptMgr->OnConfigLoad(false);                                // must be done after the ScriptMgr has been properly initialized
 //
-//    TC_LOG_INFO("server.loading", "Validating spell scripts...");
+//    // TC_LOG_INFO("server.loading", "Validating spell scripts...");
 //    sObjectMgr->ValidateSpellScripts();
 //
-//    TC_LOG_INFO("server.loading", "Loading SmartAI scripts...");
+//    // TC_LOG_INFO("server.loading", "Loading SmartAI scripts...");
 //    sSmartScriptMgr->LoadSmartAIFromDB();
 //
-//    TC_LOG_INFO("server.loading", "Loading Calendar data...");
+//    // TC_LOG_INFO("server.loading", "Loading Calendar data...");
 //    sCalendarMgr->LoadFromDB();
 //
-//    TC_LOG_INFO("server.loading", "Loading Petitions...");
+//    // TC_LOG_INFO("server.loading", "Loading Petitions...");
 //    sPetitionMgr->LoadPetitions();
 //
-//    TC_LOG_INFO("server.loading", "Loading Signatures...");
+//    // TC_LOG_INFO("server.loading", "Loading Signatures...");
 //    sPetitionMgr->LoadSignatures();
 //
-//    TC_LOG_INFO("server.loading", "Loading Item loot...");
+//    // TC_LOG_INFO("server.loading", "Loading Item loot...");
 //    sLootItemStorage->LoadStorageFromDB();
 //
-//    TC_LOG_INFO("server.loading", "Initialize query data...");
+//    // TC_LOG_INFO("server.loading", "Initialize query data...");
 //    sObjectMgr->InitializeQueriesData(QUERY_DATA_ALL);
 //
-//    TC_LOG_INFO("server.loading", "Initialize commands...");
+//    // TC_LOG_INFO("server.loading", "Initialize commands...");
 //    Trinity::ChatCommands::LoadCommandMap();
 //
 //    ///- Initialize game time and timers
-//    TC_LOG_INFO("server.loading", "Initialize game time and timers");
+//    // TC_LOG_INFO("server.loading", "Initialize game time and timers");
 //    GameTime::UpdateGameTimers();
 //
 //    LoginDatabase.PExecute("INSERT INTO uptime (realmid, starttime, uptime, revision) VALUES({}, {}, 0, '{}')",
@@ -2146,70 +2146,70 @@
 //    mail_timer = ((((localTm.tm_hour + (24 - CleanOldMailsTime)) % 24)* HOUR * IN_MILLISECONDS) / m_timers[WUPDATE_AUCTIONS].GetInterval());
 //                                                            //1440
 //    mail_timer_expires = ((DAY * IN_MILLISECONDS) / (m_timers[WUPDATE_AUCTIONS].GetInterval()));
-//    TC_LOG_INFO("server.loading", "Mail timer set to: {}, mail return is called every {} minutes", uint64(mail_timer), uint64(mail_timer_expires));
+//    // TC_LOG_INFO("server.loading", "Mail timer set to: {}, mail return is called every {} minutes", uint64(mail_timer), uint64(mail_timer_expires));
 //
 //    ///- Initialize MapManager
-//    TC_LOG_INFO("server.loading", "Starting Map System");
+//    // TC_LOG_INFO("server.loading", "Starting Map System");
 //    sMapMgr->Initialize();
 //
-//    TC_LOG_INFO("server.loading", "Starting Game Event system...");
+//    // TC_LOG_INFO("server.loading", "Starting Game Event system...");
 //    uint32 nextGameEvent = sGameEventMgr->StartSystem();
 //    m_timers[WUPDATE_EVENTS].SetInterval(nextGameEvent);    //depend on next event
 //
 //    // Delete all characters which have been deleted X days before
 //    Player::DeleteOldCharacters();
 //
-//    TC_LOG_INFO("server.loading", "Initialize AuctionHouseBot...");
+//    // TC_LOG_INFO("server.loading", "Initialize AuctionHouseBot...");
 //    sAuctionBot->Initialize();
 //
-//    TC_LOG_INFO("server.loading", "Initializing chat channels...");
+//    // TC_LOG_INFO("server.loading", "Initializing chat channels...");
 //    ChannelMgr::LoadFromDB();
 //
-//    TC_LOG_INFO("server.loading", "Initializing Opcodes...");
+//    // TC_LOG_INFO("server.loading", "Initializing Opcodes...");
 //    opcodeTable.Initialize();
 //
-//    TC_LOG_INFO("server.loading", "Starting Arena Season...");
+//    // TC_LOG_INFO("server.loading", "Starting Arena Season...");
 //    sGameEventMgr->StartArenaSeason();
 //
 //    sTicketMgr->Initialize();
 //
 //    ///- Initialize Battlegrounds
-//    TC_LOG_INFO("server.loading", "Starting Battleground System");
+//    // TC_LOG_INFO("server.loading", "Starting Battleground System");
 //    sBattlegroundMgr->LoadBattlegroundTemplates();
 //    sBattlegroundMgr->InitAutomaticArenaPointDistribution();
 //
 //    ///- Initialize outdoor pvp
-//    TC_LOG_INFO("server.loading", "Starting Outdoor PvP System");
+//    // TC_LOG_INFO("server.loading", "Starting Outdoor PvP System");
 //    sOutdoorPvPMgr->InitOutdoorPvP();
 //
 //    ///- Initialize Battlefield
-//    TC_LOG_INFO("server.loading", "Starting Battlefield System");
+//    // TC_LOG_INFO("server.loading", "Starting Battlefield System");
 //    sBattlefieldMgr->InitBattlefield();
 //
-//    TC_LOG_INFO("server.loading", "Loading Transports...");
+//    // TC_LOG_INFO("server.loading", "Loading Transports...");
 //    sTransportMgr->SpawnContinentTransports();
 //
 //    ///- Initialize Warden
-//    TC_LOG_INFO("server.loading", "Loading Warden Checks...");
+//    // TC_LOG_INFO("server.loading", "Loading Warden Checks...");
 //    sWardenCheckMgr->LoadWardenChecks();
 //
-//    TC_LOG_INFO("server.loading", "Loading Warden Action Overrides...");
+//    // TC_LOG_INFO("server.loading", "Loading Warden Action Overrides...");
 //    sWardenCheckMgr->LoadWardenOverrides();
 //
-//    TC_LOG_INFO("server.loading", "Deleting expired bans...");
+//    // TC_LOG_INFO("server.loading", "Deleting expired bans...");
 //    LoginDatabase.Execute("DELETE FROM ip_banned WHERE unbandate <= UNIX_TIMESTAMP() AND unbandate<>bandate");      // One-time query
 //
-//    TC_LOG_INFO("server.loading", "Initializing quest reset times...");
+//    // TC_LOG_INFO("server.loading", "Initializing quest reset times...");
 //    InitQuestResetTimes();
 //    CheckQuestResetTimes();
 //
-//    TC_LOG_INFO("server.loading", "Calculate random battleground reset time...");
+//    // TC_LOG_INFO("server.loading", "Calculate random battleground reset time...");
 //    InitRandomBGResetTime();
 //
-//    TC_LOG_INFO("server.loading", "Calculate deletion of old calendar events time...");
+//    // TC_LOG_INFO("server.loading", "Calculate deletion of old calendar events time...");
 //    InitCalendarOldEventsDeletionTime();
 //
-//    TC_LOG_INFO("server.loading", "Calculate guild limitation(s) reset time...");
+//    // TC_LOG_INFO("server.loading", "Calculate guild limitation(s) reset time...");
 //    InitGuildResetTime();
 //
 //    // Preload all cells, if required for the base maps
@@ -2219,7 +2219,7 @@
 //        {
 //            if (!map->Instanceable())
 //            {
-//                TC_LOG_INFO("server.loading", "Pre-loading base map data for map {}", map->GetId());
+//                // TC_LOG_INFO("server.loading", "Pre-loading base map data for map {}", map->GetId());
 //                map->LoadAllCells();
 //            }
 //        });
@@ -2227,7 +2227,7 @@
 //
 //    uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);
 //
-//    TC_LOG_INFO("server.worldserver", "World initialized in {} minutes {} seconds", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
+//    // TC_LOG_INFO("server.worldserver", "World initialized in {} minutes {} seconds", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
 //
 //    TC_METRIC_EVENT("events", "World initialized", "World initialized in " + std::to_string(startupDuration / 60000) + " minutes " + std::to_string((startupDuration % 60000) / 1000) + " seconds");
 //}
@@ -2238,7 +2238,7 @@
 //
 //    if (m_lang_confid != 255 && m_lang_confid >= TOTAL_LOCALES)
 //    {
-//        TC_LOG_ERROR("server.loading", "Incorrect DBC.Locale! Must be >= 0 and < {} (set to 0)", TOTAL_LOCALES);
+//        // TC_LOG_ERROR("server.loading", "Incorrect DBC.Locale! Must be >= 0 and < {} (set to 0)", TOTAL_LOCALES);
 //        m_lang_confid = LOCALE_enUS;
 //    }
 //
@@ -2263,7 +2263,7 @@
 //
 //    if (m_availableDbcLocaleMask == 0)
 //    {
-//        TC_LOG_ERROR("server.loading", "Unable to determine your DBC Locale! (corrupt DBC?)");
+//        // TC_LOG_ERROR("server.loading", "Unable to determine your DBC Locale! (corrupt DBC?)");
 //        exit(1);
 //    }
 //
@@ -2275,7 +2275,7 @@
 //
 //    m_defaultDbcLocale = LocaleConstant(default_locale);
 //
-//    TC_LOG_INFO("server.loading", "Using {} DBC Locale as default. All available DBC locales: {}", localeNames[m_defaultDbcLocale], availableLocalsStr.empty() ? "<none>" : availableLocalsStr);
+//    // TC_LOG_INFO("server.loading", "Using {} DBC Locale as default. All available DBC locales: {}", localeNames[m_defaultDbcLocale], availableLocalsStr.empty() ? "<none>" : availableLocalsStr);
 //}
 //
 //void World::LoadAutobroadcasts()
@@ -2292,7 +2292,7 @@
 //
 //    if (!result)
 //    {
-//        TC_LOG_INFO("server.loading", ">> Loaded 0 autobroadcasts definitions. DB table `autobroadcast` is empty for this realm!");
+//        // TC_LOG_INFO("server.loading", ">> Loaded 0 autobroadcasts definitions. DB table `autobroadcast` is empty for this realm!");
 //        return;
 //    }
 //
@@ -2309,7 +2309,7 @@
 //        ++count;
 //    } while (result->NextRow());
 //
-//    TC_LOG_INFO("server.loading", ">> Loaded {} autobroadcast definitions in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
+//    // TC_LOG_INFO("server.loading", ">> Loaded {} autobroadcast definitions in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 //}
 //
 ///// Update the World !
@@ -2544,7 +2544,7 @@
 //    {
 //        TC_METRIC_TIMER("world_update_time", TC_METRIC_TAG("type", "Ping MySQL"));
 //        m_timers[WUPDATE_PINGDB].Reset();
-//        TC_LOG_DEBUG("misc", "Ping MySQL to keep connection alive");
+//        // TC_LOG_DEBUG("misc", "Ping MySQL to keep connection alive");
 //        CharacterDatabase.KeepAlive();
 //        LoginDatabase.KeepAlive();
 //        WorldDatabase.KeepAlive();
@@ -3021,7 +3021,7 @@
 //        ServerMessageType msgid = (m_ShutdownMask & SHUTDOWN_MASK_RESTART) ? SERVER_MSG_RESTART_TIME : SERVER_MSG_SHUTDOWN_TIME;
 //
 //        SendServerMessage(msgid, str, player);
-//        TC_LOG_DEBUG("misc", "Server is {} in {}", (m_ShutdownMask & SHUTDOWN_MASK_RESTART ? "restart" : "shuttingdown"), str);
+//        // TC_LOG_DEBUG("misc", "Server is {} in {}", (m_ShutdownMask & SHUTDOWN_MASK_RESTART ? "restart" : "shuttingdown"), str);
 //    }
 //}
 //
@@ -3040,7 +3040,7 @@
 //    m_ExitCode = SHUTDOWN_EXIT_CODE;                       // to default value
 //    SendServerMessage(msgid);
 //
-//    TC_LOG_DEBUG("misc", "Server {} cancelled.", (m_ShutdownMask & SHUTDOWN_MASK_RESTART ? "restart" : "shutdown"));
+//    // TC_LOG_DEBUG("misc", "Server {} cancelled.", (m_ShutdownMask & SHUTDOWN_MASK_RESTART ? "restart" : "shutdown"));
 //
 //    sScriptMgr->OnShutdownCancel();
 //    return oldTimer;
@@ -3105,7 +3105,7 @@
 //    CliCommandHolder* command = nullptr;
 //    while (cliCmdQueue.next(command))
 //    {
-//        TC_LOG_INFO("misc", "CLI command under processing...");
+//        // TC_LOG_INFO("misc", "CLI command under processing...");
 //        zprint = command->m_print;
 //        callbackArg = command->m_callbackArg;
 //        CliHandler handler(callbackArg, zprint);
@@ -3170,7 +3170,7 @@
 //        sWorld->SendGlobalMessage(&data);
 //    }
 //
-//    TC_LOG_DEBUG("misc", "AutoBroadcast: '{}'", msg);
+//    // TC_LOG_DEBUG("misc", "AutoBroadcast: '{}'", msg);
 //}
 //
 //void World::UpdateRealmCharCount(uint32 accountId)
@@ -3233,7 +3233,7 @@
 //    m_NextDailyQuestReset = next;
 //    sWorld->setWorldState(WS_DAILY_QUEST_RESET_TIME, uint64(next));
 //
-//    TC_LOG_INFO("misc", "Daily quests for all characters have been reset.");
+//    // TC_LOG_INFO("misc", "Daily quests for all characters have been reset.");
 //}
 //
 //static time_t GetNextWeeklyResetTime(time_t t)
@@ -3269,7 +3269,7 @@
 //    m_NextWeeklyQuestReset = next;
 //    sWorld->setWorldState(WS_WEEKLY_QUEST_RESET_TIME, uint64(next));
 //
-//    TC_LOG_INFO("misc", "Weekly quests for all characters have been reset.");
+//    // TC_LOG_INFO("misc", "Weekly quests for all characters have been reset.");
 //}
 //
 //static time_t GetNextMonthlyResetTime(time_t t)
@@ -3305,7 +3305,7 @@
 //    m_NextMonthlyQuestReset = next;
 //    sWorld->setWorldState(WS_MONTHLY_QUEST_RESET_TIME, uint64(next));
 //
-//    TC_LOG_INFO("misc", "Monthly quests for all characters have been reset.");
+//    // TC_LOG_INFO("misc", "Monthly quests for all characters have been reset.");
 //}
 //
 //void World::CheckQuestResetTimes()
@@ -3394,7 +3394,7 @@
 //
 //void World::ResetEventSeasonalQuests(uint16 event_id)
 //{
-//    TC_LOG_INFO("misc", "Seasonal quests reset for all characters.");
+//    // TC_LOG_INFO("misc", "Seasonal quests reset for all characters.");
 //
 //    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_RESET_CHARACTER_QUESTSTATUS_SEASONAL_BY_EVENT);
 //    stmt->setUInt16(0, event_id);
@@ -3407,7 +3407,7 @@
 //
 //void World::ResetRandomBG()
 //{
-//    TC_LOG_INFO("misc", "Random BG status reset for all characters.");
+//    // TC_LOG_INFO("misc", "Random BG status reset for all characters.");
 //
 //    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_BATTLEGROUND_RANDOM_ALL);
 //    CharacterDatabase.Execute(stmt);
@@ -3422,7 +3422,7 @@
 //
 //void World::CalendarDeleteOldEvents()
 //{
-//    TC_LOG_INFO("misc", "Calendar deletion of old events.");
+//    // TC_LOG_INFO("misc", "Calendar deletion of old events.");
 //
 //    m_NextCalendarOldEventsDeletionTime = time_t(m_NextCalendarOldEventsDeletionTime + DAY);
 //    sWorld->setWorldState(WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME, uint64(m_NextCalendarOldEventsDeletionTime));
@@ -3431,7 +3431,7 @@
 //
 //void World::ResetGuildCap()
 //{
-//    TC_LOG_INFO("misc", "Guild Daily Cap reset.");
+//    // TC_LOG_INFO("misc", "Guild Daily Cap reset.");
 //
 //    m_NextGuildReset = time_t(m_NextGuildReset + DAY);
 //    sWorld->setWorldState(WS_GUILD_DAILY_RESET_TIME, uint64(m_NextGuildReset));
@@ -3479,7 +3479,7 @@
 //
 //    if (!result)
 //    {
-//        TC_LOG_INFO("server.loading", ">> Loaded 0 world states. DB table `worldstates` is empty!");
+//        // TC_LOG_INFO("server.loading", ">> Loaded 0 world states. DB table `worldstates` is empty!");
 //
 //        return;
 //    }
@@ -3494,7 +3494,7 @@
 //    }
 //    while (result->NextRow());
 //
-//    TC_LOG_INFO("server.loading", ">> Loaded {} world states in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
+//    // TC_LOG_INFO("server.loading", ">> Loaded {} world states in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 //
 //}
 //
@@ -3550,7 +3550,7 @@
 //void World::ReloadRBAC()
 //{
 //    // Passive reload, we mark the data as invalidated and next time a permission is checked it will be reloaded
-//    TC_LOG_INFO("rbac", "World::ReloadRBAC()");
+//    // TC_LOG_INFO("rbac", "World::ReloadRBAC()");
 //    for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
 //        if (WorldSession* session = itr->second)
 //            session->InvalidateRBACData();

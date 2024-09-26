@@ -1,11 +1,11 @@
 #ifndef SocketMgr_h__
 #define SocketMgr_h__
 
+#include "AsyncAcceptor.h"
+#include "Errors.h"
+#include "NetworkThread.h"
 #include <boost/asio/ip/tcp.hpp>
 #include <memory>
-#include "Define.h"
-#include "AsyncAcceptor.h"
-#include "NetworkThread.h"
 
 using boost::asio::ip::tcp;
 
@@ -29,13 +29,13 @@ public:
         }
         catch (boost::system::system_error const& err)
         {
-            //TC_LOG_ERROR("network", "Exception caught in SocketMgr.StartNetwork ({}:{}): {}", bindIp, port, err.what());
+            // TC_LOG_ERROR("network", "Exception caught in SocketMgr.StartNetwork ({}:{}): {}", bindIp, port, err.what());
             return false;
         }
 
         if (!acceptor->Bind())
         {
-            //TC_LOG_ERROR("network", "StartNetwork failed to bind socket acceptor");
+            // TC_LOG_ERROR("network", "StartNetwork failed to bind socket acceptor");
             delete acceptor;
             return false;
         }
@@ -83,13 +83,13 @@ public:
         try
         {
             std::shared_ptr<SocketType> newSocket = std::make_shared<SocketType>(std::move(sock));
-            newSocket->Start(); // qweqwe
+            newSocket->Start();
 
             _threads[threadIndex].AddSocket(newSocket);
         }
         catch (boost::system::system_error const& err)
         {
-            //TC_LOG_WARN("network", "Failed to retrieve client's remote address {}", err.what());
+            // TC_LOG_WARN("network", "Failed to retrieve client's remote address {}", err.what());
         }
     }
 
@@ -124,4 +124,4 @@ protected:
     int32 _threadCount;
 };
 
-#endif
+#endif // SocketMgr_h__

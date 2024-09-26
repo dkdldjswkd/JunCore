@@ -97,13 +97,13 @@ protected:
 
     void Run()
     {
-        // TC_LOG_DEBUG("misc", "Network Thread Starting");
+        // // TC_LOG_DEBUG("misc", "Network Thread Starting");
 
         _updateTimer.expires_from_now(boost::posix_time::milliseconds(1));
         _updateTimer.async_wait([this](boost::system::error_code const&) { Update(); });
         _ioContext.run();
 
-        // TC_LOG_DEBUG("misc", "Network Thread exits");
+        // // TC_LOG_DEBUG("misc", "Network Thread exits");
         _newSockets.clear();
         _sockets.clear();
     }

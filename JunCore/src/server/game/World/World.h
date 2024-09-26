@@ -836,7 +836,7 @@
 ////};
 ////
 /////// Storage class for commands issued for delayed execution
-////struct TC_GAME_API CliCommandHolder
+////struct  CliCommandHolder
 ////{
 ////    using Print = void(*)(void*, std::string_view);
 ////    using CommandFinished = void(*)(void*, bool success);
@@ -1192,7 +1192,7 @@
 ////    friend class debug_commandscript;
 ////};
 ////
-////TC_GAME_API extern Realm realm;
+//// extern Realm realm;
 ////
 ////#define sWorld World::instance()
 //

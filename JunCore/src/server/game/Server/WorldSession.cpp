@@ -237,8 +237,8 @@
 //    {
 //        uint64 minTime = uint64(cur_time - lastTime);
 //        uint64 fullTime = uint64(lastTime - firstTime);
-//        TC_LOG_DEBUG("misc", "Send all time packets count: {} bytes: {} avr.count/sec: {} avr.bytes/sec: {} time: {}", sendPacketCount, sendPacketBytes, float(sendPacketCount) / fullTime, float(sendPacketBytes) / fullTime, uint32(fullTime));
-//        TC_LOG_DEBUG("misc", "Send last min packets count: {} bytes: {} avr.count/sec: {} avr.bytes/sec: {}", sendLastPacketCount, sendLastPacketBytes, float(sendLastPacketCount) / minTime, float(sendLastPacketBytes) / minTime);
+//        // TC_LOG_DEBUG("misc", "Send all time packets count: {} bytes: {} avr.count/sec: {} avr.bytes/sec: {} time: {}", sendPacketCount, sendPacketBytes, float(sendPacketCount) / fullTime, float(sendPacketBytes) / fullTime, uint32(fullTime));
+//        // TC_LOG_DEBUG("misc", "Send last min packets count: {} bytes: {} avr.count/sec: {} avr.bytes/sec: {}", sendLastPacketCount, sendLastPacketBytes, float(sendLastPacketCount) / minTime, float(sendLastPacketBytes) / minTime);
 //
 //        lastTime = cur_time;
 //        sendLastPacketCount = 1;
@@ -248,7 +248,7 @@
 //
 //    sScriptMgr->OnPacketSend(this, *packet);
 //
-//    TC_LOG_TRACE("network.opcode", "S->C: {} {}", GetPlayerInfo(), GetOpcodeNameForLogging(static_cast<OpcodeServer>(packet->GetOpcode())));
+//    // TC_LOG_TRACE("network.opcode", "S->C: {} {}", GetPlayerInfo(), GetOpcodeNameForLogging(static_cast<OpcodeServer>(packet->GetOpcode())));
 //    m_Socket->SendPacket(*packet);
 //}
 //
@@ -261,7 +261,7 @@
 ///// Logging helper for unexpected opcodes
 //void WorldSession::LogUnexpectedOpcode(WorldPacket* packet, char const* status, const char* reason)
 //{
-//    TC_LOG_ERROR("network.opcode", "Received unexpected opcode {} Status: {} Reason: {} from {}",
+//    // TC_LOG_ERROR("network.opcode", "Received unexpected opcode {} Status: {} Reason: {} from {}",
 //        GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode())), status, reason, GetPlayerInfo());
 //}
 //
@@ -271,7 +271,7 @@
 //    if (!sLog->ShouldLog("network.opcode", LOG_LEVEL_TRACE) || packet->rpos() >= packet->wpos())
 //        return;
 //
-//    TC_LOG_TRACE("network.opcode", "Unprocessed tail data (read stop at {} from {}) Opcode {} from {}",
+//    // TC_LOG_TRACE("network.opcode", "Unprocessed tail data (read stop at {} from {}) Opcode {} from {}",
 //        uint32(packet->rpos()), uint32(packet->wpos()), GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode())), GetPlayerInfo());
 //    packet->print_storage();
 //}
@@ -316,7 +316,7 @@
 //                    {
 //                        requeuePackets.push_back(packet);
 //                        deletePacket = false;
-//                        TC_LOG_DEBUG("network", "Re-enqueueing packet with opcode {} with with status STATUS_LOGGEDIN. "
+//                        // TC_LOG_DEBUG("network", "Re-enqueueing packet with opcode {} with with status STATUS_LOGGEDIN. "
 //                            "Player is currently not in world yet.", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode())));
 //                    }
 //                }
@@ -384,18 +384,18 @@
 //                    processedPackets = MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE;   // break out of packet processing loop
 //                break;
 //            case STATUS_NEVER:
-//                TC_LOG_ERROR("network.opcode", "Received not allowed opcode {} from {}", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode()))
+//                // TC_LOG_ERROR("network.opcode", "Received not allowed opcode {} from {}", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode()))
 //                    , GetPlayerInfo());
 //                break;
 //            case STATUS_UNHANDLED:
-//                TC_LOG_DEBUG("network.opcode", "Received not handled opcode {} from {}", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode()))
+//                // TC_LOG_DEBUG("network.opcode", "Received not handled opcode {} from {}", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode()))
 //                    , GetPlayerInfo());
 //                break;
 //            }
 //        }
 //        catch (WorldPackets::InvalidHyperlinkException const& ihe)
 //        {
-//            TC_LOG_ERROR("network", "{} sent {} with an invalid link:\n{}", GetPlayerInfo(),
+//            // TC_LOG_ERROR("network", "{} sent {} with an invalid link:\n{}", GetPlayerInfo(),
 //                GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode())), ihe.GetInvalidValue());
 //
 //            if (sWorld->getIntConfig(CONFIG_CHAT_STRICT_LINK_CHECKING_KICK))
@@ -403,7 +403,7 @@
 //        }
 //        catch (WorldPackets::IllegalHyperlinkException const& ihe)
 //        {
-//            TC_LOG_ERROR("network", "{} sent {} which illegally contained a hyperlink:\n{}", GetPlayerInfo(),
+//            // TC_LOG_ERROR("network", "{} sent {} which illegally contained a hyperlink:\n{}", GetPlayerInfo(),
 //                GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode())), ihe.GetInvalidValue());
 //
 //            if (sWorld->getIntConfig(CONFIG_CHAT_STRICT_LINK_CHECKING_KICK))
@@ -411,12 +411,12 @@
 //        }
 //        catch (WorldPackets::PacketArrayMaxCapacityException const& pamce)
 //        {
-//            TC_LOG_ERROR("network", "PacketArrayMaxCapacityException: {} while parsing {} from {}.",
+//            // TC_LOG_ERROR("network", "PacketArrayMaxCapacityException: {} while parsing {} from {}.",
 //                pamce.what(), GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode())), GetPlayerInfo());
 //        }
 //        catch (ByteBufferException const&)
 //        {
-//            TC_LOG_ERROR("network", "WorldSession::Update ByteBufferException occured while parsing a packet (opcode: {}) from client {}, accountid={}. Skipped packet.",
+//            // TC_LOG_ERROR("network", "WorldSession::Update ByteBufferException occured while parsing a packet (opcode: {}) from client {}, accountid={}. Skipped packet.",
 //                packet->GetOpcode(), GetRemoteAddress(), GetAccountId());
 //            packet->hexlike();
 //        }
@@ -607,7 +607,7 @@
 //        // e.g if he got disconnected during a transfer to another map
 //        // calls to GetMap in this case may cause crashes
 //        _player->CleanupsBeforeDelete();
-//        TC_LOG_INFO("entities.player.character", "Account: {} (IP: {}) Logout Character:[{}] {} Level: {}, XP: {}/{} ({} left)",
+//        // TC_LOG_INFO("entities.player.character", "Account: {} (IP: {}) Logout Character:[{}] {} Level: {}, XP: {}/{} ({} left)",
 //            GetAccountId(), GetRemoteAddress(), _player->GetName(), _player->GetGUID().ToString(), _player->GetLevel(),
 //            _player->GetXP(), _player->GetXPForNextLevel(), std::max(0, (int32)_player->GetXPForNextLevel() - (int32)_player->GetXP()));
 //        if (Map* _map = _player->FindMap())
@@ -618,7 +618,7 @@
 //        //! Send the 'logout complete' packet to the client
 //        //! Client will respond by sending 3x CMSG_CANCEL_TRADE, which we currently dont handle
 //        SendPacket(WorldPackets::Character::LogoutComplete().Write());
-//        TC_LOG_DEBUG("network", "SESSION: Sent SMSG_LOGOUT_COMPLETE Message");
+//        // TC_LOG_DEBUG("network", "SESSION: Sent SMSG_LOGOUT_COMPLETE Message");
 //
 //        //! Since each account can only have one online character at any given time, ensure all characters for active account are marked as offline
 //        CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_ACCOUNT_ONLINE);
@@ -637,7 +637,7 @@
 //{
 //    if (m_Socket)
 //    {
-//        TC_LOG_INFO("network.kick", "Account: {} Character: '{}' {} kicked with reason: {}", GetAccountId(), _player ? _player->GetName() : "<none>",
+//        // TC_LOG_INFO("network.kick", "Account: {} Character: '{}' {} kicked with reason: {}", GetAccountId(), _player ? _player->GetName() : "<none>",
 //            _player ? _player->GetGUID().ToString() : "", reason);
 //
 //        m_Socket->CloseSocket();
@@ -650,7 +650,7 @@
 //    if (Trinity::Hyperlinks::CheckAllLinks(str))
 //        return true;
 //
-//    TC_LOG_ERROR("network", "Player {}{} sent a message with an invalid link:\n{}", GetPlayer()->GetName(),
+//    // TC_LOG_ERROR("network", "Player {}{} sent a message with an invalid link:\n{}", GetPlayer()->GetName(),
 //        GetPlayer()->GetGUID().ToString(), str);
 //
 //    if (sWorld->getIntConfig(CONFIG_CHAT_STRICT_LINK_CHECKING_KICK))
@@ -664,7 +664,7 @@
 //    if (str.find('|') == std::string::npos)
 //        return true;
 //
-//    TC_LOG_ERROR("network", "Player {} {} sent a message which illegally contained a hyperlink:\n{}", GetPlayer()->GetName(),
+//    // TC_LOG_ERROR("network", "Player {} {} sent a message which illegally contained a hyperlink:\n{}", GetPlayer()->GetName(),
 //        GetPlayer()->GetGUID().ToString(), str);
 //
 //    if (sWorld->getIntConfig(CONFIG_CHAT_STRICT_LINK_CHECKING_KICK))
@@ -733,24 +733,24 @@
 //
 //void WorldSession::Handle_NULL(WorldPacket& null)
 //{
-//    TC_LOG_ERROR("network.opcode", "Received unhandled opcode {} from {}", GetOpcodeNameForLogging(static_cast<OpcodeClient>(null.GetOpcode())), GetPlayerInfo());
+//    // TC_LOG_ERROR("network.opcode", "Received unhandled opcode {} from {}", GetOpcodeNameForLogging(static_cast<OpcodeClient>(null.GetOpcode())), GetPlayerInfo());
 //}
 //
 //void WorldSession::Handle_EarlyProccess(WorldPacket& recvPacket)
 //{
-//    TC_LOG_ERROR("network.opcode", "Received opcode {} that must be processed in WorldSocket::ReadDataHandler from {}"
+//    // TC_LOG_ERROR("network.opcode", "Received opcode {} that must be processed in WorldSocket::ReadDataHandler from {}"
 //        , GetOpcodeNameForLogging(static_cast<OpcodeClient>(recvPacket.GetOpcode())), GetPlayerInfo());
 //}
 //
 //void WorldSession::Handle_ServerSide(WorldPacket& recvPacket)
 //{
-//    TC_LOG_ERROR("network.opcode", "Received server-side opcode {} from {}"
+//    // TC_LOG_ERROR("network.opcode", "Received server-side opcode {} from {}"
 //        , GetOpcodeNameForLogging(static_cast<OpcodeServer>(recvPacket.GetOpcode())), GetPlayerInfo());
 //}
 //
 //void WorldSession::Handle_Deprecated(WorldPacket& recvPacket)
 //{
-//    TC_LOG_ERROR("network.opcode", "Received deprecated opcode {} from {}"
+//    // TC_LOG_ERROR("network.opcode", "Received deprecated opcode {} from {}"
 //        , GetOpcodeNameForLogging(static_cast<OpcodeClient>(recvPacket.GetOpcode())), GetPlayerInfo());
 //}
 //
@@ -787,14 +787,14 @@
 //        uint32 type = fields[0].GetUInt8();
 //        if (type >= NUM_ACCOUNT_DATA_TYPES)
 //        {
-//            TC_LOG_ERROR("misc", "Table `{}` have invalid account data type ({}), ignore.",
+//            // TC_LOG_ERROR("misc", "Table `{}` have invalid account data type ({}), ignore.",
 //                mask == GLOBAL_CACHE_MASK ? "account_data" : "character_account_data", type);
 //            continue;
 //        }
 //
 //        if ((mask & (1 << type)) == 0)
 //        {
-//            TC_LOG_ERROR("misc", "Table `{}` have non appropriate for table account data type ({}), ignore.",
+//            // TC_LOG_ERROR("misc", "Table `{}` have non appropriate for table account data type ({}), ignore.",
 //                mask == GLOBAL_CACHE_MASK ? "account_data" : "character_account_data", type);
 //            continue;
 //        }
@@ -988,7 +988,7 @@
 //    { \
 //        if (check) \
 //        { \
-//            TC_LOG_DEBUG("entities.unit", "WorldSession::ReadMovementInfo: Violation of MovementFlags found ({}). " \
+//            // TC_LOG_DEBUG("entities.unit", "WorldSession::ReadMovementInfo: Violation of MovementFlags found ({}). " \
 //                "MovementFlags: {}, MovementFlags2: {} for player {}. Mask {} will be removed.", \
 //                STRINGIZE(check), mi->GetMovementFlags(), mi->GetExtraMovementFlags(), GetPlayer()->GetGUID().ToString(), maskToRemove); \
 //            mi->RemoveMovementFlag((maskToRemove)); \
@@ -1002,14 +1002,14 @@
 //
 //    if (mi->guid.IsEmpty())
 //    {
-//        TC_LOG_ERROR("entities.unit", "WorldSession::ReadMovementInfo: mi->guid is empty, opcode {}", static_cast<uint32>(data.GetOpcode()));
+//        // TC_LOG_ERROR("entities.unit", "WorldSession::ReadMovementInfo: mi->guid is empty, opcode {}", static_cast<uint32>(data.GetOpcode()));
 //        return;
 //    }
 //
 //    Unit* mover = GetPlayer()->GetGUID() == mi->guid ? GetPlayer() : ObjectAccessor::GetUnit(*GetPlayer(), mi->guid);
 //    if (!mover)
 //    {
-//        TC_LOG_ERROR("entities.unit", "WorldSession::ReadMovementInfo: If the server allows the unit (GUID {}) to be moved by the client of player {}, the unit should still exist! Opcode {}",
+//        // TC_LOG_ERROR("entities.unit", "WorldSession::ReadMovementInfo: If the server allows the unit (GUID {}) to be moved by the client of player {}, the unit should still exist! Opcode {}",
 //            mi->guid.ToString(),
 //            GetPlayer()->GetGUID().ToString(),
 //            static_cast<uint32>(data.GetOpcode()));
@@ -1130,7 +1130,7 @@
 //
 //    if (size > 0xFFFFF)
 //    {
-//        TC_LOG_DEBUG("addon", "WorldSession::ReadAddonsInfo: AddOnInfo too big, size {}", size);
+//        // TC_LOG_DEBUG("addon", "WorldSession::ReadAddonsInfo: AddOnInfo too big, size {}", size);
 //        return;
 //    }
 //
@@ -1159,7 +1159,7 @@
 //                addonInfo >> addon.Name >> addon.HasKey;
 //                addonInfo >> publicKeyCrc >> urlCrc;
 //
-//                TC_LOG_DEBUG("addon", "AddOn: {} (CRC: 0x{:x}) - has key: 0x{:x} - URL CRC: 0x{:x}", addon.Name, publicKeyCrc, addon.HasKey, urlCrc);
+//                // TC_LOG_DEBUG("addon", "AddOn: {} (CRC: 0x{:x}) - has key: 0x{:x} - URL CRC: 0x{:x}", addon.Name, publicKeyCrc, addon.HasKey, urlCrc);
 //
 //                SavedAddon const* savedAddon = AddonMgr::GetAddonInfo(addon.Name);
 //                if (savedAddon)
@@ -1169,7 +1169,7 @@
 //                        if (addon.HasKey)
 //                        {
 //                            addon.Status = Addons::SecureAddonInfo::BANNED;
-//                            TC_LOG_WARN("addon", " Addon: {}: modified (CRC: 0x{:x}) - accountID {})", addon.Name, savedAddon->CRC, GetAccountId());
+//                            // TC_LOG_WARN("addon", " Addon: {}: modified (CRC: 0x{:x}) - accountID {})", addon.Name, savedAddon->CRC, GetAccountId());
 //                        }
 //                        else
 //                            addon.Status = Addons::SecureAddonInfo::SECURE_HIDDEN;
@@ -1177,13 +1177,13 @@
 //                    else
 //                    {
 //                        addon.Status = Addons::SecureAddonInfo::SECURE_HIDDEN;
-//                        TC_LOG_DEBUG("addon", "Addon: {}: validated (CRC: 0x{:x}) - accountID {}", addon.Name, savedAddon->CRC, GetAccountId());
+//                        // TC_LOG_DEBUG("addon", "Addon: {}: validated (CRC: 0x{:x}) - accountID {}", addon.Name, savedAddon->CRC, GetAccountId());
 //                    }
 //                }
 //                else
 //                {
 //                    addon.Status = Addons::SecureAddonInfo::BANNED;
-//                    TC_LOG_WARN("addon", "Addon: {}: not registered as known secure addon - accountId {}", addon.Name, GetAccountId());
+//                    // TC_LOG_WARN("addon", "Addon: {}: not registered as known secure addon - accountId {}", addon.Name, GetAccountId());
 //                }
 //            }
 //
@@ -1191,15 +1191,15 @@
 //
 //            uint32 lastBannedAddOnTimestamp;
 //            addonInfo >> lastBannedAddOnTimestamp;
-//            TC_LOG_DEBUG("addon", "AddOn: Newest banned addon timestamp: {}", lastBannedAddOnTimestamp);
+//            // TC_LOG_DEBUG("addon", "AddOn: Newest banned addon timestamp: {}", lastBannedAddOnTimestamp);
 //        }
 //        catch (ByteBufferException const& e)
 //        {
-//            TC_LOG_DEBUG("addon", "AddOn: Addon packet read error! {}", e.what());
+//            // TC_LOG_DEBUG("addon", "AddOn: Addon packet read error! {}", e.what());
 //        }
 //    }
 //    else
-//        TC_LOG_DEBUG("addon", "AddOn: Addon packet uncompress error!");
+//        // TC_LOG_DEBUG("addon", "AddOn: Addon packet uncompress error!");
 //}
 //
 //void WorldSession::SendAddonsInfo()
@@ -1238,7 +1238,7 @@
 //            data << uint8(!addonInfo.HasKey);                       // KeyProvided
 //            if (!addonInfo.HasKey)                                  // if CRC is wrong, add public key (client need it)
 //            {
-//                TC_LOG_DEBUG("addon", "AddOn: {}: key missing: sending pubkey to accountID {}", addonInfo.Name, GetAccountId());
+//                // TC_LOG_DEBUG("addon", "AddOn: {}: key missing: sending pubkey to accountID {}", addonInfo.Name, GetAccountId());
 //
 //                data.append(addonPublicKey, sizeof(addonPublicKey));
 //            }
@@ -1334,7 +1334,7 @@
 //    uint32 id = GetAccountId();
 //    uint8 secLevel = GetSecurity();
 //
-//    TC_LOG_DEBUG("rbac", "WorldSession::LoadPermissions [AccountId: {}, Name: {}, realmId: {}, secLevel: {}]",
+//    // TC_LOG_DEBUG("rbac", "WorldSession::LoadPermissions [AccountId: {}, Name: {}, realmId: {}, secLevel: {}]",
 //        id, _accountName, realm.Id.Realm, secLevel);
 //
 //    _RBACData = new rbac::RBACData(id, _accountName, realm.Id.Realm, secLevel);
@@ -1420,7 +1420,7 @@
 //        LoadPermissions();
 //
 //    bool hasPermission = _RBACData->HasPermission(permission);
-//    TC_LOG_DEBUG("rbac", "WorldSession::HasPermission [AccountId: {}, Name: {}, realmId: {}]",
+//    // TC_LOG_DEBUG("rbac", "WorldSession::HasPermission [AccountId: {}, Name: {}, realmId: {}]",
 //        _RBACData->GetId(), _RBACData->GetName(), realm.Id.Realm);
 //
 //    return hasPermission;
@@ -1428,7 +1428,7 @@
 //
 //void WorldSession::InvalidateRBACData()
 //{
-//    TC_LOG_DEBUG("rbac", "WorldSession::Invalidaterbac::RBACData [AccountId: {}, Name: {}, realmId: {}]",
+//    // TC_LOG_DEBUG("rbac", "WorldSession::Invalidaterbac::RBACData [AccountId: {}, Name: {}, realmId: {}]",
 //        _RBACData->GetId(), _RBACData->GetName(), realm.Id.Realm);
 //    delete _RBACData;
 //    _RBACData = nullptr;
@@ -1453,7 +1453,7 @@
 //    if (++packetCounter.amountCounter <= maxPacketCounterAllowed)
 //        return true;
 //
-//    TC_LOG_WARN("network", "AntiDOS: Account {}, IP: {}, Ping: {}, Character: {}, flooding packet (opc: {} (0x{:X}), count: {})",
+//    // TC_LOG_WARN("network", "AntiDOS: Account {}, IP: {}, Ping: {}, Character: {}, flooding packet (opc: {} (0x{:X}), count: {})",
 //        Session->GetAccountId(), Session->GetRemoteAddress(), Session->GetLatency(), Session->GetPlayerName(),
 //        opcodeTable[static_cast<OpcodeClient>(p.GetOpcode())]->Name, p.GetOpcode(), packetCounter.amountCounter);
 //
@@ -1463,7 +1463,7 @@
 //        return true;
 //    case POLICY_KICK:
 //    {
-//        TC_LOG_WARN("network", "AntiDOS: Player kicked!");
+//        // TC_LOG_WARN("network", "AntiDOS: Player kicked!");
 //        Session->KickPlayer("WorldSession::DosProtection::EvaluateOpcode AntiDOS");
 //        return false;
 //    }
@@ -1479,7 +1479,7 @@
 //        case BAN_IP: nameOrIp = Session->GetRemoteAddress(); break;
 //        }
 //        sWorld->BanAccount(bm, nameOrIp, duration, "DOS (Packet Flooding/Spoofing", "Server: AutoDOS");
-//        TC_LOG_WARN("network", "AntiDOS: Player automatically banned for {} seconds.", duration);
+//        // TC_LOG_WARN("network", "AntiDOS: Player automatically banned for {} seconds.", duration);
 //        Session->KickPlayer("WorldSession::DosProtection::EvaluateOpcode AntiDOS");
 //        return false;
 //    }
@@ -1764,7 +1764,7 @@
 //    // edit: this wouldn't happen in retail but it does in TC, even with a legitimate client.
 //    if (!client->GetActivelyMovedUnit() || client->GetActivelyMovedUnit()->GetGUID() != guid)
 //    {
-//        TC_LOG_DEBUG("entities.unit", "Attempt at tampering movement data by Player {}", _player->GetName());
+//        // TC_LOG_DEBUG("entities.unit", "Attempt at tampering movement data by Player {}", _player->GetName());
 //        return false;
 //    }
 //
@@ -1773,7 +1773,7 @@
 //    // as control over that unit is revoked (through a 'SMSG_CONTROL_UPDATE allowMove=false' message).
 //    if (!client->IsAllowedToMove(guid))
 //    {
-//        TC_LOG_DEBUG("entities.unit", "Bad or outdated movement data by Player {}", _player->GetName());
+//        // TC_LOG_DEBUG("entities.unit", "Bad or outdated movement data by Player {}", _player->GetName());
 //        return false;
 //    }
 //

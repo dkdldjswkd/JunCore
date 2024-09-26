@@ -122,18 +122,18 @@ int main(int argc, char** argv)
 //    Trinity::Banner::Show("worldserver-daemon",
 //        [](char const* text)
 //        {
-//            TC_LOG_INFO("server.worldserver", "{}", text);
+//            // TC_LOG_INFO("server.worldserver", "{}", text);
 //        },
 //        []()
 //        {
-//            TC_LOG_INFO("server.worldserver", "Using configuration file {}.", sConfigMgr->GetFilename());
-//            TC_LOG_INFO("server.worldserver", "Using SSL version: {} (library: {})", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
-//            TC_LOG_INFO("server.worldserver", "Using Boost version: {}.{}.{}", BOOST_VERSION / 100000, BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
+//            // TC_LOG_INFO("server.worldserver", "Using configuration file {}.", sConfigMgr->GetFilename());
+//            // TC_LOG_INFO("server.worldserver", "Using SSL version: {} (library: {})", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
+//            // TC_LOG_INFO("server.worldserver", "Using Boost version: {}.{}.{}", BOOST_VERSION / 100000, BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
 //        }
 //    );
 //
 //    for (std::string const& key : overriddenKeys)
-//        TC_LOG_INFO("server.worldserver", "Configuration field '{}' was overridden with environment variable.", key);
+//        // TC_LOG_INFO("server.worldserver", "Configuration field '{}' was overridden with environment variable.", key);
 //
 //    OpenSSLCrypto::threadsSetup(boost::dll::program_location().remove_filename());
 //
@@ -149,10 +149,10 @@ int main(int argc, char** argv)
 //    if (!pidFile.empty())
 //    {
 //        if (uint32 pid = CreatePIDFile(pidFile))
-//            TC_LOG_INFO("server.worldserver", "Daemon PID: {}\n", pid);
+//            // TC_LOG_INFO("server.worldserver", "Daemon PID: {}\n", pid);
 //        else
 //        {
-//            TC_LOG_ERROR("server.worldserver", "Cannot create PID file {}.\n", pidFile);
+//            // TC_LOG_ERROR("server.worldserver", "Cannot create PID file {}.\n", pidFile);
 //            return 1;
 //        }
 //    }
@@ -256,14 +256,14 @@ int main(int argc, char** argv)
 
     //if (networkThreads <= 0)
     //{
-    //    TC_LOG_ERROR("server.worldserver", "Network.Threads must be greater than 0");
+    //    // TC_LOG_ERROR("server.worldserver", "Network.Threads must be greater than 0");
     //    World::StopNow(ERROR_EXIT_CODE);
     //    return 1;
     //}
 
     if (!sWorldSocketMgr.StartWorldNetwork(*ioContext, worldListener, worldPort, networkThreads))
     {
-        //TC_LOG_ERROR("server.worldserver", "Failed to initialize network");
+        //// TC_LOG_ERROR("server.worldserver", "Failed to initialize network");
         //World::StopNow(ERROR_EXIT_CODE);
         return 1;
     }
@@ -290,10 +290,10 @@ int main(int argc, char** argv)
 //    {
 //        freezeDetector = std::make_shared<FreezeDetector>(*ioContext, coreStuckTime * 1000);
 //        FreezeDetector::Start(freezeDetector);
-//        TC_LOG_INFO("server.worldserver", "Starting up anti-freeze thread ({} seconds max stuck time)...", coreStuckTime);
+//        // TC_LOG_INFO("server.worldserver", "Starting up anti-freeze thread ({} seconds max stuck time)...", coreStuckTime);
 //    }
 //
-//    TC_LOG_INFO("server.worldserver", "{} (worldserver-daemon) ready...", GitRevision::GetFullVersion());
+//    // TC_LOG_INFO("server.worldserver", "{} (worldserver-daemon) ready...", GitRevision::GetFullVersion());
 //
 //    sScriptMgr->OnStartup();
 //
@@ -322,7 +322,7 @@ int main(int argc, char** argv)
 //    // set server offline
 //    LoginDatabase.DirectPExecute("UPDATE realmlist SET flag = flag | {} WHERE id = '{}'", REALM_FLAG_OFFLINE, realm.Id.Realm);
 //
-//    TC_LOG_INFO("server.worldserver", "Halting process...");
+//    // TC_LOG_INFO("server.worldserver", "Halting process...");
 
     // 0 - normal shutdown
     // 1 - shutdown at error

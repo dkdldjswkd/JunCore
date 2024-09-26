@@ -19,8 +19,7 @@
 using namespace std;
 
 /*
-WorldSession.h/cpp 구현
-World.h/cpp 구현
+WorldSocketMgr::OnSocketOpen() 구현 필요
 */
 
 int main(int argc, char** argv)

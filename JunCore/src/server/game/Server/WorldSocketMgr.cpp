@@ -17,9 +17,9 @@ WorldSocketMgr& WorldSocketMgr::Instance()
 
 bool WorldSocketMgr::StartWorldNetwork(boost::asio::io_context& ioContext, std::string const& bindIp, uint16 port, int threadCount)
 {
-    //_tcpNoDelay = sConfigMgr->GetBoolDefault("Network.TcpNodelay", true);
+    _tcpNoDelay = false; // sConfigMgr->GetBoolDefault("Network.TcpNodelay", true); // 네이글 알고리즘 해제 보류
 
-    //int const max_connections = TRINITY_MAX_LISTEN_CONNECTIONS;
+    int const max_connections = JUNCORE_MAX_LISTEN_CONNECTIONS;
     //TC_LOG_DEBUG("misc", "Max allowed socket connections {}", max_connections);
 
     //// -1 means use default
@@ -65,17 +65,17 @@ void WorldSocketMgr::OnSocketOpen(tcp::socket&& sock, uint32 threadIndex)
     //    }
     //}
 
-    //// Set TCP_NODELAY.
-    //if (_tcpNoDelay)
-    //{
-    //    boost::system::error_code err;
-    //    sock.set_option(boost::asio::ip::tcp::no_delay(true), err);
-    //    if (err)
-    //    {
-    //        TC_LOG_ERROR("misc", "WorldSocketMgr::OnSocketOpen sock.set_option(boost::asio::ip::tcp::no_delay) err = {}", err.message());
-    //        return;
-    //    }
-    //}
+    // Set TCP_NODELAY.
+    if (_tcpNoDelay)
+    {
+        boost::system::error_code err;
+        sock.set_option(boost::asio::ip::tcp::no_delay(true), err);
+        if (err)
+        {
+            //TC_LOG_ERROR("misc", "WorldSocketMgr::OnSocketOpen sock.set_option(boost::asio::ip::tcp::no_delay) err = {}", err.message());
+            return;
+        }
+    }
 
     ////sock->m_OutBufferSize = static_cast<size_t> (m_SockOutUBuff);
 

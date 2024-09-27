@@ -1,24 +1,121 @@
-///*
-// * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
-// *
-// * This program is free software; you can redistribute it and/or modify it
-// * under the terms of the GNU General Public License as published by the
-// * Free Software Foundation; either version 2 of the License, or (at your
-// * option) any later version.
-// *
-// * This program is distributed in the hope that it will be useful, but WITHOUT
-// * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-// * more details.
-// *
-// * You should have received a copy of the GNU General Public License along
-// * with this program. If not, see <http://www.gnu.org/licenses/>.
-// */
-//
-///** \file
-//    \ingroup world
-//*/
-//
+#include "World.h"
+
+/// World constructor
+World::World()
+{
+    //m_playerLimit = 0;
+    //m_allowedSecurityLevel = SEC_PLAYER;
+    //m_allowMovement = true;
+    //m_ShutdownMask = 0;
+    //m_ShutdownTimer = 0;
+
+    //m_maxActiveSessionCount = 0;
+    //m_maxQueuedSessionCount = 0;
+    //m_PlayerCount = 0;
+    //m_MaxPlayerCount = 0;
+    //m_NextDailyQuestReset = 0;
+    //m_NextWeeklyQuestReset = 0;
+    //m_NextMonthlyQuestReset = 0;
+    //m_NextRandomBGReset = 0;
+    //m_NextCalendarOldEventsDeletionTime = 0;
+    //m_NextGuildReset = 0;
+
+    //m_defaultDbcLocale = LOCALE_enUS;
+    //m_availableDbcLocaleMask = 0;
+
+    //mail_timer = 0;
+    //mail_timer_expires = 0;
+
+    //m_isClosed = false;
+
+    //m_CleaningFlags = 0;
+
+    //memset(rate_values, 0, sizeof(rate_values));
+    //memset(m_int_configs, 0, sizeof(m_int_configs));
+    //memset(m_bool_configs, 0, sizeof(m_bool_configs));
+    //memset(m_float_configs, 0, sizeof(m_float_configs));
+
+    //_guidWarn = false;
+    //_guidAlert = false;
+    //_warnDiff = 0;
+    //_warnShutdownTime = GameTime::GetGameTime();
+}
+
+/// World destructor
+World::~World()
+{
+    /////- Empty the kicked session set
+    //while (!m_sessions.empty())
+    //{
+    //    // not remove from queue, prevent loading new sessions
+    //    delete m_sessions.begin()->second;
+    //    m_sessions.erase(m_sessions.begin());
+    //}
+
+    //CliCommandHolder* command = nullptr;
+    //while (cliCmdQueue.next(command))
+    //    delete command;
+
+    //VMAP::VMapFactory::clear();
+    //MMAP::MMapFactory::clear();
+
+    ///// @todo free addSessQueue
+}
+
+
+World* World::instance()
+{
+    static World instance;
+    return &instance;
+}
+
+/// Kick (and save) all players
+void World::KickAll()
+{
+    //m_QueuedPlayer.clear();                                 // prevent send queue update packet and login queued sessions
+
+    // session not removed at kick and will removed in next update tick
+    //for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+    //    itr->second->KickPlayer("World::KickAll");
+}
+
+void World::UpdateSessions(uint32 diff)
+{
+    //{
+    //    TC_METRIC_DETAILED_NO_THRESHOLD_TIMER("world_update_time",
+    //        TC_METRIC_TAG("type", "Add sessions"),
+    //        TC_METRIC_TAG("parent_type", "Update sessions"));
+    //    ///- Add new sessions
+    //    WorldSession* sess = nullptr;
+    //    while (addSessQueue.next(sess))
+    //        AddSession_(sess);
+    //}
+
+    /////- Then send an update signal to remaining ones
+    //for (SessionMap::iterator itr = m_sessions.begin(), next; itr != m_sessions.end(); itr = next)
+    //{
+    //    next = itr;
+    //    ++next;
+
+    //    ///- and remove not active sessions from the list
+    //    WorldSession* pSession = itr->second;
+    //    WorldSessionFilter updater(pSession);
+
+    //    [[maybe_unused]] uint32 currentSessionId = itr->first;
+    //    TC_METRIC_DETAILED_TIMER("world_update_sessions_time", TC_METRIC_TAG("account_id", std::to_string(currentSessionId)));
+
+    //    if (!pSession->Update(diff, updater))    // As interval = 0
+    //    {
+    //        if (!RemoveQueuedPlayer(itr->second) && itr->second && getIntConfig(CONFIG_INTERVAL_DISCONNECT_TOLERANCE))
+    //            m_disconnects[itr->second->GetAccountId()] = GameTime::GetGameTime();
+    //        RemoveQueuedPlayer(pSession);
+    //        m_sessions.erase(itr);
+    //        delete pSession;
+
+    //    }
+    //}
+}
+
 //#include "World.h"
 //#include "AccountMgr.h"
 //#include "AchievementMgr.h"
@@ -88,12 +185,11 @@
 //#include "WeatherMgr.h"
 //#include "WhoListStorage.h"
 //#include "WorldSession.h"
-//
 //#include <boost/asio/ip/address.hpp>
-//
-// std::atomic<bool> World::m_stopEvent(false);
-// uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
-//
+
+ std::atomic<bool> World::m_stopEvent(false);
+ uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
+
 // std::atomic<uint32> World::m_worldLoopCounter(0);
 //
 // float World::m_MaxVisibleDistanceOnContinents = DEFAULT_VISIBILITY_DISTANCE;
@@ -106,73 +202,7 @@
 // int32 World::m_visibility_notify_periodInBG         = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
 // int32 World::m_visibility_notify_periodInArenas     = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
 //
-///// World constructor
-//World::World()
-//{
-//    m_playerLimit = 0;
-//    m_allowedSecurityLevel = SEC_PLAYER;
-//    m_allowMovement = true;
-//    m_ShutdownMask = 0;
-//    m_ShutdownTimer = 0;
 //
-//    m_maxActiveSessionCount = 0;
-//    m_maxQueuedSessionCount = 0;
-//    m_PlayerCount = 0;
-//    m_MaxPlayerCount = 0;
-//    m_NextDailyQuestReset = 0;
-//    m_NextWeeklyQuestReset = 0;
-//    m_NextMonthlyQuestReset = 0;
-//    m_NextRandomBGReset = 0;
-//    m_NextCalendarOldEventsDeletionTime = 0;
-//    m_NextGuildReset = 0;
-//
-//    m_defaultDbcLocale = LOCALE_enUS;
-//    m_availableDbcLocaleMask = 0;
-//
-//    mail_timer = 0;
-//    mail_timer_expires = 0;
-//
-//    m_isClosed = false;
-//
-//    m_CleaningFlags = 0;
-//
-//    memset(rate_values, 0, sizeof(rate_values));
-//    memset(m_int_configs, 0, sizeof(m_int_configs));
-//    memset(m_bool_configs, 0, sizeof(m_bool_configs));
-//    memset(m_float_configs, 0, sizeof(m_float_configs));
-//
-//    _guidWarn = false;
-//    _guidAlert = false;
-//    _warnDiff = 0;
-//    _warnShutdownTime = GameTime::GetGameTime();
-//}
-//
-///// World destructor
-//World::~World()
-//{
-//    ///- Empty the kicked session set
-//    while (!m_sessions.empty())
-//    {
-//        // not remove from queue, prevent loading new sessions
-//        delete m_sessions.begin()->second;
-//        m_sessions.erase(m_sessions.begin());
-//    }
-//
-//    CliCommandHolder* command = nullptr;
-//    while (cliCmdQueue.next(command))
-//        delete command;
-//
-//    VMAP::VMapFactory::clear();
-//    MMAP::MMapFactory::clear();
-//
-//    /// @todo free addSessQueue
-//}
-//
-//World* World::instance()
-//{
-//    static World instance;
-//    return &instance;
-//}
 //
 ///// Find a player in a specified zone
 //Player* World::FindPlayerInZone(uint32 zone)
@@ -2737,17 +2767,7 @@
 //
 //    free(buf);
 //}
-//
-///// Kick (and save) all players
-//void World::KickAll()
-//{
-//    m_QueuedPlayer.clear();                                 // prevent send queue update packet and login queued sessions
-//
-//    // session not removed at kick and will removed in next update tick
-//    for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
-//        itr->second->KickPlayer("World::KickAll");
-//}
-//
+
 ///// Kick (and save) all players with security level less `sec`
 //void World::KickAllLess(AccountTypes sec)
 //{
@@ -3059,44 +3079,6 @@
 //    else
 //        SendGlobalMessage(chatServerMessage.Write());
 //}
-//
-//void World::UpdateSessions(uint32 diff)
-//{
-//    {
-//        TC_METRIC_DETAILED_NO_THRESHOLD_TIMER("world_update_time",
-//            TC_METRIC_TAG("type", "Add sessions"),
-//            TC_METRIC_TAG("parent_type", "Update sessions"));
-//        ///- Add new sessions
-//        WorldSession* sess = nullptr;
-//        while (addSessQueue.next(sess))
-//            AddSession_(sess);
-//    }
-//
-//    ///- Then send an update signal to remaining ones
-//    for (SessionMap::iterator itr = m_sessions.begin(), next; itr != m_sessions.end(); itr = next)
-//    {
-//        next = itr;
-//        ++next;
-//
-//        ///- and remove not active sessions from the list
-//        WorldSession* pSession = itr->second;
-//        WorldSessionFilter updater(pSession);
-//
-//        [[maybe_unused]] uint32 currentSessionId = itr->first;
-//        TC_METRIC_DETAILED_TIMER("world_update_sessions_time", TC_METRIC_TAG("account_id", std::to_string(currentSessionId)));
-//
-//        if (!pSession->Update(diff, updater))    // As interval = 0
-//        {
-//            if (!RemoveQueuedPlayer(itr->second) && itr->second && getIntConfig(CONFIG_INTERVAL_DISCONNECT_TOLERANCE))
-//                m_disconnects[itr->second->GetAccountId()] = GameTime::GetGameTime();
-//            RemoveQueuedPlayer(pSession);
-//            m_sessions.erase(itr);
-//            delete pSession;
-//
-//        }
-//    }
-//}
-//
 //// This handles the issued and queued CLI commands
 //void World::ProcessCliCommands()
 //{

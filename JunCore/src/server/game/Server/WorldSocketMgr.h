@@ -29,8 +29,8 @@ protected:
 	NetworkThread<WorldSocket>* CreateThreads() const override;
 
 private:
-	int32 _socketSystemSendBufferSize;
-	int32 _socketApplicationSendBufferSize;
+	int32 _socketSystemSendBufferSize;		// 의미 파악 필요
+	int32 _socketApplicationSendBufferSize; // 의미 파악 필요
 	bool _tcpNoDelay;
 };
 

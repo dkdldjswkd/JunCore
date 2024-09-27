@@ -22,19 +22,12 @@ bool WorldSocketMgr::StartWorldNetwork(boost::asio::io_context& ioContext, std::
     int const max_connections = JUNCORE_MAX_LISTEN_CONNECTIONS;
     //TC_LOG_DEBUG("misc", "Max allowed socket connections {}", max_connections);
 
-    //// -1 means use default
-    //_socketSystemSendBufferSize = sConfigMgr->GetIntDefault("Network.OutKBuff", -1);
+    // set socket
+    _socketSystemSendBufferSize = -1; //  sConfigMgr->GetIntDefault("Network.OutKBuff", -1); // (-1 means use default)
+    _socketApplicationSendBufferSize = 65536; // sConfigMgr->GetIntDefault("Network.OutUBuff", 65536);
 
-    //_socketApplicationSendBufferSize = sConfigMgr->GetIntDefault("Network.OutUBuff", 65536);
-
-    //if (_socketApplicationSendBufferSize <= 0)
-    //{
-    //    TC_LOG_ERROR("misc", "Network.OutUBuff is wrong in your config file");
-    //    return false;
-    //}
-
-    //if (!BaseSocketMgr::StartNetwork(ioContext, bindIp, port, threadCount))
-    //    return false;
+    if (!BaseSocketMgr::StartNetwork(ioContext, bindIp, port, threadCount))
+        return false;
 
     //_acceptor->AsyncAcceptWithCallback<&OnSocketAccept>();
 

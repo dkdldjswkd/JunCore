@@ -15,12 +15,15 @@
 #include <Server/WorldSession.h>
 #include <Server/WorldSocket.h>
 #include <Server/WorldSocketMgr.h>
+#include <World/World.h>
 
 using namespace std;
 
 /*
 WorldSocketMgr::OnSocketOpen() 구현 필요
 */
+
+void ClearOnlineAccounts();
 
 int main(int argc, char** argv)
 {
@@ -262,22 +265,23 @@ int main(int argc, char** argv)
 
     if (!sWorldSocketMgr.StartWorldNetwork(*ioContext, worldListener, worldPort, networkThreads))
     {
-        //// TC_LOG_ERROR("server.worldserver", "Failed to initialize network");
-        //World::StopNow(ERROR_EXIT_CODE);
+        // todo error log
+         World::StopNow(ERROR_EXIT_CODE);
         return 1;
     }
 
-    //std::shared_ptr<void> sWorldSocketMgrHandle(nullptr, [](void*)
-//        {
-//            sWorld->KickAll();              // save and kick all players
-//            sWorld->UpdateSessions(1);      // real players unload required UpdateSessions call
-//
-//            sWorldSocketMgr.StopNetwork();
-//
-//            ///- Clean database before leaving
-//            ClearOnlineAccounts();
-//        });
-//
+    std::shared_ptr<void> sWorldSocketMgrHandle(nullptr
+        , [](void*) {
+            sWorld->KickAll();              // save and kick all players
+            sWorld->UpdateSessions(1);      // real players unload required UpdateSessions call
+
+            sWorldSocketMgr.StopNetwork();
+
+            //- Clean database before leaving
+            ClearOnlineAccounts();
+        }
+    );
+
 //    // Set server online (allow connecting now)
 //    LoginDatabase.DirectPExecute("UPDATE realmlist SET flag = flag & ~{}, population = 0 WHERE id = '{}'", REALM_FLAG_OFFLINE, realm.Id.Realm);
 //    realm.PopulationLevel = 0.0f;
@@ -331,8 +335,14 @@ int main(int argc, char** argv)
     return 0;
 }
 
-//int main() 
-//{
-//	f_Common_h();
-//	return 0;
-//}
+void ClearOnlineAccounts()
+{
+    //// Reset online status for all accounts with characters on the current realm
+    //LoginDatabase.DirectPExecute("UPDATE account SET online = 0 WHERE online > 0 AND id IN (SELECT acctid FROM realmcharacters WHERE realmid = {})", realm.Id.Realm);
+
+    //// Reset online status for all characters
+    //CharacterDatabase.DirectExecute("UPDATE characters SET online = 0 WHERE online <> 0");
+
+    //// Battleground instance ids reset at server restart
+    //CharacterDatabase.DirectExecute("UPDATE character_battleground_data SET instanceId = 0");
+}

@@ -17,21 +17,15 @@ public:
 
 public:
 	AsyncAcceptor(boost::asio::io_context& ioContext, std::string const& bindIp, uint16 port) :
-		_acceptor(ioContext), _endpoint(boost::asio::ip::make_address(bindIp), port),
-		_socket(ioContext), _closed(false), _socketFactory(std::bind(&AsyncAcceptor::DefeaultSocketFactory, this))
+		_acceptor(ioContext)
+		, _endpoint(boost::asio::ip::make_address(bindIp), port)
+		, _socket(ioContext)
+		, _closed(false)
+		, _socketFactory(std::bind(&AsyncAcceptor::DefeaultSocketFactory, this))
 	{
 	}
 
 public:
-	void Close()
-	{
-		if (_closed.exchange(true))
-			return;
-
-		boost::system::error_code err;
-		_acceptor.close(err);
-	}
-
 	bool Bind()
 	{
 		boost::system::error_code errorCode;
@@ -68,9 +62,6 @@ public:
 		return true;
 	}
 
-	void SetSocketFactory(std::function<std::pair<tcp::socket*, uint32>()> func) { _socketFactory = func; }
-
-/*
 	template<class T>
 	void AsyncAccept()
 	{
@@ -84,7 +75,7 @@ public:
 					}
 					catch (boost::system::system_error const& err)
 					{
-						// // TC_LOG_INFO("network", "Failed to retrieve client's remote address {}", err.what());
+						// TC_LOG_INFO("network", "Failed to retrieve client's remote address {}", err.what());
 					}
 				}
 
@@ -93,6 +84,17 @@ public:
 			}
 		);
 	}
+
+	void Close()
+	{
+		if (_closed.exchange(true))
+			return;
+
+		boost::system::error_code err;
+		_acceptor.close(err);
+	}
+
+	void SetSocketFactory(std::function<std::pair<tcp::socket*, uint32>()> func) { _socketFactory = func; }
 
 	template<AcceptCallback acceptCallback>
 	void AsyncAcceptWithCallback()
@@ -123,8 +125,6 @@ public:
 			}
 		);
 	}
-
-*/
 
 private:
 	std::pair<tcp::socket*, uint32> DefeaultSocketFactory() { return std::make_pair(&_socket, 0); }

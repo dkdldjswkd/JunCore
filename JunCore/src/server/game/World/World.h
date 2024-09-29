@@ -20,7 +20,7 @@ class World
 public:
     static World* instance();
 
-//    static std::atomic<uint32> m_worldLoopCounter;
+    static std::atomic<uint32> m_worldLoopCounter;
 //
 //    WorldSession* FindSession(uint32 id) const;
 //    void AddSession(WorldSession* s);
@@ -116,10 +116,8 @@ public:
 //    void ShutdownMsg(bool show = false, Player* player = nullptr, const std::string& reason = std::string());
 //    static uint8 GetExitCode() { return m_ExitCode; }
     static void StopNow(uint8 exitcode) { m_stopEvent = true; m_ExitCode = exitcode; }
-//    static bool IsStopped() { return m_stopEvent; }
-//
-//    void Update(uint32 diff);
-//
+    static bool IsStopped() { return m_stopEvent; }
+    void Update(uint32 diff);
     void UpdateSessions(uint32 diff);
 //     Set a server rate (see #Rates)
 //    void setRate(Rates rate, float value) { rate_values[rate] = value; }

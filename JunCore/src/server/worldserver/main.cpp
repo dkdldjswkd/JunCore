@@ -3,6 +3,7 @@
 // common.lib build test
 #include <Common.h>
 #include <Define.h>
+#include <Time/Timer.h>
 
 // shared.lib build test
 #include <Networking/AsyncAcceptor.h>
@@ -23,7 +24,16 @@ using namespace std;
 WorldSocketMgr::OnSocketOpen() 구현 필요
 */
 
+/*
+ * -1 - not in service mode
+ *  0 - stopped
+ *  1 - running
+ *  2 - paused
+ */
+int m_ServiceStatus = -1;
+
 void ClearOnlineAccounts();
+void WorldUpdateLoop();
 
 int main(int argc, char** argv)
 {
@@ -286,7 +296,7 @@ int main(int argc, char** argv)
 //    LoginDatabase.DirectPExecute("UPDATE realmlist SET flag = flag & ~{}, population = 0 WHERE id = '{}'", REALM_FLAG_OFFLINE, realm.Id.Realm);
 //    realm.PopulationLevel = 0.0f;
 //    realm.Flags = RealmFlags(realm.Flags & ~uint32(REALM_FLAG_OFFLINE));
-//
+
 //    // Start the freeze check callback cycle in 5 seconds (cycle itself is 1 sec)
 //    std::shared_ptr<FreezeDetector> freezeDetector;
 //    if (int coreStuckTime = sConfigMgr->GetIntDefault("MaxCoreStuckTime", 60))
@@ -310,9 +320,9 @@ int main(int argc, char** argv)
 //    {
 //        cliThread.reset(new std::thread(CliThread), &ShutdownCLIThread);
 //    }
-//
-//    WorldUpdateLoop();
-//
+
+    WorldUpdateLoop();
+
 //    // Shutdown starts here
 //    ioContextStopHandle.reset();
 //
@@ -345,4 +355,55 @@ void ClearOnlineAccounts()
 
     //// Battleground instance ids reset at server restart
     //CharacterDatabase.DirectExecute("UPDATE character_battleground_data SET instanceId = 0");
+}
+
+void WorldUpdateLoop()
+{
+    uint32 minUpdateDiff = 1; //  uint32(sConfigMgr->GetIntDefault("MinWorldUpdateTime", 1));
+    uint32 realCurrTime = 0;
+    uint32 realPrevTime = getMSTime();
+
+    uint32 maxCoreStuckTime = 60 * 1000;// uint32(sConfigMgr->GetIntDefault("MaxCoreStuckTime", 60)) * 1000;
+    uint32 halfMaxCoreStuckTime = maxCoreStuckTime / 2;
+    if (!halfMaxCoreStuckTime)
+        halfMaxCoreStuckTime = std::numeric_limits<uint32>::max();
+
+//    LoginDatabase.WarnAboutSyncQueries(true);
+//    CharacterDatabase.WarnAboutSyncQueries(true);
+//    WorldDatabase.WarnAboutSyncQueries(true);
+
+    ///- While we have not World::m_stopEvent, update the world
+    while (!World::IsStopped())
+    {
+        ++World::m_worldLoopCounter;
+        realCurrTime = getMSTime();
+
+        uint32 diff = getMSTimeDiff(realPrevTime, realCurrTime);
+        if (diff < minUpdateDiff)
+        {
+            uint32 sleepTime = minUpdateDiff - diff;
+            if (sleepTime >= halfMaxCoreStuckTime)
+            {
+				//   TC_LOG_ERROR("server.worldserver", "WorldUpdateLoop() waiting for {} ms with MaxCoreStuckTime set to {} ms", sleepTime, maxCoreStuckTime);
+            }
+            // sleep until enough time passes that we can update all timers
+            std::this_thread::sleep_for(Milliseconds(sleepTime));
+            continue;
+        }
+
+        sWorld->Update(diff);
+        realPrevTime = realCurrTime;
+
+#ifdef _WIN32
+        if (m_ServiceStatus == 0)
+            World::StopNow(SHUTDOWN_EXIT_CODE);
+
+        while (m_ServiceStatus == 2)
+            Sleep(1000);
+#endif
+    }
+
+//    LoginDatabase.WarnAboutSyncQueries(false);
+//    CharacterDatabase.WarnAboutSyncQueries(false);
+//    WorldDatabase.WarnAboutSyncQueries(false);
 }

@@ -5,6 +5,11 @@
 #include "WorldSocketMgr.h"
 #include <boost/system/error_code.hpp>
 
+static void OnSocketAccept(tcp::socket&& sock, uint32 threadIndex)
+{
+    sWorldSocketMgr.OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
+}
+
 WorldSocketMgr::WorldSocketMgr() : BaseSocketMgr(), _socketSystemSendBufferSize(-1), _socketApplicationSendBufferSize(65536), _tcpNoDelay(true)
 {
 }
@@ -29,9 +34,9 @@ bool WorldSocketMgr::StartWorldNetwork(boost::asio::io_context& ioContext, std::
     if (!BaseSocketMgr::StartNetwork(ioContext, bindIp, port, threadCount))
         return false;
 
-    //_acceptor->AsyncAcceptWithCallback<&OnSocketAccept>();
+    _acceptor->AsyncAcceptWithCallback<&OnSocketAccept>();
 
-    //sScriptMgr->OnNetworkStart();
+    // sScriptMgr->OnNetworkStart();
     return true;
 }
 
@@ -46,17 +51,17 @@ void WorldSocketMgr::StopNetwork()
 // todo
 void WorldSocketMgr::OnSocketOpen(tcp::socket&& sock, uint32 threadIndex)
 {
-    //// set some options here
-    //if (_socketSystemSendBufferSize >= 0)
-    //{
-    //    boost::system::error_code err;
-    //    sock.set_option(boost::asio::socket_base::send_buffer_size(_socketSystemSendBufferSize), err);
-    //    if (err && err != boost::system::errc::not_supported)
-    //    {
-    //        TC_LOG_ERROR("misc", "WorldSocketMgr::OnSocketOpen sock.set_option(boost::asio::socket_base::send_buffer_size) err = {}", err.message());
-    //        return;
-    //    }
-    //}
+    // set some options here
+    if (_socketSystemSendBufferSize >= 0)
+    {
+        boost::system::error_code err;
+        sock.set_option(boost::asio::socket_base::send_buffer_size(_socketSystemSendBufferSize), err);
+        if (err && err != boost::system::errc::not_supported)
+        {
+            // TC_LOG_ERROR("misc", "WorldSocketMgr::OnSocketOpen sock.set_option(boost::asio::socket_base::send_buffer_size) err = {}", err.message());
+            return;
+        }
+    }
 
     // Set TCP_NODELAY.
     if (_tcpNoDelay)
@@ -70,7 +75,7 @@ void WorldSocketMgr::OnSocketOpen(tcp::socket&& sock, uint32 threadIndex)
         }
     }
 
-    ////sock->m_OutBufferSize = static_cast<size_t> (m_SockOutUBuff);
+    sock->m_OutBufferSize = static_cast<size_t> (m_SockOutUBuff);
 
     //BaseSocketMgr::OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
 }
@@ -82,13 +87,6 @@ NetworkThread<WorldSocket>* WorldSocketMgr::CreateThreads() const
     return new NetworkThread<WorldSocket>(); // 아래 코드로 변경 필요
     // return new WorldSocketThread[GetNetworkThreadCount()];
 }
-
-
-//static void OnSocketAccept(tcp::socket&& sock, uint32 threadIndex)
-//{
-//    sWorldSocketMgr.OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
-//}
-//
 //class WorldSocketThread : public NetworkThread<WorldSocket>
 //{
 //public:
@@ -103,5 +101,3 @@ NetworkThread<WorldSocket>* WorldSocketMgr::CreateThreads() const
 //        sScriptMgr->OnSocketClose(sock);
 //    }
 //};
-//
-//

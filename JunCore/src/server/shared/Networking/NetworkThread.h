@@ -30,12 +30,6 @@ public:
     }
 
 public:
-    void Stop()
-    {
-        _stopped = true;
-        _ioContext.stop();
-    }
-
     bool Start()
     {
         if (_thread)
@@ -43,6 +37,12 @@ public:
 
         _thread = new std::thread(&NetworkThread::Run, this);
         return true;
+    }
+
+    void Stop()
+    {
+        _stopped = true;
+        _ioContext.stop();
     }
 
     void Wait()

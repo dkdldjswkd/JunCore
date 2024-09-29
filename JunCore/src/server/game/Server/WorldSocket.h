@@ -30,7 +30,7 @@ public:
 
     //void SendPacket(WorldPacket const& packet);
 
-    //void SetSendBufferSize(std::size_t sendBufferSize) { _sendBufferSize = sendBufferSize; }
+    void SetSendBufferSize(std::size_t sendBufferSize) { _sendBufferSize = sendBufferSize; }
 
 protected:
     void OnClose() override;

@@ -10,6 +10,21 @@ static void OnSocketAccept(tcp::socket&& sock, uint32 threadIndex)
     sWorldSocketMgr.OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
 }
 
+class WorldSocketThread : public NetworkThread<WorldSocket>
+{
+public:
+    void SocketAdded(std::shared_ptr<WorldSocket> sock) override
+    {
+        sock->SetSendBufferSize(sWorldSocketMgr.GetApplicationSendBufferSize());
+        //sScriptMgr->OnSocketOpen(sock);
+    }
+
+    void SocketRemoved(std::shared_ptr<WorldSocket> sock) override
+    {
+        //sScriptMgr->OnSocketClose(sock);
+    }
+};
+
 WorldSocketMgr::WorldSocketMgr() : BaseSocketMgr(), _socketSystemSendBufferSize(-1), _socketApplicationSendBufferSize(65536), _tcpNoDelay(true)
 {
 }
@@ -44,11 +59,9 @@ void WorldSocketMgr::StopNetwork()
 {
     BaseSocketMgr::StopNetwork();
 
-    // todo
     //sScriptMgr->OnNetworkStop();
 }
 
-// todo
 void WorldSocketMgr::OnSocketOpen(tcp::socket&& sock, uint32 threadIndex)
 {
     // set some options here
@@ -75,29 +88,10 @@ void WorldSocketMgr::OnSocketOpen(tcp::socket&& sock, uint32 threadIndex)
         }
     }
 
-    sock->m_OutBufferSize = static_cast<size_t> (m_SockOutUBuff);
-
-    //BaseSocketMgr::OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
+    BaseSocketMgr::OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
 }
 
 NetworkThread<WorldSocket>* WorldSocketMgr::CreateThreads() const
 {
-    // todo
-
-    return new NetworkThread<WorldSocket>(); // 아래 코드로 변경 필요
-    // return new WorldSocketThread[GetNetworkThreadCount()];
+     return new WorldSocketThread[GetNetworkThreadCount()];
 }
-//class WorldSocketThread : public NetworkThread<WorldSocket>
-//{
-//public:
-//    void SocketAdded(std::shared_ptr<WorldSocket> sock) override
-//    {
-//        sock->SetSendBufferSize(sWorldSocketMgr.GetApplicationSendBufferSize());
-//        sScriptMgr->OnSocketOpen(sock);
-//    }
-//
-//    void SocketRemoved(std::shared_ptr<WorldSocket> sock) override
-//    {
-//        sScriptMgr->OnSocketClose(sock);
-//    }
-//};

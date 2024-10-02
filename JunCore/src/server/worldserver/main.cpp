@@ -18,10 +18,20 @@
 #include <Server/WorldSocketMgr.h>
 #include <World/World.h>
 
+// boost or std
+#include <boost/asio/post.hpp>
+#include <boost/asio/thread_pool.hpp>
+#include <thread>
+
 using namespace std;
 
 /*
 WorldSocketMgr::OnSocketOpen() 구현 필요
+
+* 이 후
+- test packet 구현 해서 더미 클라 붙이기
+    ㄴ 네트워크 라이브러리 신뢰성 체크
+    ㄴ 퍼포먼스 측정
 */
 
 /*
@@ -124,9 +134,9 @@ int main(int argc, char** argv)
 //    }
 //
 //    std::vector<std::string> overriddenKeys = sConfigMgr->OverrideWithEnvVariablesIfAny();
-//
+
     std::shared_ptr<boost::asio::io_context> ioContext = std::make_shared<boost::asio::io_context>();
-//
+
 //    sLog->RegisterAppender<AppenderDB>();
 //    // If logs are supposed to be handled async then we need to pass the IoContext into the Log singleton
 //    sLog->Initialize(sConfigMgr->GetBoolDefault("Log.Async.Enable", false) ? ioContext.get() : nullptr);
@@ -176,25 +186,26 @@ int main(int argc, char** argv)
 //#endif
 //    signals.async_wait(SignalHandler);
 //
-//    // Start the Boost based thread pool
-//    int numThreads = sConfigMgr->GetIntDefault("ThreadPool", 1);
-//    if (numThreads < 1)
-//        numThreads = 1;
-//
-//    std::shared_ptr<Trinity::ThreadPool> threadPool = std::make_shared<Trinity::ThreadPool>(numThreads);
-//
-//    for (int i = 0; i < numThreads; ++i)
-//        threadPool->PostWork([ioContext]() { ioContext->run(); });
-//
-//    std::shared_ptr<void> ioContextStopHandle(nullptr, [ioContext](void*) { ioContext->stop(); });
-//
+
+	int numThreads = 1 /*sConfigMgr->GetIntDefault("ThreadPool", 1)*/;
+	numThreads = numThreads < 1 ? 1 : numThreads;
+
+	std::shared_ptr<boost::asio::thread_pool> threadPool = std::make_shared<boost::asio::thread_pool>(std::thread::hardware_concurrency());
+
+	for (int i = 0; i < numThreads; ++i)
+	{
+		boost::asio::post(*threadPool, [ioContext]() { ioContext->run(); });
+	}
+
+    std::shared_ptr<void> ioContextStopHandle(nullptr, [ioContext](void*) { ioContext->stop(); });
+
 //    // Set process priority according to configuration settings
 //    SetProcessPriority("server.worldserver", sConfigMgr->GetIntDefault(CONFIG_PROCESSOR_AFFINITY, 0), sConfigMgr->GetBoolDefault(CONFIG_HIGH_PRIORITY, false));
-//
+
 //    // Start the databases
 //    if (!StartDB())
 //        return 1;
-//
+
 //    std::shared_ptr<void> dbHandle(nullptr, [](void*) { StopDB(); });
 //
 //    if (vm.count("update-databases-only"))
@@ -273,6 +284,7 @@ int main(int argc, char** argv)
     //    return 1;
     //}
 
+    // qweqwe
     if (!sWorldSocketMgr.StartWorldNetwork(*ioContext, worldListener, worldPort, networkThreads))
     {
         // todo error log
@@ -323,15 +335,15 @@ int main(int argc, char** argv)
 
     WorldUpdateLoop();
 
-//    // Shutdown starts here
-//    ioContextStopHandle.reset();
-//
-//    threadPool.reset();
-//
+    // Shutdown starts here
+    ioContextStopHandle.reset();
+
+    threadPool.reset();
+
 //    sLog->SetSynchronous();
-//
+
 //    sScriptMgr->OnShutdown();
-//
+
 //    // set server offline
 //    LoginDatabase.DirectPExecute("UPDATE realmlist SET flag = flag | {} WHERE id = '{}'", REALM_FLAG_OFFLINE, realm.Id.Realm);
 //
@@ -340,9 +352,7 @@ int main(int argc, char** argv)
     // 0 - normal shutdown
     // 1 - shutdown at error
     // 2 - restart command used, this code can be used by restarter for restart Trinityd
-
-    // return World::GetExitCode();
-    return 0;
+     return World::GetExitCode();
 }
 
 void ClearOnlineAccounts()

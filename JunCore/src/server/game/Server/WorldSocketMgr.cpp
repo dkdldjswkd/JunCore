@@ -43,8 +43,8 @@ bool WorldSocketMgr::StartWorldNetwork(boost::asio::io_context& ioContext, std::
     //TC_LOG_DEBUG("misc", "Max allowed socket connections {}", max_connections);
 
     // set socket
-    _socketSystemSendBufferSize = -1; //  sConfigMgr->GetIntDefault("Network.OutKBuff", -1); // (-1 means use default)
-    _socketApplicationSendBufferSize = 65536; // sConfigMgr->GetIntDefault("Network.OutUBuff", 65536);
+    _socketSystemSendBufferSize      = -1;      // sConfigMgr->GetIntDefault("Network.OutKBuff", -1); // (-1 means use default)
+    _socketApplicationSendBufferSize = 65536;   // sConfigMgr->GetIntDefault("Network.OutUBuff", 65536);
 
     if (!BaseSocketMgr::StartNetwork(ioContext, bindIp, port, threadCount))
         return false;

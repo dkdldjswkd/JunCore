@@ -114,7 +114,7 @@ public:
 //    void ShutdownServ(uint32 time, uint32 options, uint8 exitcode, const std::string& reason = std::string());
 //    uint32 ShutdownCancel();
 //    void ShutdownMsg(bool show = false, Player* player = nullptr, const std::string& reason = std::string());
-//    static uint8 GetExitCode() { return m_ExitCode; }
+    static uint8 GetExitCode() { return m_ExitCode; }
     static void StopNow(uint8 exitcode) { m_stopEvent = true; m_ExitCode = exitcode; }
     static bool IsStopped() { return m_stopEvent; }
     void Update(uint32 diff);

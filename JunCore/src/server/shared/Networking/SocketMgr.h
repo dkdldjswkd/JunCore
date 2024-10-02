@@ -18,41 +18,40 @@ public:
         //ASSERT(!_threads && !_acceptor && !_threadCount, "StopNetwork must be called prior to SocketMgr destruction");
     }
 
-    virtual bool StartNetwork(boost::asio::io_context& ioContext, std::string const& bindIp, uint16 port, int threadCount)
-    {
-        //ASSERT(threadCount > 0);
+	virtual bool StartNetwork(boost::asio::io_context& ioContext, std::string const& bindIp, uint16 port, int threadCount)
+	{
+		//ASSERT(threadCount > 0);
 
-        AsyncAcceptor* acceptor = nullptr;
-        try
-        {
-            acceptor = new AsyncAcceptor(ioContext, bindIp, port);
-        }
-        catch (boost::system::system_error const& err)
-        {
-            // TC_LOG_ERROR("network", "Exception caught in SocketMgr.StartNetwork ({}:{}): {}", bindIp, port, err.what());
-            return false;
-        }
+		AsyncAcceptor* acceptor = nullptr;
+		try
+		{
+			acceptor = new AsyncAcceptor(ioContext, bindIp, port);
+		}
+		catch (boost::system::system_error const& err)
+		{
+			// TC_LOG_ERROR("network", "Exception caught in SocketMgr.StartNetwork ({}:{}): {}", bindIp, port, err.what());
+			return false;
+		}
 
-        if (!acceptor->Bind())
-        {
-            // TC_LOG_ERROR("network", "StartNetwork failed to bind socket acceptor");
-            delete acceptor;
-            return false;
-        }
+		if (!acceptor->Bind())
+		{
+			// TC_LOG_ERROR("network", "StartNetwork failed to bind socket acceptor");
+			delete acceptor;
+			return false;
+		}
 
-        _acceptor = acceptor;
-        _threadCount = threadCount;
-        _threads = CreateThreads();
+		_acceptor = acceptor;
+		_threadCount = threadCount;
+		_threads = CreateThreads();
 
-        //ASSERT(_threads);
+		//ASSERT(_threads);
 
-        for (int32 i = 0; i < _threadCount; ++i)
-            _threads[i].Start();
+		for (int32 i = 0; i < _threadCount; ++i)
+			_threads[i].Start();
 
-        _acceptor->SetSocketFactory([this]() { return GetSocketForAccept(); });
-
-        return true;
-    }
+		_acceptor->SetSocketFactory([this]() { return GetSocketForAccept(); });
+		return true;
+	}
 
     virtual void StopNetwork()
     {
@@ -74,8 +73,12 @@ public:
     void Wait()
     {
         if (_threadCount != 0)
+        {
             for (int32 i = 0; i < _threadCount; ++i)
+            {
                 _threads[i].Wait();
+            }
+        }
     }
 
     virtual void OnSocketOpen(tcp::socket&& sock, uint32 threadIndex)
@@ -100,8 +103,10 @@ public:
         uint32 min = 0;
 
         for (int32 i = 1; i < _threadCount; ++i)
+        {
             if (_threads[i].GetConnectionCount() < _threads[min].GetConnectionCount())
                 min = i;
+        }
 
         return min;
     }

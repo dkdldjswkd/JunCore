@@ -32,7 +32,7 @@ public:
 		_acceptor.open(_endpoint.protocol(), errorCode);
 		if (errorCode)
 		{
-			// // TC_LOG_INFO("network", "Failed to open acceptor {}", errorCode.message());
+			// TC_LOG_INFO("network", "Failed to open acceptor {}", errorCode.message());
 			return false;
 		}
 
@@ -48,14 +48,14 @@ public:
 		_acceptor.bind(_endpoint, errorCode);
 		if (errorCode)
 		{
-			// // TC_LOG_INFO("network", "Could not bind to {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
+			// TC_LOG_INFO("network", "Could not bind to {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
 			return false;
 		}
 
 		_acceptor.listen(JUNCORE_MAX_LISTEN_CONNECTIONS, errorCode);
 		if (errorCode)
 		{
-			// // TC_LOG_INFO("network", "Failed to start listening on {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
+			// TC_LOG_INFO("network", "Failed to start listening on {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
 			return false;
 		}
 

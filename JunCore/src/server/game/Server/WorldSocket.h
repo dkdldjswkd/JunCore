@@ -11,8 +11,23 @@
 //#include "MPSCQueue.h"
 #include <boost/asio/ip/tcp.hpp>
 #include <Define.h>
+#include <mutex>
 
 using boost::asio::ip::tcp;
+
+class tmp_MPSCQueue // 임시 mpsc queue (추후 개선)
+{
+public:
+    void Enqueue(WorldPacket _packet)
+    {
+        std::lock_guard<std::mutex> lock(_mutex);
+		_queue.emplace(std::move(_packet));
+    }
+
+private:
+    std::mutex _mutex;
+	std::queue<WorldPacket> _queue;
+};
 
 class WorldSocket : public Socket<WorldSocket>
 {
@@ -74,7 +89,7 @@ private:
 
     //MessageBuffer _headerBuffer;
     //MessageBuffer _packetBuffer;
-    //MPSCQueue<EncryptablePacket, &EncryptablePacket::SocketQueueLink> _bufferQueue;
+    tmp_MPSCQueue _bufferQueue; //MPSCQueue<EncryptablePacket, &EncryptablePacket::SocketQueueLink> _bufferQueue;
     std::size_t _sendBufferSize;
 
     //QueryCallbackProcessor _queryProcessor;

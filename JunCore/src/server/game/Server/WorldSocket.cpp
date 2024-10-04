@@ -415,7 +415,7 @@ void WorldSocket::SendPacket(WorldPacket const& packet)
     //if (sPacketLog->CanLogPacket())
     //    sPacketLog->LogPacket(packet, SERVER_TO_CLIENT, GetRemoteIpAddress(), GetRemotePort());
 
-    //_bufferQueue.Enqueue(new EncryptablePacket(packet, _authCrypt.IsInitialized())); // todo
+    _bufferQueue.Enqueue(packet); // _bufferQueue.Enqueue(new EncryptablePacket(packet, _authCrypt.IsInitialized()));
 }
 //
 //void WorldSocket::HandleAuthSession(WorldPacket& recvPacket)

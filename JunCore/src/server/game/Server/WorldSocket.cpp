@@ -1,4 +1,5 @@
 #include "WorldSocket.h"
+
 //#include "BigNumber.h"
 //#include "ClientBuildInfo.h"
 //#include "DatabaseEnv.h"
@@ -32,7 +33,10 @@ void WorldSocket::Start()
     //LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_IP_INFO);
     //stmt->setString(0, ip_address);
 
-    //_queryProcessor.AddCallback(LoginDatabase.AsyncQuery(stmt).WithPreparedCallback(std::bind(&WorldSocket::CheckIpCallback, this, std::placeholders::_1)));
+	//_queryProcessor.AddCallback(LoginDatabase.AsyncQuery(stmt).WithPreparedCallback(std::bind(&WorldSocket::CheckIpCallback, this, std::placeholders::_1)));
+
+	AsyncRead();
+	HandleSendAuthSession();
 }
 
 
@@ -113,16 +117,16 @@ bool WorldSocket::Update()
 //    HandleSendAuthSession();
 //}
 
-//void WorldSocket::HandleSendAuthSession()
-//{
-//    WorldPacket packet(SMSG_AUTH_CHALLENGE, 40);
-//    packet << uint32(1);                                    // 1...31
-//    packet.append(_authSeed);
-//
-//    packet.append(Trinity::Crypto::GetRandomBytes<32>());               // new encryption seeds
-//
-//    SendPacketAndLogOpcode(packet);
-//}
+void WorldSocket::HandleSendAuthSession()
+{
+    WorldPacket packet(0x1EC/*SMSG_AUTH_CHALLENGE*/, 40);
+    //packet << uint32(1);                                    // 1...31
+    //packet.append(_authSeed);
+
+    //packet.append(Trinity::Crypto::GetRandomBytes<32>());               // new encryption seeds
+   
+    SendPacket(packet);  //SendPacketAndLogOpcode(packet);
+}
 
 void WorldSocket::OnClose()
 {
@@ -403,16 +407,16 @@ void WorldSocket::ReadHandler()
 //    SendPacket(packet);
 //}
 //
-//void WorldSocket::SendPacket(WorldPacket const& packet)
-//{
-//    if (!IsOpen())
-//        return;
-//
-//    if (sPacketLog->CanLogPacket())
-//        sPacketLog->LogPacket(packet, SERVER_TO_CLIENT, GetRemoteIpAddress(), GetRemotePort());
-//
-//    _bufferQueue.Enqueue(new EncryptablePacket(packet, _authCrypt.IsInitialized()));
-//}
+void WorldSocket::SendPacket(WorldPacket const& packet)
+{
+    if (!IsOpen())
+        return;
+
+    //if (sPacketLog->CanLogPacket())
+    //    sPacketLog->LogPacket(packet, SERVER_TO_CLIENT, GetRemoteIpAddress(), GetRemotePort());
+
+    //_bufferQueue.Enqueue(new EncryptablePacket(packet, _authCrypt.IsInitialized())); // todo
+}
 //
 //void WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 //{

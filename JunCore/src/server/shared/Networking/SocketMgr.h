@@ -86,7 +86,7 @@ public:
         try
         {
             std::shared_ptr<SocketType> newSocket = std::make_shared<SocketType>(std::move(sock));
-            newSocket->Start();
+			newSocket->Start(); // ex. WorldSocket::Start()
 
             _threads[threadIndex].AddSocket(newSocket);
         }

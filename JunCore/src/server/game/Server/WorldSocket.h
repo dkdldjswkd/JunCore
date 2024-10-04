@@ -6,7 +6,7 @@
 //#include "ServerPktHeader.h"
 #include <Networking/Socket.h>
 //#include "Util.h"
-//#include "WorldPacket.h"
+#include "WorldPacket.h"
 #include "WorldSession.h"
 //#include "MPSCQueue.h"
 #include <boost/asio/ip/tcp.hpp>
@@ -28,7 +28,7 @@ public:
     void Start() override;
     bool Update() override;
 
-    //void SendPacket(WorldPacket const& packet);
+    void SendPacket(WorldPacket const& packet);
 
     void SetSendBufferSize(std::size_t sendBufferSize) { _sendBufferSize = sendBufferSize; }
 
@@ -54,7 +54,7 @@ private:
     //void LogOpcodeText(OpcodeClient opcode, std::unique_lock<std::mutex> const& guard) const;
     ///// sends and logs network.opcode without accessing WorldSession
     //void SendPacketAndLogOpcode(WorldPacket const& packet);
-    //void HandleSendAuthSession();
+    void HandleSendAuthSession();
     //void HandleAuthSession(WorldPacket& recvPacket);
     //void HandleAuthSessionCallback(std::shared_ptr<AuthSession> authSession, PreparedQueryResult result);
     //void LoadSessionPermissionsCallback(PreparedQueryResult result);

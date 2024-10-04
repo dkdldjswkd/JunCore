@@ -62,13 +62,12 @@ public:
 
     void AsyncRead()
     {
-        //if (!IsOpen())
-        //    return;
+        if (!IsOpen())
+            return;
 
-        //_readBuffer.Normalize();
-        //_readBuffer.EnsureFreeSpace();
-        //_socket.async_read_some(boost::asio::buffer(_readBuffer.GetWritePointer(), _readBuffer.GetRemainingSpace()),
-        //    std::bind(&Socket<T>::ReadHandlerInternal, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+         _readBuffer.Normalize();
+         _readBuffer.EnsureFreeSpace();
+         _socket.async_read_some(boost::asio::buffer(_readBuffer.GetWritePointer(), _readBuffer.GetRemainingSpace()),std::bind(&Socket<T>::ReadHandlerInternal, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
     }
 
     void AsyncReadWithCallback(void (T::* callback)(boost::system::error_code, std::size_t))

@@ -1,6 +1,10 @@
 ﻿# Boost 라이브러리 찾기
 find_package(Boost REQUIRED)
 
+ # C++17 표준 설정
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 # shared 라이브러리 정의
 add_library(shared 
  "Packets/ByteBuffer.cpp"

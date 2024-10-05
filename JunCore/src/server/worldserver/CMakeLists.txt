@@ -1,4 +1,8 @@
-﻿add_executable(worldserver 
+﻿# C++17 표준 설정
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+add_executable(worldserver 
 main.cpp
 )
 

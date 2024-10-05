@@ -22,11 +22,14 @@
 #include <boost/asio/post.hpp>
 #include <boost/asio/thread_pool.hpp>
 #include <thread>
+#include <string_view>
 
 using namespace std;
 
 /*
-WorldSocketMgr::OnSocketOpen() 구현 필요
+* 보류
+EndianConvert
+암호화
 
 * 이 후
 - test packet 구현 해서 더미 클라 붙이기
@@ -47,6 +50,8 @@ void WorldUpdateLoop();
 
 int main(int argc, char** argv)
 {
+    std::string_view a;
+
 //    Trinity::Impl::CurrentServerProcessHolder::_type = SERVER_PROCESS_WORLDSERVER;
 //    signal(SIGABRT, &Trinity::AbortHandler);
 //

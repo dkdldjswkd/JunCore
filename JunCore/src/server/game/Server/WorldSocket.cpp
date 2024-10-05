@@ -1,4 +1,5 @@
 #include "WorldSocket.h"
+#include "Protocol/ServerPktHeader.h"
 
 //#include "BigNumber.h"
 //#include "ClientBuildInfo.h"
@@ -42,48 +43,48 @@ void WorldSocket::Start()
 
 bool WorldSocket::Update()
 {
-    //EncryptablePacket* queued;
-    //if (_bufferQueue.Dequeue(queued))
-    //{
-    //    // Allocate buffer only when it's needed but not on every Update() call.
-    //    MessageBuffer buffer(_sendBufferSize);
-    //    do
-    //    {
-    //        ServerPktHeader header(queued->size() + 2, queued->GetOpcode());
-    //        if (queued->NeedsEncryption())
-    //            _authCrypt.EncryptSend(header.header, header.getHeaderLength());
+    WorldPacket* queued;
+    if (_bufferQueue.Dequeue(queued))
+    {
+        // Allocate buffer only when it's needed but not on every Update() call.
+        MessageBuffer buffer(_sendBufferSize);
+        do
+        {
+             ServerPktHeader header(queued->size() + 2, queued->GetOpcode());
+            //if (queued->NeedsEncryption())
+            //    _authCrypt.EncryptSend(header.header, header.getHeaderLength());
 
-    //        if (buffer.GetRemainingSpace() < queued->size() + header.getHeaderLength())
-    //        {
-    //            QueuePacket(std::move(buffer));
-    //            buffer.Resize(_sendBufferSize);
-    //        }
+            //if (buffer.GetRemainingSpace() < queued->size() + header.getHeaderLength())
+            //{
+            //    QueuePacket(std::move(buffer));
+            //    buffer.Resize(_sendBufferSize);
+            //}
 
-    //        if (buffer.GetRemainingSpace() >= queued->size() + header.getHeaderLength())
-    //        {
-    //            buffer.Write(header.header, header.getHeaderLength());
-    //            if (!queued->empty())
-    //                buffer.Write(queued->contents(), queued->size());
-    //        }
-    //        else    // single packet larger than buffer size
-    //        {
-    //            MessageBuffer packetBuffer(queued->size() + header.getHeaderLength());
-    //            packetBuffer.Write(header.header, header.getHeaderLength());
-    //            if (!queued->empty())
-    //                packetBuffer.Write(queued->contents(), queued->size());
+            //if (buffer.GetRemainingSpace() >= queued->size() + header.getHeaderLength())
+            //{
+            //    buffer.Write(header.header, header.getHeaderLength());
+            //    if (!queued->empty())
+            //        buffer.Write(queued->contents(), queued->size());
+            //}
+            //else    // single packet larger than buffer size
+            //{
+            //    MessageBuffer packetBuffer(queued->size() + header.getHeaderLength());
+            //    packetBuffer.Write(header.header, header.getHeaderLength());
+            //    if (!queued->empty())
+            //        packetBuffer.Write(queued->contents(), queued->size());
 
-    //            QueuePacket(std::move(packetBuffer));
-    //        }
+            //    QueuePacket(std::move(packetBuffer));
+            //}
 
-    //        delete queued;
-    //    } while (_bufferQueue.Dequeue(queued));
+            delete queued;
+        } while (_bufferQueue.Dequeue(queued));
 
-    //    if (buffer.GetActiveSize() > 0)
-    //        QueuePacket(std::move(buffer));
-    //}
+        if (buffer.GetActiveSize() > 0)
+            QueuePacket(std::move(buffer));
+    }
 
-    //if (!BaseSocket::Update())
-    //    return false;
+    if (!BaseSocket::Update())
+        return false;
 
     //_queryProcessor.ProcessReadyCallbacks();
 

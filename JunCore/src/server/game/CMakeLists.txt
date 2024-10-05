@@ -12,7 +12,7 @@ add_library(game
  "Server/WorldPacket.h"
  "World/World.h"
  "World/World.cpp"
-)
+ "Server/Protocol/ServerPktHeader.h")
 
 # game에 해당 디렉터리들을 포함한다.
 # PUBLIC : game을(를) 사용하는 프로젝트에도 포함된다.

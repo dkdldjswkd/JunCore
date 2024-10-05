@@ -24,6 +24,16 @@ public:
 		_queue.emplace(std::move(_packet));
     }
 
+    bool Dequeue(OUT WorldPacket*& _packet) {
+		std::lock_guard<std::mutex> lock(_mutex);
+		if (_queue.empty())
+			return false;
+
+		_packet = &_queue.front();
+		_queue.pop();
+		return true;
+    }
+
 private:
     std::mutex _mutex;
 	std::queue<WorldPacket> _queue;

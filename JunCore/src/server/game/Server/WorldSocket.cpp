@@ -37,9 +37,8 @@ void WorldSocket::Start()
 	//_queryProcessor.AddCallback(LoginDatabase.AsyncQuery(stmt).WithPreparedCallback(std::bind(&WorldSocket::CheckIpCallback, this, std::placeholders::_1)));
 
 	AsyncRead();
-	HandleSendAuthSession();
+	HandleSendAuthSession(); // accept session에게 connect noty를 한다.
 }
-
 
 bool WorldSocket::Update()
 {
@@ -50,31 +49,39 @@ bool WorldSocket::Update()
         MessageBuffer buffer(_sendBufferSize);
         do
         {
-             ServerPktHeader header(queued->size() + 2, queued->GetOpcode());
-            //if (queued->NeedsEncryption())
-            //    _authCrypt.EncryptSend(header.header, header.getHeaderLength());
+			ServerPktHeader header(queued->size() + 2, queued->GetOpcode());
 
-            //if (buffer.GetRemainingSpace() < queued->size() + header.getHeaderLength())
-            //{
-            //    QueuePacket(std::move(buffer));
-            //    buffer.Resize(_sendBufferSize);
-            //}
+			// header 암호화
+			//if (queued->NeedsEncryption())
+			//    _authCrypt.EncryptSend(header.header, header.getHeaderLength());
 
-            //if (buffer.GetRemainingSpace() >= queued->size() + header.getHeaderLength())
-            //{
-            //    buffer.Write(header.header, header.getHeaderLength());
-            //    if (!queued->empty())
-            //        buffer.Write(queued->contents(), queued->size());
-            //}
-            //else    // single packet larger than buffer size
-            //{
-            //    MessageBuffer packetBuffer(queued->size() + header.getHeaderLength());
-            //    packetBuffer.Write(header.header, header.getHeaderLength());
-            //    if (!queued->empty())
-            //        packetBuffer.Write(queued->contents(), queued->size());
+			// buffer의 Size가 'Header + Packet'의 Size보다 작으면, buffer를 전송하고 새로운 buffer를 할당한다.
+			if (buffer.GetRemainingSpace() < queued->size() + header.getHeaderLength())
+            {
+                QueuePacket(std::move(buffer));
+                buffer.Resize(_sendBufferSize);
+            }
 
-            //    QueuePacket(std::move(packetBuffer));
-            //}
+			// buffer에 header와 packet을 쓴다.
+            if (buffer.GetRemainingSpace() >= queued->size() + header.getHeaderLength())
+            {
+                buffer.Write(header.header, header.getHeaderLength());
+                if (!queued->empty())
+                {
+					buffer.Write(queued->contents(), queued->size());
+                }
+            }
+            else    // single packet larger than buffer size
+            {
+                MessageBuffer packetBuffer(queued->size() + header.getHeaderLength());
+                packetBuffer.Write(header.header, header.getHeaderLength());
+                if (!queued->empty())
+                {
+                    packetBuffer.Write(queued->contents(), queued->size());
+                }
+
+                QueuePacket(std::move(packetBuffer));
+            }
 
             delete queued;
         } while (_bufferQueue.Dequeue(queued));
@@ -87,7 +94,6 @@ bool WorldSocket::Update()
         return false;
 
     //_queryProcessor.ProcessReadyCallbacks();
-
     return true;
 }
 
@@ -137,94 +143,90 @@ void WorldSocket::OnClose()
     //}
 }
 
-// todo 아래 함수로 치환
 void WorldSocket::ReadHandler()
 {
+    if (!IsOpen())
+        return;
+
+    MessageBuffer& packet = GetReadBuffer();
+    while (packet.GetActiveSize() > 0)
+    {
+        if (_headerBuffer.GetRemainingSpace() > 0)
+        {
+            // need to receive the header
+            std::size_t readHeaderSize = std::min(packet.GetActiveSize(), _headerBuffer.GetRemainingSpace());
+            _headerBuffer.Write(packet.GetReadPointer(), readHeaderSize);
+            packet.ReadCompleted(readHeaderSize);
+
+            if (_headerBuffer.GetRemainingSpace() > 0)
+            {
+                // Couldn't receive the whole header this time.
+                // ASSERT(packet.GetActiveSize() == 0);
+                break;
+            }
+
+            // We just received nice new header
+            if (!ReadHeaderHandler())
+            {
+                CloseSocket();
+                return;
+            }
+        }
+
+        // We have full read header, now check the data payload
+        if (_packetBuffer.GetRemainingSpace() > 0)
+        {
+            // need more data in the payload
+            std::size_t readDataSize = std::min(packet.GetActiveSize(), _packetBuffer.GetRemainingSpace());
+            _packetBuffer.Write(packet.GetReadPointer(), readDataSize);
+            packet.ReadCompleted(readDataSize);
+
+            if (_packetBuffer.GetRemainingSpace() > 0)
+            {
+                // Couldn't receive the whole data this time.
+                // ASSERT(packet.GetActiveSize() == 0);
+                break;
+            }
+        }
+
+        // just received fresh new payload
+        ReadDataHandlerResult result = ReadDataHandler();
+        _headerBuffer.Reset();
+        if (result != ReadDataHandlerResult::Ok)
+        {
+            if (result != ReadDataHandlerResult::WaitingForQuery)
+                CloseSocket();
+
+            return;
+        }
+    }
+
+    AsyncRead();
 }
-//void WorldSocket::ReadHandler()
-//{
-//    if (!IsOpen())
-//        return;
-//
-//    MessageBuffer& packet = GetReadBuffer();
-//    while (packet.GetActiveSize() > 0)
-//    {
-//        if (_headerBuffer.GetRemainingSpace() > 0)
-//        {
-//            // need to receive the header
-//            std::size_t readHeaderSize = std::min(packet.GetActiveSize(), _headerBuffer.GetRemainingSpace());
-//            _headerBuffer.Write(packet.GetReadPointer(), readHeaderSize);
-//            packet.ReadCompleted(readHeaderSize);
-//
-//            if (_headerBuffer.GetRemainingSpace() > 0)
-//            {
-//                // Couldn't receive the whole header this time.
-//                ASSERT(packet.GetActiveSize() == 0);
-//                break;
-//            }
-//
-//            // We just received nice new header
-//            if (!ReadHeaderHandler())
-//            {
-//                CloseSocket();
-//                return;
-//            }
-//        }
-//
-//        // We have full read header, now check the data payload
-//        if (_packetBuffer.GetRemainingSpace() > 0)
-//        {
-//            // need more data in the payload
-//            std::size_t readDataSize = std::min(packet.GetActiveSize(), _packetBuffer.GetRemainingSpace());
-//            _packetBuffer.Write(packet.GetReadPointer(), readDataSize);
-//            packet.ReadCompleted(readDataSize);
-//
-//            if (_packetBuffer.GetRemainingSpace() > 0)
-//            {
-//                // Couldn't receive the whole data this time.
-//                ASSERT(packet.GetActiveSize() == 0);
-//                break;
-//            }
-//        }
-//
-//        // just received fresh new payload
-//        ReadDataHandlerResult result = ReadDataHandler();
-//        _headerBuffer.Reset();
-//        if (result != ReadDataHandlerResult::Ok)
-//        {
-//            if (result != ReadDataHandlerResult::WaitingForQuery)
-//                CloseSocket();
-//
-//            return;
-//        }
-//    }
-//
-//    AsyncRead();
-//}
-//
-//bool WorldSocket::ReadHeaderHandler()
-//{
-//    ASSERT(_headerBuffer.GetActiveSize() == sizeof(ClientPktHeader));
-//
-//    if (_authCrypt.IsInitialized())
-//        _authCrypt.DecryptRecv(_headerBuffer.GetReadPointer(), sizeof(ClientPktHeader));
-//
-//    ClientPktHeader* header = reinterpret_cast<ClientPktHeader*>(_headerBuffer.GetReadPointer());
-//    EndianConvertReverse(header->size);
-//    EndianConvert(header->cmd);
-//
-//    if (!header->IsValidSize() || !header->IsValidOpcode())
-//    {
-//        // TC_LOG_ERROR("network", "WorldSocket::ReadHeaderHandler(): client {} sent malformed packet (size: {}, cmd: {})",
-//            GetRemoteIpAddress().to_string(), header->size, header->cmd);
-//        return false;
-//    }
-//
-//    header->size -= sizeof(header->cmd);
-//    _packetBuffer.Resize(header->size);
-//    return true;
-//}
-//
+
+bool WorldSocket::ReadHeaderHandler()
+{
+    // ASSERT(_headerBuffer.GetActiveSize() == sizeof(ClientPktHeader));
+
+    //if (_authCrypt.IsInitialized())
+    //    _authCrypt.DecryptRecv(_headerBuffer.GetReadPointer(), sizeof(ClientPktHeader));
+
+    //ClientPktHeader* header = reinterpret_cast<ClientPktHeader*>(_headerBuffer.GetReadPointer());
+    //EndianConvertReverse(header->size);
+    //EndianConvert(header->cmd);
+
+    //if (!header->IsValidSize() || !header->IsValidOpcode())
+    //{
+    //    // TC_LOG_ERROR("network", "WorldSocket::ReadHeaderHandler(): client {} sent malformed packet (size: {}, cmd: {})",
+    //        GetRemoteIpAddress().to_string(), header->size, header->cmd);
+    //    return false;
+    //}
+
+    //header->size -= sizeof(header->cmd);
+    //_packetBuffer.Resize(header->size);
+    return true;
+}
+
 //struct AuthSession
 //{
 //    uint32 BattlegroupID = 0;
@@ -291,104 +293,104 @@ void WorldSocket::ReadHandler()
 //            Locale = LOCALE_enUS;
 //    }
 //};
-//
-//WorldSocket::ReadDataHandlerResult WorldSocket::ReadDataHandler()
-//{
-//    ClientPktHeader* header = reinterpret_cast<ClientPktHeader*>(_headerBuffer.GetReadPointer());
-//    OpcodeClient opcode = static_cast<OpcodeClient>(header->cmd);
-//
-//    WorldPacket packet(opcode, std::move(_packetBuffer));
-//    WorldPacket* packetToQueue;
-//
-//    if (sPacketLog->CanLogPacket())
-//        sPacketLog->LogPacket(packet, CLIENT_TO_SERVER, GetRemoteIpAddress(), GetRemotePort());
-//
-//    std::unique_lock<std::mutex> sessionGuard(_worldSessionLock, std::defer_lock);
-//
-//    switch (opcode)
-//    {
-//    case CMSG_PING:
-//    {
-//        LogOpcodeText(opcode, sessionGuard);
-//        try
-//        {
-//            return HandlePing(packet) ? ReadDataHandlerResult::Ok : ReadDataHandlerResult::Error;
-//        }
-//        catch (ByteBufferException const&)
-//        {
-//        }
-//        // TC_LOG_ERROR("network", "WorldSocket::ReadDataHandler(): client {} sent malformed CMSG_PING", GetRemoteIpAddress().to_string());
-//        return ReadDataHandlerResult::Error;
-//    }
-//    case CMSG_AUTH_SESSION:
-//    {
-//        LogOpcodeText(opcode, sessionGuard);
-//        if (_authed)
-//        {
-//            // locking just to safely log offending user is probably overkill but we are disconnecting him anyway
-//            if (sessionGuard.try_lock())
-//                // TC_LOG_ERROR("network", "WorldSocket::ProcessIncoming: received duplicate CMSG_AUTH_SESSION from {}", _worldSession->GetPlayerInfo());
-//            return ReadDataHandlerResult::Error;
-//        }
-//
-//        try
-//        {
-//            HandleAuthSession(packet);
-//            return ReadDataHandlerResult::WaitingForQuery;
-//        }
-//        catch (ByteBufferException const&)
-//        {
-//        }
-//        // TC_LOG_ERROR("network", "WorldSocket::ReadDataHandler(): client {} sent malformed CMSG_AUTH_SESSION", GetRemoteIpAddress().to_string());
-//        return ReadDataHandlerResult::Error;
-//    }
-//    case CMSG_KEEP_ALIVE: // todo: handle this packet in the same way of CMSG_TIME_SYNC_RESP
-//        sessionGuard.lock();
-//        LogOpcodeText(opcode, sessionGuard);
-//        if (_worldSession)
-//        {
-//            _worldSession->ResetTimeOutTime(true);
-//            return ReadDataHandlerResult::Ok;
-//        }
-//        // TC_LOG_ERROR("network", "WorldSocket::ReadDataHandler: client {} sent CMSG_KEEP_ALIVE without being authenticated", GetRemoteIpAddress().to_string());
-//        return ReadDataHandlerResult::Error;
-//    case CMSG_TIME_SYNC_RESP:
-//        packetToQueue = new WorldPacket(std::move(packet), std::chrono::steady_clock::now());
-//        break;
-//
-//    default:
-//        packetToQueue = new WorldPacket(std::move(packet));
-//        break;
-//    }
-//
-//    sessionGuard.lock();
-//
-//    LogOpcodeText(opcode, sessionGuard);
-//
-//    if (!_worldSession)
-//    {
-//        // TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client not authed opcode = {}", uint32(opcode));
-//        delete packetToQueue;
-//        return ReadDataHandlerResult::Error;
-//    }
-//
-//    OpcodeHandler const* handler = opcodeTable[opcode];
-//    if (!handler)
-//    {
-//        // TC_LOG_ERROR("network.opcode", "No defined handler for opcode {} sent by {}", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet.GetOpcode())), _worldSession->GetPlayerInfo());
-//        delete packetToQueue;
-//        return ReadDataHandlerResult::Error;
-//    }
-//
-//    // Our Idle timer will reset on any non PING opcodes on login screen, allowing us to catch people idling.
-//    _worldSession->ResetTimeOutTime(false);
-//
-//    // Copy the packet to the heap before enqueuing
-//    _worldSession->QueuePacket(packetToQueue);
-//
-//    return ReadDataHandlerResult::Ok;
-//}
-//
+
+WorldSocket::ReadDataHandlerResult WorldSocket::ReadDataHandler()
+{
+    //ClientPktHeader* header = reinterpret_cast<ClientPktHeader*>(_headerBuffer.GetReadPointer());
+    //OpcodeClient opcode = static_cast<OpcodeClient>(header->cmd);
+
+    //WorldPacket packet(opcode, std::move(_packetBuffer));
+    //WorldPacket* packetToQueue;
+
+    //if (sPacketLog->CanLogPacket())
+    //    sPacketLog->LogPacket(packet, CLIENT_TO_SERVER, GetRemoteIpAddress(), GetRemotePort());
+
+    //std::unique_lock<std::mutex> sessionGuard(_worldSessionLock, std::defer_lock);
+
+    //switch (opcode)
+    //{
+    //case CMSG_PING:
+    //{
+    //    LogOpcodeText(opcode, sessionGuard);
+    //    try
+    //    {
+    //        return HandlePing(packet) ? ReadDataHandlerResult::Ok : ReadDataHandlerResult::Error;
+    //    }
+    //    catch (ByteBufferException const&)
+    //    {
+    //    }
+    //    // TC_LOG_ERROR("network", "WorldSocket::ReadDataHandler(): client {} sent malformed CMSG_PING", GetRemoteIpAddress().to_string());
+    //    return ReadDataHandlerResult::Error;
+    //}
+    //case CMSG_AUTH_SESSION:
+    //{
+    //    LogOpcodeText(opcode, sessionGuard);
+    //    if (_authed)
+    //    {
+    //        // locking just to safely log offending user is probably overkill but we are disconnecting him anyway
+    //        if (sessionGuard.try_lock())
+    //            // TC_LOG_ERROR("network", "WorldSocket::ProcessIncoming: received duplicate CMSG_AUTH_SESSION from {}", _worldSession->GetPlayerInfo());
+    //        return ReadDataHandlerResult::Error;
+    //    }
+
+    //    try
+    //    {
+    //        HandleAuthSession(packet);
+    //        return ReadDataHandlerResult::WaitingForQuery;
+    //    }
+    //    catch (ByteBufferException const&)
+    //    {
+    //    }
+    //    // TC_LOG_ERROR("network", "WorldSocket::ReadDataHandler(): client {} sent malformed CMSG_AUTH_SESSION", GetRemoteIpAddress().to_string());
+    //    return ReadDataHandlerResult::Error;
+    //}
+    //case CMSG_KEEP_ALIVE: // todo: handle this packet in the same way of CMSG_TIME_SYNC_RESP
+    //    sessionGuard.lock();
+    //    LogOpcodeText(opcode, sessionGuard);
+    //    if (_worldSession)
+    //    {
+    //        _worldSession->ResetTimeOutTime(true);
+    //        return ReadDataHandlerResult::Ok;
+    //    }
+    //    // TC_LOG_ERROR("network", "WorldSocket::ReadDataHandler: client {} sent CMSG_KEEP_ALIVE without being authenticated", GetRemoteIpAddress().to_string());
+    //    return ReadDataHandlerResult::Error;
+    //case CMSG_TIME_SYNC_RESP:
+    //    packetToQueue = new WorldPacket(std::move(packet), std::chrono::steady_clock::now());
+    //    break;
+
+    //default:
+    //    packetToQueue = new WorldPacket(std::move(packet));
+    //    break;
+    //}
+
+    //sessionGuard.lock();
+
+    //LogOpcodeText(opcode, sessionGuard);
+
+    //if (!_worldSession)
+    //{
+    //    // TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client not authed opcode = {}", uint32(opcode));
+    //    delete packetToQueue;
+    //    return ReadDataHandlerResult::Error;
+    //}
+
+    //OpcodeHandler const* handler = opcodeTable[opcode];
+    //if (!handler)
+    //{
+    //    // TC_LOG_ERROR("network.opcode", "No defined handler for opcode {} sent by {}", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet.GetOpcode())), _worldSession->GetPlayerInfo());
+    //    delete packetToQueue;
+    //    return ReadDataHandlerResult::Error;
+    //}
+
+    //// Our Idle timer will reset on any non PING opcodes on login screen, allowing us to catch people idling.
+    //_worldSession->ResetTimeOutTime(false);
+
+    //// Copy the packet to the heap before enqueuing
+    //_worldSession->QueuePacket(packetToQueue);
+
+    return ReadDataHandlerResult::Ok;
+}
+
 //void WorldSocket::LogOpcodeText(OpcodeClient opcode, std::unique_lock<std::mutex> const& guard) const
 //{
 //    if (!guard)

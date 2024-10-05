@@ -97,8 +97,8 @@ private:
     WorldSession* _worldSession;
     bool _authed;
 
-    //MessageBuffer _headerBuffer;
-    //MessageBuffer _packetBuffer;
+    MessageBuffer _headerBuffer;
+    MessageBuffer _packetBuffer;
     tmp_MPSCQueue _bufferQueue; //MPSCQueue<EncryptablePacket, &EncryptablePacket::SocketQueueLink> _bufferQueue;
     std::size_t _sendBufferSize;
 

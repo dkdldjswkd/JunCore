@@ -1,5 +1,5 @@
-﻿ #include <iostream>
-#include <google/protobuf/port_def.inc>
+﻿#include <iostream>
+#include "person.pb.h"
 using namespace std;
 
 int main()

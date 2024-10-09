@@ -12,8 +12,7 @@ endif()
 project ("TmpServer")
 
 # 하위 프로젝트를 포함합니다.
-add_subdirectory ("WinServer")
 add_subdirectory ("AsioServer")
-add_subdirectory ("WinClient")
 add_subdirectory ("Test")
-add_subdirectory ("ProtobufTest")
+add_subdirectory ("WinClient")
+add_subdirectory ("WinServer")

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\carpk\Desktop\test protobuf project 2\MyProtobufProject\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\carpk\Desktop\test protobuf project 2\MyProtobufProject\generated\addressbook.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\carpk\Desktop\test protobuf project 2\MyProtobufProject\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7C63394A-73A1-39F3-9DC0-AA8D7D841F37}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

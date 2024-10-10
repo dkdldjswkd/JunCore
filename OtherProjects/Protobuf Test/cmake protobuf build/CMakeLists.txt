@@ -9,7 +9,7 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-project ("Test")
+project ("cmake protobuf build")
 
 # 하위 프로젝트를 포함합니다.
 add_subdirectory ("src")

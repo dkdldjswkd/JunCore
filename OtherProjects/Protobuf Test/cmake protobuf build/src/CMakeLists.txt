@@ -1,5 +1,6 @@
 ﻿# Protobuf 라이브러리 자동 링크
 find_package(Protobuf REQUIRED)
+find_package(absl REQUIRED)
 
 # 실행 파일 생성
 add_executable(src 
@@ -11,10 +12,12 @@ add_executable(src
 target_include_directories(src 
     PRIVATE 
         ${Protobuf_INCLUDE_DIRS}
+        ${Abseil_INCLUDE_DIRS}
 )
 
 # Lib 링크
 target_link_libraries(src 
     PRIVATE 
         protobuf::libprotobuf
+        absl::base
 )

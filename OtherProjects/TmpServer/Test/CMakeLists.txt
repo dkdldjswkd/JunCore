@@ -1,14 +1,21 @@
-﻿# Boost 라이브러리 찾기
+﻿# Protobuf 라이브러리 자동 링크
+find_package(Protobuf REQUIRED)
+find_package(absl REQUIRED)
 find_package(Boost REQUIRED)
 
 # 이 프로젝트의 실행 파일에 소스를 추가합니다.
-add_executable (Test "main.cpp" )
+add_executable (Test
+"main.cpp"
+"addressbook.pb.cc"
+ "test_1.cpp")
 
 # Test에 해당 디렉터리들을 포함한다.
 # PUBLIC : Test을(를) 사용하는 프로젝트에도 포함된다.
 target_include_directories(Test 
     PUBLIC 
         ${Boost_INCLUDE_DIRS}
+        ${Protobuf_INCLUDE_DIRS}
+        ${Abseil_INCLUDE_DIRS}
 )
 
 # Test에 해당 라이브러리들을 링크한다.
@@ -16,6 +23,8 @@ target_include_directories(Test
 target_link_libraries(Test 
     PRIVATE 
         ${Boost_LIBRARIES}
+        protobuf::libprotobuf
+        absl::base
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

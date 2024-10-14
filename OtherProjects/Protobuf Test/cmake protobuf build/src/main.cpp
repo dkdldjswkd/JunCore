@@ -4,7 +4,13 @@ using namespace std;
 
 int main()
 {
-	Person p;
-	 p.set_id(3);
-	 cout << p.id() << endl;
+    // Person °´Ã¼ »ı¼º
+    Person person;
+    person.set_name("Alice");
+    person.set_id(1);
+    person.set_email("alice@example.com");
+
+    // Test console output
+    std::cout << person.name() << std::endl;
+    std::cout << "Alice" << std::endl;
 }

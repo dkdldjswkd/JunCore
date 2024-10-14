@@ -1,53 +1,68 @@
 #include <iostream>
-#include <fstream>
-#include "addressbook.pb.h"  // proto íŒŒì¼ì—ì„œ ìƒì„±ëœ í—¤ë” íŒŒì¼
+#include <string>
+#include <google/protobuf/message.h> // Protobuf Çì´õ ÆÄÀÏ Ãß°¡
+#include "addressbook.pb.h" // »ı¼ºÇÑ protobuf Çì´õ ÆÄÀÏ Ãß°¡
 
-// Person ë©”ì‹œì§€ ì§ë ¬í™” í•¨ìˆ˜
-void SerializePerson(const std::string& filename) {
-    // Person ê°ì²´ ìƒì„±
+// Á÷·ÄÈ­ ÇÔ¼ö: PersonÀ» uint8_t ¹è¿­¿¡ ÀúÀå
+size_t SerializePersonToArray(uint8_t* array, size_t array_size) {
+    // Person °´Ã¼ »ı¼º
     Person person;
-
-    // í•„ë“œì— ë°ì´í„° ì„¤ì •
     person.set_name("Alice");
     person.set_id(1);
     person.set_email("alice@example.com");
 
-    // ì§ë ¬í™”ëœ ë°ì´í„°ë¥¼ íŒŒì¼ë¡œ ì €ì¥
-    std::ofstream output_file(filename, std::ios::binary);
-    if (!person.SerializeToOstream(&output_file)) {
-        std::cerr << "Failed to serialize person." << std::endl;
+	// Test console output
+	std::cout << person.name() << std::endl;
+    std::cout << "Alice" << std::endl;
+
+    // Á÷·ÄÈ­µÈ µ¥ÀÌÅÍÀÇ Å©±â
+    size_t size = person.ByteSizeLong();
+    if (size > array_size) {
+        std::cerr << "Array size is not sufficient for serialization." << std::endl;
+        return 0; // ½ÇÆĞ
     }
-    output_file.close();
+
+    // ¹è¿­¿¡ Á÷·ÄÈ­
+    if (!person.SerializeToArray(array, size)) {
+        std::cerr << "Failed to serialize person to array." << std::endl;
+        return 0; // ½ÇÆĞ
+    }
+
+    return size; // Á÷·ÄÈ­µÈ µ¥ÀÌÅÍÀÇ Å©±â¸¦ ¹İÈ¯
 }
 
-// Person ë©”ì‹œì§€ ì—­ì§ë ¬í™” í•¨ìˆ˜
-void DeserializePerson(const std::string& filename) {
-    // Person ê°ì²´ ìƒì„±
+// ¿ªÁ÷·ÄÈ­ ÇÔ¼ö: uint8_t ¹è¿­¿¡¼­ Person ÀĞ±â
+bool DeserializePersonFromArray(const uint8_t* array, size_t size) {
+    // Person °´Ã¼ »ı¼º
     Person person;
 
-    // íŒŒì¼ì—ì„œ ì§ë ¬í™”ëœ ë°ì´í„° ì½ê¸°
-    std::ifstream input_file(filename, std::ios::binary);
-    if (!person.ParseFromIstream(&input_file)) {
-        std::cerr << "Failed to deserialize person." << std::endl;
-        return;
+    // ¹è¿­¿¡¼­ ¿ªÁ÷·ÄÈ­
+    if (!person.ParseFromArray(array, size)) {
+        std::cerr << "Failed to deserialize person from array." << std::endl;
+        return false; // ½ÇÆĞ
     }
-    input_file.close();
 
-    // ì—­ì§ë ¬í™”ëœ ë°ì´í„° ì¶œë ¥
+    // ¿ªÁ÷·ÄÈ­µÈ µ¥ÀÌÅÍ Ãâ·Â (ÇÊµåº°·Î Ãâ·Â)
     std::cout << "Name: " << person.name() << std::endl;
     std::cout << "ID: " << person.id() << std::endl;
     std::cout << "Email: " << person.email() << std::endl;
+
+    return true; // ¼º°ø
 }
 
 int main() {
-    const std::string filename = "person.bin";
+    // Á÷·ÄÈ­ÇÒ Person µ¥ÀÌÅÍ Å©±â
+    const size_t array_size = 128; // ÃæºĞÇÑ Å©±â·Î ¼³Á¤
+    uint8_t serialized_data[array_size];
+	memset(serialized_data, 0, array_size); // ¹è¿­ ÃÊ±âÈ­
 
-    // Person ì§ë ¬í™”
-    SerializePerson(filename);
-    std::cout << "Data serialized to " << filename << std::endl;
+    // Person Á÷·ÄÈ­
+    size_t serialized_size = SerializePersonToArray(serialized_data, array_size);
 
-    // Person ì—­ì§ë ¬í™”
-    DeserializePerson(filename);
+    if (serialized_size > 0) {
+        // ¹è¿­¿¡¼­ ¿ªÁ÷·ÄÈ­
+        DeserializePersonFromArray(serialized_data, serialized_size);
+    }
 
     return 0;
 }

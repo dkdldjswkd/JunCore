@@ -1,0 +1,30 @@
+﻿# Boost 라이브러리 찾기
+find_package(Boost REQUIRED)
+
+ # C++17 표준 설정
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# echo_server 정의
+add_executable(echo_server 
+ "network/EchoSocketMgr.cpp"
+ "network/EchoSocket.cpp"
+ "main.cpp"
+)
+
+# PUBLIC : echo_server를 사용하는 프로젝트에도 포함된다.
+target_include_directories(echo_server 
+	PRIVATE 
+		${CMAKE_CURRENT_SOURCE_DIR}
+		${Boost_INCLUDE_DIRS}
+		common
+		server_core
+)
+
+# PUBLIC : echo_server에서 링크한 라이브러리들이 echo_server를 사용하는 프로젝트에게도 링크된다.
+target_link_libraries(echo_server 
+	PRIVATE 
+		${Boost_LIBRARIES}
+		common
+		server_core
+)

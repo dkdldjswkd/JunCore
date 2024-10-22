@@ -86,9 +86,8 @@ public:
         try
         {
             std::shared_ptr<SocketType> newSocket = std::make_shared<SocketType>(std::move(sock));
-			newSocket->Start(); // ex. WorldSocket::Start()
-
             _threads[threadIndex].AddSocket(newSocket);
+			newSocket->Start(); // ex. EchoSocket::Start()
         }
         catch (boost::system::system_error const& err)
         {

@@ -50,8 +50,6 @@ void WorldUpdateLoop();
 
 int main(int argc, char** argv)
 {
-    std::string_view a;
-
 //    Trinity::Impl::CurrentServerProcessHolder::_type = SERVER_PROCESS_WORLDSERVER;
 //    signal(SIGABRT, &Trinity::AbortHandler);
 //
@@ -289,13 +287,13 @@ int main(int argc, char** argv)
     //    return 1;
     //}
 
-    // qweqwe
-    if (!sWorldSocketMgr.StartWorldNetwork(*ioContext, worldListener, worldPort, networkThreads))
-    {
-        // todo error log
-         World::StopNow(ERROR_EXIT_CODE);
-        return 1;
-    }
+	// qweqwe
+	if (!sWorldSocketMgr.StartWorldNetwork(*ioContext, worldListener, worldPort, networkThreads))
+	{
+		// todo error log
+		World::StopNow(ERROR_EXIT_CODE);
+		return 1;
+	}
 
     std::shared_ptr<void> sWorldSocketMgrHandle(nullptr
         , [](void*) {

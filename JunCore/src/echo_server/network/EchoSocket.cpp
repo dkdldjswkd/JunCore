@@ -5,20 +5,12 @@ using boost::asio::ip::tcp;
 
 EchoSocket::EchoSocket(tcp::socket&& socket) : Socket(std::move(socket)), _OverSpeedPings(0), _authed(false), _sendBufferSize(4096)
 {
-    // Trinity::Crypto::GetRandomBytes(_authSeed);
-    // _headerBuffer.Resize(sizeof(ClientPktHeader));
 }
 
 EchoSocket::~EchoSocket() = default;
 
 void EchoSocket::Start()
 {
-    //std::string ip_address = GetRemoteIpAddress().to_string();
-    //LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_IP_INFO);
-    //stmt->setString(0, ip_address);
-
-	//_queryProcessor.AddCallback(LoginDatabase.AsyncQuery(stmt).WithPreparedCallback(std::bind(&EchoSocket::CheckIpCallback, this, std::placeholders::_1)));
-
 	AsyncRead();
 	HandleSendAuthSession(); // accept session에게 connect noty를 한다.
 }

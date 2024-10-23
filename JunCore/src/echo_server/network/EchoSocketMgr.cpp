@@ -1,10 +1,10 @@
 #include "EchoSocketMgr.h"
 #include <boost/system/error_code.hpp>
 
-static void OnSocketAccept(tcp::socket&& sock, uint32 threadIndex)
-{
-    sEchoSocketMgr.OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
-}
+//static void OnSocketAccept(tcp::socket&& sock, uint32 threadIndex)
+//{
+//    sEchoSocketMgr.OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
+//}
 
 class EchoSocketThread : public NetworkThread<EchoSocket>
 {
@@ -20,7 +20,7 @@ public:
     }
 };
 
-EchoSocketMgr::EchoSocketMgr() : BaseSocketMgr(), _socketApplicationSendBufferSize(65536), _tcpNoDelay(true)
+EchoSocketMgr::EchoSocketMgr() : BaseSocketMgr(), _socketApplicationSendBufferSize(65536)
 {
 }
 
@@ -30,43 +30,15 @@ EchoSocketMgr& EchoSocketMgr::Instance()
     return instance;
 }
 
-bool EchoSocketMgr::StartEchoNetwork(boost::asio::io_context& ioContext, std::string const& bindIp, uint16 port, int threadCount)
+bool EchoSocketMgr::StartEchoNetwork(std::string const& bindIp, uint16 port, int threadCount)
 {
-    _tcpNoDelay = false; // sConfigMgr->GetBoolDefault("Network.TcpNodelay", true); // 네이글 알고리즘 해제 보류
-
     // set socket
     _socketApplicationSendBufferSize = 65536;   // sConfigMgr->GetIntDefault("Network.OutUBuff", 65536);
 
-    if (!BaseSocketMgr::StartNetwork(ioContext, bindIp, port, threadCount))
-        return false;
-
-    _acceptor->AsyncAcceptWithCallback<&OnSocketAccept>();
-    return true;
+    return BaseSocketMgr::StartNetwork(bindIp, port, threadCount);
 }
 
 void EchoSocketMgr::StopNetwork()
 {
     BaseSocketMgr::StopNetwork();
-}
-
-void EchoSocketMgr::OnSocketOpen(tcp::socket&& sock, uint32 threadIndex)
-{
-    // Set TCP_NODELAY.
-    if (_tcpNoDelay)
-    {
-        boost::system::error_code err;
-        sock.set_option(boost::asio::ip::tcp::no_delay(true), err);
-        if (err)
-        {
-            //TC_LOG_ERROR("misc", "EchoSocketMgr::OnSocketOpen sock.set_option(boost::asio::ip::tcp::no_delay) err = {}", err.message());
-            return;
-        }
-    }
-
-    BaseSocketMgr::OnSocketOpen(std::forward<tcp::socket>(sock), threadIndex);
-}
-
-NetworkThread<EchoSocket>* EchoSocketMgr::CreateThreads() const
-{
-     return new EchoSocketThread[GetNetworkThreadCount()];
 }

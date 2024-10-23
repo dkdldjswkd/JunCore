@@ -1,7 +1,7 @@
 #ifndef SocketMgr_h__
 #define SocketMgr_h__
 
-#include "AsyncAcceptor.h"
+//#include "AsyncAcceptor.h"
 #include "Errors.h"
 #include "NetworkThread.h"
 #include <boost/asio/ip/tcp.hpp>
@@ -9,123 +9,172 @@
 
 using boost::asio::ip::tcp;
 
+class AsyncAcceptor
+{
+public:
+	AsyncAcceptor(boost::asio::io_context& _io_context, std::string const& _bind_ip, uint16 _port) : 
+		_acceptor(_io_context), _endpoint(boost::asio::ip::make_address(_bind_ip), _port) , _closed(false)
+	{
+	}
+	~AsyncAcceptor() = default;
+
+public:
+	bool Bind()
+	{
+		boost::system::error_code _error_code;
+		_acceptor.open(_endpoint.protocol(), _error_code);
+		if (_error_code)
+		{
+			// LOG_ERROR("network", "Failed to open acceptor {}", errorCode.message());
+			return false;
+		}
+
+		_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true), _error_code);
+		if (_error_code)
+		{
+			// LOG_ERROR("network", "Failed to set reuse_address option on acceptor {}", errorCode.message());
+			return false;
+		}
+
+		_acceptor.bind(_endpoint, _error_code);
+		if (_error_code)
+		{
+			// LOG_ERROR("network", "Could not bind to {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
+			return false;
+		}
+
+		_acceptor.listen(boost::asio::socket_base::max_listen_connections, _error_code);
+		if (_error_code)
+		{
+			// LOG_ERROR("network", "Failed to start listening on {}:{} {}", _endpoint.address().to_string(), _endpoint.port(), errorCode.message());
+			return false;
+		}
+
+		return true;
+	}
+
+	inline void async_accept(tcp::socket& _socket, std::function<void(boost::system::error_code)> _accept_handler)
+	{
+		_acceptor.async_accept(_socket, _accept_handler);
+	}
+
+	void close()
+	{
+		if (_closed.exchange(true))
+			return;
+
+		boost::system::error_code err;
+		_acceptor.close(err);
+	}
+
+private:
+	tcp::acceptor _acceptor;
+	tcp::endpoint _endpoint;
+	std::atomic<bool> _closed;
+};
+
 template<class SocketType>
 class SocketMgr
 {
 public:
-    virtual ~SocketMgr()
-    {
-        //ASSERT(!_threads && !_acceptor && !_threadCount, "StopNetwork must be called prior to SocketMgr destruction");
-    }
+	SocketMgr() = default;
+	virtual ~SocketMgr() = default;
 
-	virtual bool StartNetwork(boost::asio::io_context& ioContext, std::string const& bindIp, uint16 port, int threadCount)
+	virtual bool StartNetwork(std::string const& _bind_ip, uint16 _port, int _worker_cnt)
 	{
-		//ASSERT(threadCount > 0);
+		_io_context = new boost::asio::io_context;
+		_acceptor   = new AsyncAcceptor(*_io_context, _bind_ip, _port);
 
-		AsyncAcceptor* acceptor = nullptr;
-		try
-		{
-			acceptor = new AsyncAcceptor(ioContext, bindIp, port);
-		}
-		catch (boost::system::system_error const& err)
-		{
-			// TC_LOG_ERROR("network", "Exception caught in SocketMgr.StartNetwork ({}:{}): {}", bindIp, port, err.what());
-			return false;
-		}
+        // CHECK_RETURN(threadCount > 0, false);
 
-		if (!acceptor->Bind())
+		if (!_acceptor->Bind())
 		{
-			// TC_LOG_ERROR("network", "StartNetwork failed to bind socket acceptor");
+			// LOG_ERROR
 			delete acceptor;
 			return false;
 		}
 
-		_acceptor = acceptor;
-		_threadCount = threadCount;
-		_threads = CreateThreads();
+		_workers.reserve(_worker_cnt);
 
-		//ASSERT(_threads);
+		for (int i = 0; i < _worker_cnt; ++i)
+		{
+			auto _worker = new NetworkThread<SocketType>();
+			_workers.emplace_back(_worker);
 
-		for (int32 i = 0; i < _threadCount; ++i)
-			_threads[i].Start();
+			_worker->Start();
+		}
 
-		_acceptor->SetSocketFactory([this]() { return GetSocketForAccept(); });
+		this->async_accept();
 		return true;
 	}
 
-    virtual void StopNetwork()
-    {
-        _acceptor->Close();
+	virtual void StopNetwork()
+	{
+		// 1. acceptor 종료
+		_acceptor->close();
 
-        if (_threadCount != 0)
-            for (int32 i = 0; i < _threadCount; ++i)
-                _threads[i].Stop();
+		// 2. acceptor ioconext stop
+		_io_context->stop();
 
-        Wait();
+		// 3. acceptor 정리
+		delete _acceptor;
+		_acceptor = nullptr
 
-        delete _acceptor;
-        _acceptor = nullptr;
-        delete[] _threads;
-        _threads = nullptr;
-        _threadCount = 0;
-    }
+		// 4. acceptor ioconext 정리
+		delete _io_context;
+		_io_context = nullptr;
 
-    void Wait()
-    {
-        if (_threadCount != 0)
-        {
-            for (int32 i = 0; i < _threadCount; ++i)
-            {
-                _threads[i].Wait();
-            }
-        }
-    }
+		// 5. workers ioconext stop
+		for (const auto& _worker : _workers)
+		{
+			_worker->stop();
+		}
 
-    virtual void OnSocketOpen(tcp::socket&& sock, uint32 threadIndex)
-    {
-        try
-        {
-            std::shared_ptr<SocketType> newSocket = std::make_shared<SocketType>(std::move(sock));
-            _threads[threadIndex].AddSocket(newSocket);
-			newSocket->Start(); // ex. EchoSocket::Start()
-        }
-        catch (boost::system::system_error const& err)
-        {
-            // TC_LOG_WARN("network", "Failed to retrieve client's remote address {}", err.what());
-        }
-    }
+		// 6. workers join wait
+		for (const auto& _worker : _workers)
+		{
+			_worker->Wait();
+		}
+	}
 
-    int32 GetNetworkThreadCount() const { return _threadCount; }
+	void async_accept()
+	{
+		uint32 _min_worker_index = 0;
 
-    uint32 SelectThreadWithMinConnections() const
-    {
-        uint32 min = 0;
+		for (int _worker_index= 0 ; _worker_index < _workers.size(); ++_worker_index)
+		{
+			if (_workers[_worker_index].GetConnectionCount() < _workers[_min_worker_index].GetConnectionCount())
+				_min_worker_index = _worker_index;
+		}
 
-        for (int32 i = 1; i < _threadCount; ++i)
-        {
-            if (_threads[i].GetConnectionCount() < _threads[min].GetConnectionCount())
-                min = i;
-        }
+		tcp::socket* _accept_sock = _workers[_min_worker_index].GetSocketForAccept();
 
-        return min;
-    }
+		_acceptor.async_accept(*_accept_sock
+			// accept handler
+			, [this, _accept_sock, _min_worker_index, &_workers](boost::system::error_code error)
+			{
+				if (!error)
+				{
+					// 비동기 소켓으로 생성
+					_accept_sock->non_blocking(true);
 
-    std::pair<tcp::socket*, uint32> GetSocketForAccept()
-    {
-        uint32 threadIndex = SelectThreadWithMinConnections();
-        return std::make_pair(_threads[threadIndex].GetSocketForAccept(), threadIndex);
-    }
+					std::shared_ptr<SocketType> _new_sock(_accept_sock);
+					_workers[_min_worker_index]->AddSocket(_new_sock);
+					_new_sock->Start(); // ex. EchoSocket::Start()
+				}
 
-protected:
-    SocketMgr() : _acceptor(nullptr), _threads(nullptr), _threadCount(0)
-    {
-    }
+				if (!_closed)
+				{
+					this->async_accept();
+				}
+			}
+		);
+	}
 
-    virtual NetworkThread<SocketType>* CreateThreads() const = 0;
-
-    AsyncAcceptor* _acceptor;
-    NetworkThread<SocketType>* _threads;
-    int32 _threadCount;
+private:
+	boost::asio::io_context* _io_context = nullptr;
+	AsyncAcceptor* _acceptor = nullptr;
+    std::vector<NetworkThread<SocketType>*> _workers;
 };
 
 #endif // SocketMgr_h__

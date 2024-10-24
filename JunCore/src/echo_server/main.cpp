@@ -14,7 +14,7 @@ int main()
 	// 워커 스레드 개수 설정
 	int32 networkThreads = 1; // sConfigMgr->GetIntDefault("Network.Threads", 1);
 
-	if (!sEchoSocketMgr.StartEchoNetwork(_ip, _port, networkThreads))
+	if (!sEchoSocketMgr.StartNetwork(_ip, _port, networkThreads))
 	{
 		return 1;
 	}

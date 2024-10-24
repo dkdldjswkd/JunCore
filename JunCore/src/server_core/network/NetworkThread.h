@@ -60,13 +60,13 @@ public:
         return _connections;
     }
 
-    virtual void AddSocket(std::shared_ptr<SocketType> sock)
+    virtual void AddSocket(std::shared_ptr<SocketType> _sock)
     {
         std::lock_guard<std::mutex> lock(_newSocketsLock);
 
         ++_connections;
-        _newSockets.push_back(sock);
-        SocketAdded(sock);
+        _newSockets.push_back(_sock);
+        SocketAdded(_sock);
     }
 
     tcp::socket* GetSocketForAccept() { return &_acceptSocket; }

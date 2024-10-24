@@ -11,17 +11,6 @@ class EchoSocketMgr : public SocketMgr<EchoSocket>
 public:
 	static EchoSocketMgr& Instance();
 
-	bool StartEchoNetwork(std::string const& bindIp, uint16 port, int networkThreads);
-
-	void StopNetwork() override;
-
-	std::size_t GetApplicationSendBufferSize() const { return _socketApplicationSendBufferSize; }
-
-protected:
-	EchoSocketMgr();
-
-private:
-	int32 _socketApplicationSendBufferSize;
 };
 
 #define sEchoSocketMgr EchoSocketMgr::Instance()

@@ -19,8 +19,8 @@ template<class T>
 class Socket : public std::enable_shared_from_this<T>
 {
 public:
-	explicit Socket(tcp::socket&& socket) : _socket(std::move(socket)), _remoteAddress(_socket.remote_endpoint().address()),
-		_remotePort(_socket.remote_endpoint().port()), _readBuffer(), _closed(false), _closing(false), _isWritingAsync(false)
+	explicit Socket(tcp::socket&& socket) 
+		: _socket(std::move(socket)), _remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port()), _readBuffer(), _closed(false), _closing(false), _isWritingAsync(false)
 	{
 		_readBuffer.Resize(READ_BLOCK_SIZE);
 	}

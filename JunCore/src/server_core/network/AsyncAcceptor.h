@@ -8,15 +8,11 @@
 
 using boost::asio::ip::tcp;
 
-using SocketFactory = std::function<std::pair<tcp::socket*, uint32>()>;
-using OnSocketAccept = std::function<void(tcp::socket&&, uint32)>;
-
-template <typename SocketFactory, typename OnSocketAccept>
 class AsyncAcceptor
 {
 public:
-	AsyncAcceptor(boost::asio::io_context& _io_context, std::string const& _bind_ip, uint16 _port) : 
-		_acceptor(_io_context), _endpoint(boost::asio::ip::make_address(_bind_ip), _port) , _closed(false)
+	AsyncAcceptor(boost::asio::io_context& _io_context, std::string const& _bind_ip, uint16 _port) :
+		_acceptor(_io_context), _endpoint(boost::asio::ip::make_address(_bind_ip), _port), _closed(false)
 	{
 	}
 	~AsyncAcceptor() = default;
@@ -56,37 +52,23 @@ public:
 		return true;
 	}
 
-	void AsyncAcceptWithCallback()
+	inline void async_accept(tcp::socket& _socket, std::function<void(boost::system::error_code)> _accept_handler)
 	{
-		tcp::socket* socket;
-		uint32 threadIndex;
-		std::tie(socket, threadIndex) = SocketFactory();
-
-		_acceptor.async_accept(*socket
-			// accept handler
-			, [this, socket, threadIndex](boost::system::error_code error)
-			{
-				if (!error)
-				{
-					socket->non_blocking(true);
-					OnSocketAccept(std::move(*socket), threadIndex);
-				}
-
-				if (!_closed)
-				{
-					this->AsyncAcceptWithCallback();
-				}
-			}
-		);
+		_acceptor.async_accept(_socket, _accept_handler);
 	}
 
-	void Close()
+	void close()
 	{
 		if (_closed.exchange(true))
 			return;
 
 		boost::system::error_code err;
 		_acceptor.close(err);
+	}
+
+	bool is_closed() const
+	{
+		return _closed.load();
 	}
 
 private:

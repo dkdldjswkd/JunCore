@@ -25,9 +25,12 @@
                 "value": "x64",
                 "strategy": "external"
             },
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
+          "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Debug",
+            "Boost_INCLUDE_DIRS": "D:\\boost_1_76_0",
+            "LIB_INCLUDE_DIR": "C:\\ProjectVic\\vic_server_lib\\include",
+            "LIB_DIR": "C:\\ProjectVic\\vic_server_lib\\lib\\Debug"
+          }
         },
         {
             "name": "x64-release",

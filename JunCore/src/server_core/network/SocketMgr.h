@@ -1,4 +1,4 @@
-#ifndef SocketMgr_h__
+ï»¿#ifndef SocketMgr_h__
 #define SocketMgr_h__
 
 #include "AsyncAcceptor.h"
@@ -19,9 +19,9 @@ public:
 	bool StartNetwork(std::string const& _bind_ip, uint16 _port, int _worker_cnt)
 	{
 		_io_context = new boost::asio::io_context;
-		_acceptor   = new AsyncAcceptor(*_io_context, _bind_ip, _port);
+		_acceptor = new AsyncAcceptor(*_io_context, _bind_ip, _port);
 
-        // CHECK_RETURN(threadCount > 0, false);
+		// CHECK_RETURN(threadCount > 0, false);
 
 		if (!_acceptor->Bind())
 		{
@@ -46,17 +46,17 @@ public:
 
 	virtual void StopNetwork()
 	{
-		// 1. acceptor Á¾·á
+		// 1. acceptor ì¢…ë£Œ
 		_acceptor->close();
 
 		// 2. acceptor ioconext stop
 		_io_context->stop();
 
-		// 3. acceptor Á¤¸®
+		// 3. acceptor ì •ë¦¬
 		delete _acceptor;
 		_acceptor = nullptr;
 
-		// 4. acceptor ioconext Á¤¸®
+		// 4. acceptor ioconext ì •ë¦¬
 		delete _io_context;
 		_io_context = nullptr;
 
@@ -77,7 +77,7 @@ public:
 	{
 		uint32 _min_worker_index = 0;
 
-		for (int _worker_index= 0 ; _worker_index < _workers.size(); ++_worker_index)
+		for (int _worker_index = 0; _worker_index < _workers.size(); ++_worker_index)
 		{
 			if (_workers[_worker_index]->GetConnectionCount() < _workers[_min_worker_index]->GetConnectionCount())
 				_min_worker_index = _worker_index;
@@ -91,7 +91,7 @@ public:
 			{
 				if (!error)
 				{
-					// ºñµ¿±â ¼ÒÄÏÀ¸·Î »ý¼º
+					// ë¹„ë™ê¸° ì†Œì¼“ìœ¼ë¡œ ìƒì„±
 					_accept_sock->non_blocking(true);
 
 					std::shared_ptr<SocketType> _new_sock = std::make_shared<SocketType>(std::move(*_accept_sock));
@@ -110,7 +110,7 @@ public:
 private:
 	boost::asio::io_context* _io_context = nullptr;
 	AsyncAcceptor* _acceptor = nullptr;
-    std::vector<NetworkThread<SocketType>*> _workers;
+	std::vector<NetworkThread<SocketType>*> _workers;
 };
 
 #endif // SocketMgr_h__

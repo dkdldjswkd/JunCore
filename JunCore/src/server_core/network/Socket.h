@@ -1,4 +1,4 @@
-#ifndef __SOCKET_H__
+ï»¿#ifndef __SOCKET_H__
 #define __SOCKET_H__
 
 #include <Define.h>
@@ -30,9 +30,9 @@ public:
 	}
 
 public:
-	void Start(); // async_accept ½Ã callback
+	void Start(); // async_accept ì‹œ callback
 	void AsyncRead();
-	bool Update(); // Update Thread ¿¡¼­ ¸ğµç SocketµéÀ» ¼øÈ¸ÇÏ¸ç È£Ãâ
+	bool Update(); // Update Thread ì—ì„œ ëª¨ë“  Socketë“¤ì„ ìˆœíšŒí•˜ë©° í˜¸ì¶œ
 
 public:
 	void SendPacket(MessageBuffer&& buffer)
@@ -77,7 +77,7 @@ protected:
 	}
 
 private:
-	// _send_queue¸¦ ¸ğµÎ Ã³¸®ÇÔ (empty°¡ µÉ¶§±îÁö send)
+	// _send_queueë¥¼ ëª¨ë‘ ì²˜ë¦¬í•¨ (emptyê°€ ë ë•Œê¹Œì§€ send)
 	bool process_send_queue();
 
 	void ReadHandlerInternal(boost::system::error_code error, size_t transferredBytes)
@@ -170,7 +170,7 @@ private:
 
 	// state
 	std::atomic<bool> _closed;
-	bool _is_writing; // update thread ¿¡¼­¸¸ »ç¿ëÇÏ¹Ç·Î, °øÀ¯ÀÚ¿ø x
+	bool _is_writing; // update thread ì—ì„œë§Œ ì‚¬ìš©í•˜ë¯€ë¡œ, ê³µìœ ìì› x
 };
 
 
@@ -234,7 +234,7 @@ bool Socket<T>::process_send_queue()
 		return false;
 	}
 
-	// ÆĞÅ¶À» ºÎºĞÀûÀ¸·Î ¼Û½ÅÇÑ °æ¿ì (but °á°úÀûÀ¸·Î write_some()À» ÅëÇØ send ÇÏ¹Ç·Î, ÇØ´ç if¿¡ °É¸± ¼ö ¾øÀ½.)
+	// íŒ¨í‚·ì„ ë¶€ë¶„ì ìœ¼ë¡œ ì†¡ì‹ í•œ ê²½ìš° (but ê²°ê³¼ì ìœ¼ë¡œ write_some()ì„ í†µí•´ send í•˜ë¯€ë¡œ, í•´ë‹¹ ifì— ê±¸ë¦´ ìˆ˜ ì—†ìŒ.)
 	if (_complete_send_msg_size < _send_msg_size)
 	{
 		// LOG_ERROR("invalid case");

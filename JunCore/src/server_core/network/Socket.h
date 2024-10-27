@@ -31,7 +31,7 @@ public:
 
 public:
 	void Start(); // async_accept 시 callback
-	void AsyncRead();
+	void async_recv();
 	bool Update(); // Update Thread 에서 모든 Socket들을 순회하며 호출
 
 public:
@@ -96,7 +96,8 @@ private:
 		if (!IsOpen())
 			return;
 
-		//MessageBuffer& packet = GetReadBuffer();
+		MessageBuffer& packet = GetReadBuffer();
+
 		//while (packet.GetActiveSize() > 0)
 		//{
 		//	if (_headerBuffer.GetRemainingSpace() > 0)
@@ -149,7 +150,62 @@ private:
 		//	}
 		//}
 
-		AsyncRead();
+		async_recv();
+
+		//=======================================================
+
+		//	// 패킷 조립
+		//for (;;) {
+		//	int recvLen = p_session->recvBuf.GetUseSize();
+		//	if (recvLen <= NET_HEADER_SIZE)
+		//		break;
+
+		//	// 헤더 카피
+		//	char encryptPacket[NET_HEADER_SIZE + MAX_PAYLOAD_LEN];
+		//	p_session->recvBuf.Peek(encryptPacket, NET_HEADER_SIZE);
+
+		//	// code 검사
+		//	BYTE code = ((NetHeader*)encryptPacket)->code;
+		//	if (code != protocolCode) {
+		//		LOG("NetServer", LOG_LEVEL_WARN, "Recv Packet is wrong code!!", WSAGetLastError());
+		//		DisconnectSession(p_session);
+		//		break;
+		//	}
+
+		//	// 페이로드 데이터 부족
+		//	WORD payloadLen = ((NetHeader*)encryptPacket)->len;
+		//	if (recvLen < (NET_HEADER_SIZE + payloadLen)) {
+		//		break;
+		//	}
+
+		//	// 암호패킷 복사
+		//	p_session->recvBuf.MoveFront(NET_HEADER_SIZE);
+		//	p_session->recvBuf.Dequeue(encryptPacket + NET_HEADER_SIZE, payloadLen);
+
+		//	// 패킷 복호화
+		//	PacketBuffer* decrypt_packet = PacketBuffer::Alloc();
+		//	if (!decrypt_packet->DecryptPacket(encryptPacket, privateKey)) {
+		//		PacketBuffer::Free(decrypt_packet);
+		//		LOG("NetServer", LOG_LEVEL_WARN, "Recv Packet is wrong checksum!!", WSAGetLastError());
+		//		DisconnectSession(p_session);
+		//		break;
+		//	}
+
+		//	// 사용자 패킷 처리
+		//	OnRecv(p_session->sessionId, decrypt_packet);
+		//	InterlockedIncrement(&recvMsgCount);
+
+		//	// 암호패킷, 복호화 패킷 Free
+		//	PacketBuffer::Free(decrypt_packet);
+		//}
+
+		////------------------------------
+		//// Post Recv
+		////------------------------------
+		//if (!p_session->disconnectFlag) {
+		//	AsyncRecv(p_session);
+		//}
+
 	}
 
 	void WriteHandlerWrapper(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/)
@@ -189,12 +245,12 @@ uint16 Socket<T>::GetRemotePort() const
 template<class T>
 void Socket<T>::Start()
 {
-	AsyncRead();
+	async_recv();
 	OnStart();
 };
 
 template<class T>
-void Socket<T>::AsyncRead()
+void Socket<T>::async_recv()
 {
 	if (!IsOpen())
 		return;

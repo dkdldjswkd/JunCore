@@ -2,7 +2,6 @@
 #define _BYTEBUFFER_H
 
 #include "Define.h"
-//#include "ByteConverter.h"
 #include <array>
 #include <string>
 #include <vector>
@@ -11,7 +10,6 @@
 
 class MessageBuffer;
 
-// Root of ByteBuffer exception hierarchy
 class ByteBufferException : public std::exception
 {
 public:
@@ -113,7 +111,6 @@ public:
 	template <typename T> void append(T value)
 	{
 		static_assert(std::is_fundamental<T>::value, "append(compound)");
-		// EndianConvert(value);
 		append((uint8*)&value, sizeof(value));
 	}
 
@@ -121,7 +118,6 @@ public:
 	void put(std::size_t pos, T value)
 	{
 		static_assert(std::is_fundamental<T>::value, "append(compound)");
-		// EndianConvert(value);
 		put(pos, (uint8*)&value, sizeof(value));
 	}
 

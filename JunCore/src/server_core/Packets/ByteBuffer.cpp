@@ -5,9 +5,3 @@
 ByteBuffer::ByteBuffer(MessageBuffer&& buffer) : _rpos(0), _wpos(0), _storage(buffer.Move())
 {
 }
-
-int server_core_test()
-{
-	f_Common_h();
-	return 3;
-}

@@ -29,29 +29,13 @@ public:
 		_socket.close(error);
 	}
 
-	// Accept 시 호출
-	void Start();
+public:
+	void Start(); // async_accept 시 callback
 	void AsyncRead();
+	bool Update(); // Update Thread 에서 모든 Socket들을 순회하며 호출
 
-	virtual void OnStart() = 0;
-
-	// Update Thread 에서 모든 Socket들을 순회하며 호출
-	virtual bool Update()
-	{
-		if (_closed)
-			return false;
-
-		if (_is_writing || _send_queue.empty())
-			return true;
-
-		while (process_send_queue());
-		return true;
-	}
-
-	// _send_queue를 모두 처리함 (empty가 될때까지 send)
-	bool process_send_queue();
-
-	void QueuePacket(MessageBuffer&& buffer)
+public:
+	void SendPacket(MessageBuffer&& buffer)
 	{
 		_send_queue.push(std::move(buffer));
 	}
@@ -78,9 +62,9 @@ public:
 	uint16 GetRemotePort() const;
 
 protected:
+	virtual void OnStart() = 0;
 	virtual void OnClose() { }
-
-	virtual void ReadHandler() = 0;
+	virtual void OnRecv() = 0;
 
 	bool async_send_inner()
 	{
@@ -93,6 +77,9 @@ protected:
 	}
 
 private:
+	// _send_queue를 모두 처리함 (empty가 될때까지 send)
+	bool process_send_queue();
+
 	void ReadHandlerInternal(boost::system::error_code error, size_t transferredBytes)
 	{
 		if (error)
@@ -102,7 +89,67 @@ private:
 		}
 
 		_recv_buffer.WriteCompleted(transferredBytes);
-		ReadHandler();
+		on_recv_core();
+	}
+
+	void on_recv_core() {
+		if (!IsOpen())
+			return;
+
+		//MessageBuffer& packet = GetReadBuffer();
+		//while (packet.GetActiveSize() > 0)
+		//{
+		//	if (_headerBuffer.GetRemainingSpace() > 0)
+		//	{
+		//		// need to receive the header
+		//		std::size_t readHeaderSize = std::min(packet.GetActiveSize(), _headerBuffer.GetRemainingSpace());
+		//		_headerBuffer.Write(packet.GetReadPointer(), readHeaderSize);
+		//		packet.ReadCompleted(readHeaderSize);
+
+		//		if (_headerBuffer.GetRemainingSpace() > 0)
+		//		{
+		//			// Couldn't receive the whole header this time.
+		//			// ASSERT(packet.GetActiveSize() == 0);
+		//			break;
+		//		}
+
+		//		// We just received nice new header
+		//		if (!ReadHeaderHandler())
+		//		{
+		//			CloseSocket();
+		//			return;
+		//		}
+		//	}
+
+		//	// We have full read header, now check the data payload
+		//	if (_packetBuffer.GetRemainingSpace() > 0)
+		//	{
+		//		// need more data in the payload
+		//		std::size_t readDataSize = std::min(packet.GetActiveSize(), _packetBuffer.GetRemainingSpace());
+		//		_packetBuffer.Write(packet.GetReadPointer(), readDataSize);
+		//		packet.ReadCompleted(readDataSize);
+
+		//		if (_packetBuffer.GetRemainingSpace() > 0)
+		//		{
+		//			// Couldn't receive the whole data this time.
+		//			// ASSERT(packet.GetActiveSize() == 0);
+		//			break;
+		//		}
+		//	}
+
+		//	// just received fresh new payload
+		//	ReadDataHandlerResult result = ReadDataHandler();
+		//	_headerBuffer.Reset();
+		//	if (result != ReadDataHandlerResult::Ok)
+		//	{
+		//		if (result != ReadDataHandlerResult::WaitingForQuery)
+		//			CloseSocket();
+
+		//		return;
+		//	}
+		//}
+
+		AsyncRead();
 	}
 
 	void WriteHandlerWrapper(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/)
@@ -197,6 +244,19 @@ bool Socket<T>::process_send_queue()
 
 	_send_queue.pop();
 	return !_send_queue.empty();
+}
+
+template<class T>
+bool Socket<T>::Update()
+{
+	if (_closed)
+		return false;
+
+	if (_is_writing || _send_queue.empty())
+		return true;
+
+	while (process_send_queue());
+	return true;
 }
 #endif
 

@@ -26,7 +26,7 @@ public:
 
 protected:
     void OnClose() override;
-    void ReadHandler() override;
+    void OnRecv() override;
     bool ReadHeaderHandler();
 
     enum class ReadDataHandlerResult

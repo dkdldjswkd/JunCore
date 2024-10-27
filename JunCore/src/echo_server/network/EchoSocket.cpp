@@ -9,86 +9,16 @@ EchoSocket::EchoSocket(tcp::socket&& socket) : Socket(std::move(socket)), _OverS
 
 EchoSocket::~EchoSocket() = default;
 
-void EchoSocket::Start()
+
+void EchoSocket::OnStart()
 {
-	AsyncRead();
-	HandleSendAuthSession(); // accept session에게 connect noty를 한다.
+    // some...
 }
 
-bool EchoSocket::Update()
-{
-    EchoPacket* queued;
-    if (_bufferQueue.Dequeue(queued))
-    {
-        // Allocate buffer only when it's needed but not on every Update() call.
-        MessageBuffer buffer(_sendBufferSize);
-        do
-        {
-			ServerPktHeader header(queued->size() + 2, queued->GetOpcode());
-
-			// header 암호화
-			//if (queued->NeedsEncryption())
-			//    _authCrypt.EncryptSend(header.header, header.getHeaderLength());
-
-			// buffer의 Size가 'Header + Packet'의 Size보다 작으면, buffer를 전송하고 새로운 buffer를 할당한다.
-			if (buffer.GetRemainingSpace() < queued->size() + header.getHeaderLength())
-            {
-                QueuePacket(std::move(buffer));
-                buffer.Resize(_sendBufferSize);
-            }
-
-			// buffer에 header와 packet을 쓴다.
-            if (buffer.GetRemainingSpace() >= queued->size() + header.getHeaderLength())
-            {
-                buffer.Write(header.header, header.getHeaderLength());
-                if (!queued->empty())
-                {
-					buffer.Write(queued->contents(), queued->size());
-                }
-            }
-            else    // single packet larger than buffer size
-            {
-                MessageBuffer packetBuffer(queued->size() + header.getHeaderLength());
-                packetBuffer.Write(header.header, header.getHeaderLength());
-                if (!queued->empty())
-                {
-                    packetBuffer.Write(queued->contents(), queued->size());
-                }
-
-                QueuePacket(std::move(packetBuffer));
-            }
-
-            delete queued;
-        } while (_bufferQueue.Dequeue(queued));
-
-        if (buffer.GetActiveSize() > 0)
-            QueuePacket(std::move(buffer));
-    }
-
-    if (!BaseSocket::Update())
-        return false;
-
-    //_queryProcessor.ProcessReadyCallbacks();
-    return true;
-}
-
-void EchoSocket::HandleSendAuthSession()
-{
-    EchoPacket packet(0x1EC/*SMSG_AUTH_CHALLENGE*/, 40);
-    //packet << uint32(1);                                    // 1...31
-    //packet.append(_authSeed);
-
-    //packet.append(Trinity::Crypto::GetRandomBytes<32>());               // new encryption seeds
-   
-    SendPacket(packet);  //SendPacketAndLogOpcode(packet);
-}
 
 void EchoSocket::OnClose()
 {
-    //{
-    //    std::lock_guard<std::mutex> sessionGuard(_worldSessionLock);
-    //    _worldSession = nullptr;
-    //}
+    // some...
 }
 
 void EchoSocket::ReadHandler()
@@ -178,15 +108,4 @@ bool EchoSocket::ReadHeaderHandler()
 EchoSocket::ReadDataHandlerResult EchoSocket::ReadDataHandler()
 {
     return ReadDataHandlerResult::Ok;
-}
-
-void EchoSocket::SendPacket(EchoPacket const& packet)
-{
-    if (!IsOpen())
-        return;
-
-    //if (sPacketLog->CanLogPacket())
-    //    sPacketLog->LogPacket(packet, SERVER_TO_CLIENT, GetRemoteIpAddress(), GetRemotePort());
-
-    _bufferQueue.Enqueue(packet); // _bufferQueue.Enqueue(new EncryptablePacket(packet, _authCrypt.IsInitialized()));
 }

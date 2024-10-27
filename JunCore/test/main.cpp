@@ -9,34 +9,21 @@
 #include <cstdint>
 #include <cstring>
 
-namespace aaa
+// 예제 함수
+void exampleFunction(int a, int b, int c)
 {
-    namespace bbb
-    {
-        struct ccc
-        {
-            ccc() { std::cout << "기본 생성자 호출" << std::endl; }
-            ccc(int x) { std::cout << "매개변수 생성자 호출: " << x << std::endl; }
-        };
-    }
+    std::cout << "a: " << a << ", b: " << b << ", c: " << c << std::endl;
 }
-
-struct ddd : public aaa::bbb::ccc
-{
-    using aaa::bbb::ccc::ccc; // 부모 클래스의 생성자들을 사용 가능하게 함
-
-    ddd() : aaa::bbb::ccc() {
-        a = 2;
-    }
-
-    int a = 1;
-};
 
 int main()
 {
-    ddd d1; // 기본 생성자 호출
-    ddd d2(10); // 매개변수 생성자 호출
-    std::cout << d1.a << std::endl;
+    // std::bind를 사용하여 exampleFunction을 바인딩
+    auto boundFunction = std::bind(exampleFunction, std::placeholders::_1, 2, std::placeholders::_2);
+
+    // boundFunction을 호출하면서 인수를 전달
+    boundFunction(10, 20); // 출력: a: 10, b: 20
+
+    return 0;
 }
 
 //#include <boost/asio.hpp>

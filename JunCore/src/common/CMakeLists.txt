@@ -11,6 +11,8 @@ add_library(common
  "Common.cpp"
  "Define.h"
  "Utilities/MessageBuffer.h"
+ "ring_buffer.h"
+ "ring_buffer.cpp"
 )
 
 # common에 해당 디렉터리들을 포함한다.

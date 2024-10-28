@@ -84,7 +84,7 @@ protected:
 
         for (std::shared_ptr<SocketType> sock : _newSockets)
         {
-            if (!sock->IsOpen())
+            if (!sock->is_open())
             {
                 SocketRemoved(sock);
                 --_connections;
@@ -124,8 +124,8 @@ protected:
 				{
 					if (sock->Update() == false)
 					{
-						if (sock->IsOpen())
-							sock->CloseSocket();
+						if (sock->is_open())
+							sock->close_socket();
 
 						this->SocketRemoved(sock);
 

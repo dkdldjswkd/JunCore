@@ -8,6 +8,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include "Utilities/MessageBuffer.h"
 #include "../Packets/packet_header.h"
+#include <ring_buffer.h>
 
 using boost::asio::ip::tcp;
 
@@ -18,9 +19,10 @@ class Socket : public std::enable_shared_from_this<T>
 {
 public:
 	explicit Socket(tcp::socket&& socket) 
-		: _socket(std::move(socket)), _remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port()), _recv_buffer(), _closed(false), _is_writing(false)
+		:	/*socket*/	_socket(std::move(socket))
+			/*addr*/	, _remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port())
+			/*state*/	, _closed(false), _is_writing(false)
 	{
-		_recv_buffer.Resize(READ_BLOCK_SIZE);
 	}
 
 	virtual ~Socket()
@@ -36,14 +38,18 @@ public:
 	bool Update(); // Update Thread 에서 모든 Socket들을 순회하며 호출
 
 public:
-	void SendPacket(MessageBuffer&& buffer)
+	// MessageBuffer에 user에게 데이터를 체워서 넘기게하자
+	// + header 공간은 core단에서 먼저 확보해두고, 우리가 header를 채우는 방식으로
+	// + MessageBuffer->PacketBuffer 치환
+	void send_packet(MessageBuffer&& buffer)
 	{
+		// todo : server core header 세팅
 		_send_queue.push(std::move(buffer));
 	}
 
-	bool IsOpen() const { return !_closed; }
+	bool is_open() const { return !_closed; }
 
-	void CloseSocket()
+	void close_socket()
 	{
 		if (_closed.exchange(true))
 			return;
@@ -51,8 +57,7 @@ public:
 		boost::system::error_code shutdownError;
 		_socket.shutdown(boost::asio::socket_base::shutdown_send, shutdownError);
 
-		// MCHECK_RETURN(!shutdownError, "Socket::CloseSocket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
-
+		// MCHECK_RETURN(!shutdownError, "Socket::close_socket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
 		OnClose();
 	}
 
@@ -85,7 +90,7 @@ private:
 	{
 		if (error)
 		{
-			CloseSocket();
+			close_socket();
 			return;
 		}
 
@@ -94,14 +99,13 @@ private:
 	}
 
 	void on_recv_core() {
-		if (!IsOpen())
-			return;
+		//if (!is_open())
+		//	return;
 
-		MessageBuffer& packet = get_recv_buffer();
+		//MessageBuffer& packet = get_recv_buffer();
 
 		//// 패킷 조립
 		//for (;;) {
-		//	int recvLen = packet.GetRemainingSpace();
 		//	int recvLen = p_session->recvBuf.GetUseSize();
 		//	if (recvLen <= NET_HEADER_SIZE)
 		//		break;
@@ -173,7 +177,7 @@ private:
 		//		// We just received nice new header
 		//		if (!ReadHeaderHandler())
 		//		{
-		//			CloseSocket();
+		//			close_socket();
 		//			return;
 		//		}
 		//	}
@@ -200,7 +204,7 @@ private:
 		//	if (result != ReadDataHandlerResult::Ok)
 		//	{
 		//		if (result != ReadDataHandlerResult::WaitingForQuery)
-		//			CloseSocket();
+		//			close_socket();
 
 		//		return;
 		//	}
@@ -219,7 +223,7 @@ private:
 private:
 	// socket
 	tcp::socket _socket;
-	MessageBuffer _recv_buffer;
+	/*ring_buffer*/ MessageBuffer _recv_buffer; // ring_buffer 교체할것.
 	std::queue<MessageBuffer> _send_queue;
 
 	// addr
@@ -228,7 +232,7 @@ private:
 
 	// state
 	std::atomic<bool> _closed;
-	bool _is_writing; // update thread 에서만 사용하므로, 공유자원 x
+	bool _is_writing; // worker 에서만 사용하므로, 공유자원 x
 };
 
 
@@ -254,7 +258,7 @@ void Socket<T>::Start()
 template<class T>
 void Socket<T>::async_recv()
 {
-	if (!IsOpen())
+	if (!is_open())
 		return;
 
 	_recv_buffer.Normalize();

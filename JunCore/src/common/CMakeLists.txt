@@ -28,5 +28,5 @@ target_include_directories(common
 target_link_libraries(common 
 	PUBLIC 
 		${Boost_LIBRARIES}
-        # ${LIB_DIR}/libboost_date_time-vc142-mt-gd-x64-1_76.lib
+        ${LIB_DIR}/libboost_date_time-vc142-mt-gd-x64-1_76.lib # 개발 환경 대응
 )

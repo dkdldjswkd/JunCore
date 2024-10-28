@@ -7,7 +7,7 @@
 #include <atomic>
 #include <boost/asio/ip/tcp.hpp>
 #include "Utilities/MessageBuffer.h"
-#include "../Packets/packet_header.h"
+#include "../Packets/PacketHeader.h"
 #include <ring_buffer.h>
 
 using boost::asio::ip::tcp;
@@ -115,7 +115,7 @@ private:
 		//	p_session->recvBuf.Peek(encryptPacket, NET_HEADER_SIZE);
 
 		//	// code 검사
-		//	BYTE code = ((NetHeader*)encryptPacket)->code;
+		//	BYTE code = ((PacketHeader*)encryptPacket)->code;
 		//	if (code != protocolCode) {
 		//		LOG("NetServer", LOG_LEVEL_WARN, "Recv Packet is wrong code!!", WSAGetLastError());
 		//		DisconnectSession(p_session);
@@ -123,7 +123,7 @@ private:
 		//	}
 
 		//	// 페이로드 데이터 부족
-		//	WORD payloadLen = ((NetHeader*)encryptPacket)->len;
+		//	WORD payloadLen = ((PacketHeader*)encryptPacket)->len;
 		//	if (recvLen < (NET_HEADER_SIZE + payloadLen)) {
 		//		break;
 		//	}

@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # server_core 라이브러리 정의
 add_library(server_core 
- 
+ "network/AsyncAcceptor.cpp"
 )
 
 # PUBLIC : server_core를 사용하는 프로젝트에도 포함된다.

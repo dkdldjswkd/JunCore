@@ -2,7 +2,6 @@
 #define __WORLDSOCKET_H__
 
 #include <network/Socket.h>
-#include "EchoPacket.h"
 #include <boost/asio/ip/tcp.hpp>
 #include <Define.h>
 #include <mutex>

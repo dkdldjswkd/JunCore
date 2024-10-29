@@ -7,6 +7,8 @@ using namespace std;
 
 int main()
 {
+	cout << "2" << endl;
+
 	// 서버 연결 정보 설정
 	std::string _ip   = "0.0.0.0";  // sConfigMgr->GetStringDefault("BindIP", "0.0.0.0");
 	uint16		_port = 8085;		//  uint16(sWorld->getIntConfig(CONFIG_PORT_WORLD));

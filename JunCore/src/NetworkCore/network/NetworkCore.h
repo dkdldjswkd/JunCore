@@ -4,17 +4,18 @@
 #include "AsyncAcceptor.h"
 #include "Errors.h"
 #include "NetworkThread.h"
+#include "NetworkSession.h"
 #include <boost/asio/ip/tcp.hpp>
 #include <memory>
 
 using boost::asio::ip::tcp;
 
 template<class SocketType>
-class SocketMgr
+class NetworkCore
 {
 public:
-	SocketMgr() = default;
-	virtual ~SocketMgr() = default;
+	NetworkCore() = default;
+	virtual ~NetworkCore() = default;
 
 	bool StartNetwork(std::string const& _bind_ip, uint16 _port, int _worker_cnt)
 	{
@@ -111,6 +112,7 @@ private:
 	boost::asio::io_context* _io_context = nullptr;
 	AsyncAcceptor* _acceptor = nullptr;
 	std::vector<NetworkThread<SocketType>*> _workers;
+
 };
 
 #endif // SocketMgr_h__

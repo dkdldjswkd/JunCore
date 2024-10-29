@@ -15,17 +15,17 @@ using boost::asio::ip::tcp;
 #define READ_BLOCK_SIZE 4096
 
 template<class T>
-class Socket : public std::enable_shared_from_this<T>
+class NetworkSession : public std::enable_shared_from_this<T>
 {
 public:
-	explicit Socket(tcp::socket&& socket) 
+	explicit NetworkSession(tcp::socket&& socket) 
 		:	/*socket*/	_socket(std::move(socket))
 			/*addr*/	, _remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port())
 			/*state*/	, _closed(false), _is_writing(false)
 	{
 	}
 
-	virtual ~Socket()
+	virtual ~NetworkSession()
 	{
 		_closed = true;
 		boost::system::error_code error;
@@ -35,7 +35,7 @@ public:
 public:
 	void Start(); // async_accept 시 callback
 	void async_recv();
-	bool Update(); // Update Thread 에서 모든 Socket들을 순회하며 호출
+	bool Update(); // Update Thread 에서 모든 NetworkSession들을 순회하며 호출
 
 public:
 	// MessageBuffer에 user에게 데이터를 체워서 넘기게하자
@@ -57,7 +57,7 @@ public:
 		boost::system::error_code shutdownError;
 		_socket.shutdown(boost::asio::socket_base::shutdown_send, shutdownError);
 
-		// MCHECK_RETURN(!shutdownError, "Socket::close_socket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
+		// MCHECK_RETURN(!shutdownError, "NetworkSession::close_socket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
 		OnClose();
 	}
 
@@ -78,7 +78,7 @@ protected:
 			return false;
 
 		_is_writing = true;
-		_socket.async_write_some(boost::asio::null_buffers(), std::bind(&Socket<T>::WriteHandlerWrapper, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+		_socket.async_write_some(boost::asio::null_buffers(), std::bind(&NetworkSession<T>::WriteHandlerWrapper, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 		return false;
 	}
 
@@ -237,37 +237,37 @@ private:
 
 
 template<class T>
-boost::asio::ip::address Socket<T>::GetRemoteIpAddress() const
+boost::asio::ip::address NetworkSession<T>::GetRemoteIpAddress() const
 {
 	return _remoteAddress;
 }
 
 template<class T>
-uint16 Socket<T>::GetRemotePort() const
+uint16 NetworkSession<T>::GetRemotePort() const
 {
 	return _remotePort;
 }
 
 template<class T>
-void Socket<T>::Start()
+void NetworkSession<T>::Start()
 {
 	async_recv();
 	OnStart();
 };
 
 template<class T>
-void Socket<T>::async_recv()
+void NetworkSession<T>::async_recv()
 {
 	if (!is_open())
 		return;
 
 	_recv_buffer.Normalize();
 	_recv_buffer.EnsureFreeSpace();
-	_socket.async_read_some(boost::asio::buffer(_recv_buffer.GetWritePointer(), _recv_buffer.GetRemainingSpace()), std::bind(&Socket<T>::ReadHandlerInternal, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+	_socket.async_read_some(boost::asio::buffer(_recv_buffer.GetWritePointer(), _recv_buffer.GetRemainingSpace()), std::bind(&NetworkSession<T>::ReadHandlerInternal, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
 template<class T>
-bool Socket<T>::process_send_queue()
+bool NetworkSession<T>::process_send_queue()
 {
 	if (_send_queue.empty())
 		return false;
@@ -309,7 +309,7 @@ bool Socket<T>::process_send_queue()
 }
 
 template<class T>
-bool Socket<T>::Update()
+bool NetworkSession<T>::Update()
 {
 	if (_closed)
 		return false;
@@ -330,7 +330,7 @@ bool Socket<T>::Update()
 //       // todo : error handling
 //	//if (err)
 //	//{
-//	//	// TC_LOG_DEBUG("network", "Socket::SetNoDelay: failed to set_option(boost::asio::ip::tcp::no_delay) for {} - {} ({})",
+//	//	// TC_LOG_DEBUG("network", "NetworkSession::SetNoDelay: failed to set_option(boost::asio::ip::tcp::no_delay) for {} - {} ({})",
 //	//}
 
 //	GetRemoteIpAddress().to_string(), err.value(), err.message());

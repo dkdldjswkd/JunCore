@@ -1,12 +1,12 @@
 #ifndef __WORLDSOCKETMGR_H
 #define __WORLDSOCKETMGR_H
 
-#include <network/SocketMgr.h>
+#include <network/NetworkCore.h>
 #include "EchoSocket.h"
 
-class EchoSocketMgr : public SocketMgr<EchoSocket>
+class EchoSocketMgr : public NetworkCore<EchoSocket>
 {
-	typedef SocketMgr<EchoSocket> BaseSocketMgr;
+	typedef NetworkCore<EchoSocket> BaseSocketMgr;
 
 public:
 	static EchoSocketMgr& Instance();

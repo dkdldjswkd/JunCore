@@ -18,7 +18,7 @@ target_include_directories(echo_server
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${Boost_INCLUDE_DIRS}
 		common
-		server_core
+		NetworkCore
 )
 
 # PUBLIC : echo_server에서 링크한 라이브러리들이 echo_server를 사용하는 프로젝트에게도 링크된다.
@@ -26,5 +26,5 @@ target_link_libraries(echo_server
 	PRIVATE 
 		${Boost_LIBRARIES}
 		common
-		server_core
+		NetworkCore
 )

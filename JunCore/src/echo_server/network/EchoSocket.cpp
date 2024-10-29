@@ -3,7 +3,7 @@
 
 using boost::asio::ip::tcp;
 
-EchoSocket::EchoSocket(tcp::socket&& socket) : Socket(std::move(socket)), _OverSpeedPings(0), _authed(false), _sendBufferSize(4096)
+EchoSocket::EchoSocket(tcp::socket&& socket) : NetworkSession(std::move(socket)), _OverSpeedPings(0), _authed(false), _sendBufferSize(4096)
 {
 }
 

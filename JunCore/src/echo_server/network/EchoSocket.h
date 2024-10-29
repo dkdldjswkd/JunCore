@@ -1,16 +1,16 @@
 #ifndef __WORLDSOCKET_H__
 #define __WORLDSOCKET_H__
 
-#include <network/Socket.h>
+#include <network/NetworkSession.h>
 #include <boost/asio/ip/tcp.hpp>
 #include <Define.h>
 #include <mutex>
 
 using boost::asio::ip::tcp;
 
-class EchoSocket : public Socket<EchoSocket>
+class EchoSocket : public NetworkSession<EchoSocket>
 {
-    typedef Socket<EchoSocket> BaseSocket;
+    typedef NetworkSession<EchoSocket> BaseSocket;
 
 public:
     EchoSocket(tcp::socket&& socket);

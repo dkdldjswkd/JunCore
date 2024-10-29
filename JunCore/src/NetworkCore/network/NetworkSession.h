@@ -221,6 +221,9 @@ private:
 	std::atomic<bool> _closed;
 	bool _is_writing; // worker 에서만 사용하므로, 공유자원 x
 };
+
+using NetworkSessionPtr		= std::shared_ptr<NetworkSession>;
+using NetworkSessionPtrVec	= std::vector<NetworkSessionPtr>;
 #endif
 
 //void SetNoDelay(bool enable)

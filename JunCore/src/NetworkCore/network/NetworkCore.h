@@ -96,7 +96,7 @@ public:
 					_accept_sock->non_blocking(true);
 
 					std::shared_ptr<SocketType> _new_sock = std::make_shared<SocketType>(std::move(*_accept_sock));
-					_network_threads[_min_worker_index]->AddSocket(_new_sock); // todo
+					_network_threads[_min_worker_index]->AddNewSession(_new_sock); // todo
 					_new_sock->Start(); // ex. EchoSocket::Start()
 				}
 
@@ -111,7 +111,7 @@ public:
 private:
 	boost::asio::io_context* _io_context = nullptr;
 	AsyncAcceptor* _acceptor = nullptr;
-	std::vector<NetworkThread<SocketType>*> _network_threads;
+	std::vector<NetworkThread*> _network_threads;
 
 };
 

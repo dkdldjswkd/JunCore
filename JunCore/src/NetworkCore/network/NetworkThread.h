@@ -6,154 +6,149 @@
 #include <thread>
 #include <mutex>
 #include <iostream>
+#include <network/NetworkSession.h>
 
 using boost::asio::ip::tcp;
 
-template<class SocketType>
 class NetworkThread
 {
-private:
-	using SocketContainer = std::vector<std::shared_ptr<SocketType>>;
-
 public:
-    NetworkThread() : _connections(0), _stopped(false), _thread(nullptr), _ioContext(1), _acceptSocket(_ioContext), _updateTimer(_ioContext)
+    NetworkThread() : connections_(0), stopped_(false), thread_(nullptr), io_context_(1), accept_socket_(io_context_), update_timer_(io_context_)
     {
     }
 
     virtual ~NetworkThread()
     {
         Stop();
-        if (_thread)
+        if (thread_)
         {
             Wait();
-            delete _thread;
+            delete thread_;
         }
     }
 
 public:
     bool Start()
     {
-        if (_thread)
+        if (thread_)
             return false;
 
-        _thread = new std::thread(&NetworkThread::Run, this);
+        thread_ = new std::thread(&NetworkThread::Run, this);
         return true;
     }
 
     void Stop()
     {
-        _stopped = true;
-        _ioContext.stop();
+        stopped_ = true;
+        io_context_.stop();
     }
 
     void Wait()
     {
         //ASSERT(_thread);
 
-        _thread->join();
-        delete _thread;
-        _thread = nullptr;
+        thread_->join();
+        delete thread_;
+        thread_ = nullptr;
     }
 
     int32 GetConnectionCount() const
     {
-        return _connections;
+        return connections_;
     }
 
-    virtual void AddSocket(std::shared_ptr<SocketType> _sock)
+    void AddNewSession(NetworkSessionPtr _new_network_session_ptr)
     {
-        std::lock_guard<std::mutex> lock(_newSocketsLock);
+        std::lock_guard<std::mutex> lock(new_session_lock);
 
-        ++_connections;
-        _newSockets.push_back(_sock);
-        SocketAdded(_sock);
+        ++connections_;
+        new_session_vec_.emplace_back(_new_network_session_ptr);
+        // callback 고려
     }
 
-    tcp::socket* GetSocketForAccept() { return &_acceptSocket; }
+    tcp::socket* GetSocketForAccept() { return &accept_socket_; }
 
 protected:
-    virtual void SocketAdded(std::shared_ptr<SocketType> /*sock*/) { }
-    virtual void SocketRemoved(std::shared_ptr<SocketType> /*sock*/) { }
-
-    void AddNewSockets()
-    {
-        std::lock_guard<std::mutex> lock(_newSocketsLock);
-
-        if (_newSockets.empty())
-            return;
-
-        for (std::shared_ptr<SocketType> sock : _newSockets)
-        {
-            if (!sock->is_open())
-            {
-                SocketRemoved(sock);
-                --_connections;
-            }
-            else
-                _sockets.push_back(sock);
-        }
-
-        _newSockets.clear();
-    }
-
     void Run()
     {
         // TC_LOG_DEBUG("misc", "Network Thread Starting");
-        _updateTimer.expires_from_now(boost::posix_time::milliseconds(1));
-        _updateTimer.async_wait([this](boost::system::error_code const&) { Update(); });
-        _ioContext.run();
+        update_timer_.expires_from_now(boost::posix_time::milliseconds(1));
+        update_timer_.async_wait([this](boost::system::error_code const&) { Update(); });
+        io_context_.run();
 
         // TC_LOG_DEBUG("misc", "Network Thread exits");
-        _newSockets.clear();
-        _sockets.clear();
+        new_session_vec_.clear();
+        active_session_vec_.clear();
     }
 
     void Update()
     {
-        if (_stopped)
+        if (stopped_)
             return;
 
-        _updateTimer.expires_from_now(boost::posix_time::milliseconds(1));
-        _updateTimer.async_wait([this](boost::system::error_code const&) { Update(); });
+        update_timer_.expires_from_now(boost::posix_time::milliseconds(1));
+        update_timer_.async_wait([this](boost::system::error_code const&) { Update(); });
 
         AddNewSockets();
 
-        _sockets.erase(
-            std::remove_if(_sockets.begin(), _sockets.end()
-                , [this](std::shared_ptr<SocketType> sock)
+        active_session_vec_.erase(
+            std::remove_if(active_session_vec_.begin(), active_session_vec_.end()
+                , [this](NetworkSessionPtr network_session_ptr)
 				{
-					if (sock->Update() == false)
+					if (network_session_ptr->Update() == false)
 					{
-						if (sock->is_open())
-							sock->close_socket();
+						if (network_session_ptr->is_open())
+							network_session_ptr->close_socket();
 
-						this->SocketRemoved(sock);
+						// callbck 고려 SocketRemoved
 
-						--this->_connections;
+						--this->connections_;
 						return true;
 					}
 
 					return false;
 				}
             )
-            , _sockets.end()
+            , active_session_vec_.end()
         );
 	}
 
 private:
-    std::atomic<int32> _connections;
-    std::atomic<bool> _stopped;
+    void AddNewSockets()
+    {
+        std::lock_guard<std::mutex> lock(new_session_lock);
 
-    std::thread* _thread;
+        if (new_session_vec_.empty())
+            return;
 
-    SocketContainer _sockets;
+        for (auto _session : new_session_vec_)
+        {
+            if (!_session->is_open())
+            {
+                // callback 고려, SocketRemoved
+                --connections_;
+            }
+            else
+                active_session_vec_.push_back(_session);
+        }
 
-    std::mutex _newSocketsLock;
-    SocketContainer _newSockets;
+        new_session_vec_.clear();
+    }
 
-    boost::asio::io_context _ioContext;
-    tcp::socket _acceptSocket;
-    DeadlineTimer _updateTimer;
+private:
+    std::atomic<int32> connections_;
+    std::atomic<bool> stopped_;
+
+    std::thread* thread_;
+
+    NetworkSessionPtrVec active_session_vec_;
+
+    std::mutex new_session_lock;
+    NetworkSessionPtrVec new_session_vec_;
+
+    boost::asio::io_context io_context_;
+    tcp::socket accept_socket_;
+    DeadlineTimer update_timer_;
 };
 
 #endif

@@ -7,9 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # echo_server 정의
 add_executable(echo_server 
- "network/EchoSocketMgr.cpp"
- "network/EchoSocket.cpp"
  "main.cpp"
+ "network/EchoServer.h"
 )
 
 # PUBLIC : echo_server를 사용하는 프로젝트에도 포함된다.

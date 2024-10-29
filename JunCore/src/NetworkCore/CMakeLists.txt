@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # NetworkCore 라이브러리 정의
 add_library(NetworkCore 
  "network/AsyncAcceptor.cpp"
+ "network/NetworkSession.cpp"
 )
 
 # PUBLIC : NetworkCore를 사용하는 프로젝트에도 포함된다.

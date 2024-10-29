@@ -31,12 +31,12 @@ public:
 			return false;
 		}
 
-		_workers.reserve(_worker_cnt);
+		_network_threads.reserve(_worker_cnt);
 
 		for (int i = 0; i < _worker_cnt; ++i)
 		{
 			auto _worker = new NetworkThread<SocketType>();
-			_workers.emplace_back(_worker);
+			_network_threads.emplace_back(_worker);
 
 			_worker->Start();
 		}
@@ -62,13 +62,13 @@ public:
 		_io_context = nullptr;
 
 		// 5. workers ioconext stop
-		for (const auto& _worker : _workers)
+		for (const auto& _worker : _network_threads)
 		{
 			_worker->Stop();
 		}
 
 		// 6. workers join wait
-		for (const auto& _worker : _workers)
+		for (const auto& _worker : _network_threads)
 		{
 			_worker->Wait();
 		}
@@ -78,13 +78,13 @@ public:
 	{
 		uint32 _min_worker_index = 0;
 
-		for (int _worker_index = 0; _worker_index < _workers.size(); ++_worker_index)
+		for (int _worker_index = 0; _worker_index < _network_threads.size(); ++_worker_index)
 		{
-			if (_workers[_worker_index]->GetConnectionCount() < _workers[_min_worker_index]->GetConnectionCount())
+			if (_network_threads[_worker_index]->GetConnectionCount() < _network_threads[_min_worker_index]->GetConnectionCount())
 				_min_worker_index = _worker_index;
 		}
 
-		tcp::socket* _accept_sock = _workers[_min_worker_index]->GetSocketForAccept();
+		tcp::socket* _accept_sock = _network_threads[_min_worker_index]->GetSocketForAccept();
 
 		_acceptor->async_accept(*_accept_sock
 			// accept handler
@@ -96,7 +96,7 @@ public:
 					_accept_sock->non_blocking(true);
 
 					std::shared_ptr<SocketType> _new_sock = std::make_shared<SocketType>(std::move(*_accept_sock));
-					_workers[_min_worker_index]->AddSocket(_new_sock); // todo
+					_network_threads[_min_worker_index]->AddSocket(_new_sock); // todo
 					_new_sock->Start(); // ex. EchoSocket::Start()
 				}
 
@@ -111,7 +111,7 @@ public:
 private:
 	boost::asio::io_context* _io_context = nullptr;
 	AsyncAcceptor* _acceptor = nullptr;
-	std::vector<NetworkThread<SocketType>*> _workers;
+	std::vector<NetworkThread<SocketType>*> _network_threads;
 
 };
 

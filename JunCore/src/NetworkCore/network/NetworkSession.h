@@ -14,14 +14,13 @@ using boost::asio::ip::tcp;
 
 #define READ_BLOCK_SIZE 4096
 
-template<class T>
-class NetworkSession : public std::enable_shared_from_this<T>
+class NetworkSession
 {
 public:
-	explicit NetworkSession(tcp::socket&& socket) 
+	explicit NetworkSession(tcp::socket&& socket)
 		:	/*socket*/	_socket(std::move(socket))
-			/*addr*/	, _remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port())
-			/*state*/	, _closed(false), _is_writing(false)
+		/*addr*/, _remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port())
+		/*state*/, _closed(false), _is_writing(false)
 	{
 	}
 
@@ -72,15 +71,7 @@ protected:
 	virtual void OnClose() { }
 	virtual void OnRecv() = 0;
 
-	bool async_send_inner()
-	{
-		if (_is_writing)
-			return false;
-
-		_is_writing = true;
-		_socket.async_write_some(boost::asio::null_buffers(), std::bind(&NetworkSession<T>::WriteHandlerWrapper, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
-		return false;
-	}
+	bool async_send_inner();
 
 private:
 	// _send_queue를 모두 처리함 (empty가 될때까지 send)
@@ -214,11 +205,7 @@ private:
 
 	}
 
-	void WriteHandlerWrapper(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/)
-	{
-		_is_writing = false;
-		process_send_queue();
-	}
+	void WriteHandlerWrapper(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/);
 
 private:
 	// socket
@@ -234,92 +221,6 @@ private:
 	std::atomic<bool> _closed;
 	bool _is_writing; // worker 에서만 사용하므로, 공유자원 x
 };
-
-
-template<class T>
-boost::asio::ip::address NetworkSession<T>::GetRemoteIpAddress() const
-{
-	return _remoteAddress;
-}
-
-template<class T>
-uint16 NetworkSession<T>::GetRemotePort() const
-{
-	return _remotePort;
-}
-
-template<class T>
-void NetworkSession<T>::Start()
-{
-	async_recv();
-	OnStart();
-};
-
-template<class T>
-void NetworkSession<T>::async_recv()
-{
-	if (!is_open())
-		return;
-
-	_recv_buffer.Normalize();
-	_recv_buffer.EnsureFreeSpace();
-	_socket.async_read_some(boost::asio::buffer(_recv_buffer.GetWritePointer(), _recv_buffer.GetRemainingSpace()), std::bind(&NetworkSession<T>::ReadHandlerInternal, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
-}
-
-template<class T>
-bool NetworkSession<T>::process_send_queue()
-{
-	if (_send_queue.empty())
-		return false;
-
-	MessageBuffer& _send_msg = _send_queue.front();
-	std::size_t _send_msg_size = _send_msg.GetActiveSize();
-
-	boost::system::error_code error;
-	std::size_t _complete_send_msg_size = _socket.write_some(boost::asio::buffer(_send_msg.GetReadPointer(), _send_msg_size), error);
-
-	if (error)
-	{
-		if (error == boost::asio::error::would_block || error == boost::asio::error::try_again)
-		{
-			return async_send_inner();
-		}
-		else
-		{
-			_send_queue.pop();
-			return false;
-		}
-	}
-	else if (_complete_send_msg_size == 0)
-	{
-		_send_queue.pop();
-		return false;
-	}
-
-	// 패킷을 부분적으로 송신한 경우 (but 결과적으로 write_some()을 통해 send 하므로, 해당 if에 걸릴 수 없음.)
-	if (_complete_send_msg_size < _send_msg_size)
-	{
-		// LOG_ERROR("invalid case");
-		_send_msg.ReadCompleted(_complete_send_msg_size);
-		return async_send_inner();
-	}
-
-	_send_queue.pop();
-	return !_send_queue.empty();
-}
-
-template<class T>
-bool NetworkSession<T>::Update()
-{
-	if (_closed)
-		return false;
-
-	if (_is_writing || _send_queue.empty())
-		return true;
-
-	while (process_send_queue());
-	return true;
-}
 #endif
 
 //void SetNoDelay(bool enable)

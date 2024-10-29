@@ -10,7 +10,6 @@
 
 using boost::asio::ip::tcp;
 
-template<class SocketType>
 class NetworkCore
 {
 public:
@@ -35,7 +34,7 @@ public:
 
 		for (int i = 0; i < _worker_cnt; ++i)
 		{
-			auto _worker = new NetworkThread<SocketType>();
+			auto _worker = new NetworkThread();
 			_network_threads.emplace_back(_worker);
 
 			_worker->Start();
@@ -76,28 +75,28 @@ public:
 
 	void async_accept()
 	{
-		uint32 _min_worker_index = 0;
+		uint32 _min_network_thread_index = 0;
 
 		for (int _worker_index = 0; _worker_index < _network_threads.size(); ++_worker_index)
 		{
-			if (_network_threads[_worker_index]->GetConnectionCount() < _network_threads[_min_worker_index]->GetConnectionCount())
-				_min_worker_index = _worker_index;
+			if (_network_threads[_worker_index]->GetConnectionCount() < _network_threads[_min_network_thread_index]->GetConnectionCount())
+				_min_network_thread_index = _worker_index;
 		}
 
-		tcp::socket* _accept_sock = _network_threads[_min_worker_index]->GetSocketForAccept();
+		tcp::socket* _accept_sock = _network_threads[_min_network_thread_index]->GetSocketForAccept();
 
 		_acceptor->async_accept(*_accept_sock
 			// accept handler
-			, [this, _accept_sock, _min_worker_index](boost::system::error_code error)
+			, [this, _accept_sock, _min_network_thread_index](boost::system::error_code error)
 			{
 				if (!error)
 				{
 					// 비동기 소켓으로 생성
 					_accept_sock->non_blocking(true);
 
-					std::shared_ptr<SocketType> _new_sock = std::make_shared<SocketType>(std::move(*_accept_sock));
-					_network_threads[_min_worker_index]->AddNewSession(_new_sock); // todo
-					_new_sock->Start(); // ex. EchoSocket::Start()
+					NetworkSessionPtr _new_network_session = std::make_shared<NetworkSession>(std::move(*_accept_sock));
+					_network_threads[_min_network_thread_index]->AddNewSession(_new_network_session);
+					_new_network_session->Start();
 				}
 
 				if (!_acceptor->is_closed())

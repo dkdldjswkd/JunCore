@@ -67,9 +67,10 @@ public:
 	uint16 GetRemotePort() const;
 
 protected:
-	virtual void OnStart() = 0;
-	virtual void OnClose() { }
-	virtual void OnRecv() = 0;
+	// todo NetworkCore 멤버 함수로 이동
+	virtual void OnStart() {};
+	virtual void OnClose() {};
+	virtual void OnRecv() {};
 
 	bool async_send_inner();
 

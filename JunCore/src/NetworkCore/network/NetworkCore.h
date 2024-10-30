@@ -4,7 +4,7 @@
 #include "AsyncAcceptor.h"
 #include "Errors.h"
 #include "NetworkThread.h"
-#include "NetworkSession.h"
+#include "Session.h"
 #include <boost/asio/ip/tcp.hpp>
 #include <memory>
 
@@ -94,7 +94,7 @@ public:
 					// 비동기 소켓으로 생성
 					_accept_sock->non_blocking(true);
 
-					NetworkSessionPtr _new_network_session = std::make_shared<NetworkSession>(std::move(*_accept_sock));
+					NetworkSessionPtr _new_network_session = std::make_shared<Session>(std::move(*_accept_sock));
 					_network_threads[_min_network_thread_index]->AddNewSession(_new_network_session);
 					_new_network_session->Start();
 				}

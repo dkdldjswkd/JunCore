@@ -14,17 +14,17 @@ using boost::asio::ip::tcp;
 
 #define READ_BLOCK_SIZE 4096
 
-class NetworkSession
+class Session
 {
 public:
-	explicit NetworkSession(tcp::socket&& socket)
-		:	/*socket*/	_socket(std::move(socket))
-		/*addr*/, _remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port())
-		/*state*/, _closed(false), _is_writing(false)
+	explicit Session(tcp::socket&& socket)
+		:	/*socket*/	_socket(std::move(socket)),
+			/*addr*/	_remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port()),
+			/*state*/	_closed(false), _is_writing(false)
 	{
 	}
 
-	virtual ~NetworkSession()
+	virtual ~Session()
 	{
 		_closed = true;
 		boost::system::error_code error;
@@ -34,7 +34,7 @@ public:
 public:
 	void Start(); // async_accept 시 callback
 	void async_recv();
-	bool Update(); // Update Thread 에서 모든 NetworkSession들을 순회하며 호출
+	bool Update(); // Update Thread 에서 모든 Session들을 순회하며 호출
 
 public:
 	// MessageBuffer에 user에게 데이터를 체워서 넘기게하자
@@ -56,7 +56,7 @@ public:
 		boost::system::error_code shutdownError;
 		_socket.shutdown(boost::asio::socket_base::shutdown_send, shutdownError);
 
-		// MCHECK_RETURN(!shutdownError, "NetworkSession::close_socket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
+		// MCHECK_RETURN(!shutdownError, "Session::close_socket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
 		OnClose();
 	}
 
@@ -223,7 +223,7 @@ private:
 	bool _is_writing; // worker 에서만 사용하므로, 공유자원 x
 };
 
-using NetworkSessionPtr		= std::shared_ptr<NetworkSession>;
+using NetworkSessionPtr		= std::shared_ptr<Session>;
 using NetworkSessionPtrVec	= std::vector<NetworkSessionPtr>;
 #endif
 
@@ -235,7 +235,7 @@ using NetworkSessionPtrVec	= std::vector<NetworkSessionPtr>;
 //       // todo : error handling
 //	//if (err)
 //	//{
-//	//	// TC_LOG_DEBUG("network", "NetworkSession::SetNoDelay: failed to set_option(boost::asio::ip::tcp::no_delay) for {} - {} ({})",
+//	//	// TC_LOG_DEBUG("network", "Session::SetNoDelay: failed to set_option(boost::asio::ip::tcp::no_delay) for {} - {} ({})",
 //	//}
 
 //	GetRemoteIpAddress().to_string(), err.value(), err.message());

@@ -1,4 +1,4 @@
-#include "AsyncAcceptor.h"
+﻿#include "AsyncAcceptor.h"
 
 AsyncAcceptor::AsyncAcceptor(boost::asio::io_context& _io_context, std::string const& _bind_ip, uint16 _port)
 	: _acceptor(_io_context), _endpoint(boost::asio::ip::make_address(_bind_ip), _port), _closed(false)

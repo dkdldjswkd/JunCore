@@ -1,4 +1,4 @@
-#ifndef NetworkThread_h__
+ï»¿#ifndef NetworkThread_h__
 #define NetworkThread_h__
 
 #include <boost/asio/ip/tcp.hpp>
@@ -6,7 +6,7 @@
 #include <thread>
 #include <mutex>
 #include <iostream>
-#include <network/NetworkSession.h>
+#include <network/Session.h>
 
 using boost::asio::ip::tcp;
 
@@ -63,7 +63,7 @@ public:
 
         ++connections_;
         new_session_vec_.emplace_back(_new_network_session_ptr);
-        // callback °í·Á
+        // callback ê³ ë ¤
     }
 
     tcp::socket* GetSocketForAccept() { return &accept_socket_; }
@@ -100,7 +100,7 @@ protected:
 						if (network_session_ptr->is_open())
 							network_session_ptr->close_socket();
 
-						// callbck °í·Á SocketRemoved
+						// callbck ê³ ë ¤ SocketRemoved
 
 						--this->connections_;
 						return true;
@@ -125,7 +125,7 @@ private:
         {
             if (!_session->is_open())
             {
-                // callback °í·Á, SocketRemoved
+                // callback ê³ ë ¤, SocketRemoved
                 --connections_;
             }
             else

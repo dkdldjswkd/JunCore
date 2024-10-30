@@ -1,22 +1,22 @@
-#include "NetworkSession.h"
+ï»¿#include "Session.h"
 
-boost::asio::ip::address NetworkSession::GetRemoteIpAddress() const
+boost::asio::ip::address Session::GetRemoteIpAddress() const
 {
 	return _remoteAddress;
 }
 
-uint16 NetworkSession::GetRemotePort() const
+uint16 Session::GetRemotePort() const
 {
 	return _remotePort;
 }
 
-void NetworkSession::Start()
+void Session::Start()
 {
 	async_recv();
 	OnStart();
 };
 
-bool NetworkSession::Update()
+bool Session::Update()
 {
 	if (_closed)
 		return false;
@@ -28,24 +28,24 @@ bool NetworkSession::Update()
 	return true;
 }
 
-void NetworkSession::WriteHandlerWrapper(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/)
+void Session::WriteHandlerWrapper(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/)
 {
 	_is_writing = false;
 	process_send_queue();
 }
 
-bool NetworkSession::async_send_inner()
+bool Session::async_send_inner()
 {
 	if (_is_writing)
 		return false;
 
 	_is_writing = true;
-	_socket.async_write_some(boost::asio::null_buffers(), std::bind(&NetworkSession::WriteHandlerWrapper, this, std::placeholders::_1, std::placeholders::_2));
+	_socket.async_write_some(boost::asio::null_buffers(), std::bind(&Session::WriteHandlerWrapper, this, std::placeholders::_1, std::placeholders::_2));
 	return false;
 }
 
 
-bool NetworkSession::process_send_queue()
+bool Session::process_send_queue()
 {
 	if (_send_queue.empty())
 		return false;
@@ -74,7 +74,7 @@ bool NetworkSession::process_send_queue()
 		return false;
 	}
 
-	// ÆĞÅ¶À» ºÎºĞÀûÀ¸·Î ¼Û½ÅÇÑ °æ¿ì (but °á°úÀûÀ¸·Î write_some()À» ÅëÇØ send ÇÏ¹Ç·Î, ÇØ´ç if¿¡ °É¸± ¼ö ¾øÀ½.)
+	// íŒ¨í‚·ì„ ë¶€ë¶„ì ìœ¼ë¡œ ì†¡ì‹ í•œ ê²½ìš° (but ê²°ê³¼ì ìœ¼ë¡œ write_some()ì„ í†µí•´ send í•˜ë¯€ë¡œ, í•´ë‹¹ ifì— ê±¸ë¦´ ìˆ˜ ì—†ìŒ.)
 	if (_complete_send_msg_size < _send_msg_size)
 	{
 		// LOG_ERROR("invalid case");
@@ -86,12 +86,12 @@ bool NetworkSession::process_send_queue()
 	return !_send_queue.empty();
 }
 
-void NetworkSession::async_recv()
+void Session::async_recv()
 {
 	if (!is_open())
 		return;
 
 	_recv_buffer.Normalize();
 	_recv_buffer.EnsureFreeSpace();
-	_socket.async_read_some(boost::asio::buffer(_recv_buffer.GetWritePointer(), _recv_buffer.GetRemainingSpace()), std::bind(&NetworkSession::ReadHandlerInternal, this, std::placeholders::_1, std::placeholders::_2));
+	_socket.async_read_some(boost::asio::buffer(_recv_buffer.GetWritePointer(), _recv_buffer.GetRemainingSpace()), std::bind(&Session::ReadHandlerInternal, this, std::placeholders::_1, std::placeholders::_2));
 }

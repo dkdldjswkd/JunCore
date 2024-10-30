@@ -39,7 +39,7 @@ int main()
 //
 //class ServerBase; // 전방 선언
 //
-//struct NetworkSession : public boost::asio::ip::tcp::socket {
+//struct Session : public boost::asio::ip::tcp::socket {
 //    using boost::asio::ip::tcp::socket::socket;
 //
 //    std::queue<std::vector<char>> writeQueue;
@@ -133,7 +133,7 @@ int main()
 //    }
 //
 //    void Accept() {
-//        auto socket = std::make_shared<NetworkSession>(*_p_io_context);
+//        auto socket = std::make_shared<Session>(*_p_io_context);
 //        _acceptor->async_accept(*socket,
 //            [this, socket](boost::system::error_code error_code) {
 //                if (!error_code) {
@@ -147,7 +147,7 @@ int main()
 //            });
 //    }
 //
-//    virtual void on_accept(std::shared_ptr<NetworkSession> socket) = 0; // 추상 메서드
+//    virtual void on_accept(std::shared_ptr<Session> socket) = 0; // 추상 메서드
 //    virtual void OnRecv(const std::vector<char>& packet) = 0; // 패킷 핸들링
 //
 //protected:
@@ -157,7 +157,7 @@ int main()
 //};
 //
 //struct TestServer : public ServerBase {
-//    void on_accept(std::shared_ptr<NetworkSession> socket) override {
+//    void on_accept(std::shared_ptr<Session> socket) override {
 //        std::cout << "Accepted a connection." << std::endl;
 //    }
 //

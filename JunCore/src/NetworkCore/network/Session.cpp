@@ -1,19 +1,9 @@
 ﻿#include "Session.h"
 
-boost::asio::ip::address Session::GetRemoteIpAddress() const
-{
-	return _remoteAddress;
-}
-
-uint16 Session::GetRemotePort() const
-{
-	return _remotePort;
-}
-
+// session accept 시 호출
 void Session::Start()
 {
 	async_recv();
-	OnStart();
 };
 
 bool Session::Update()
@@ -94,4 +84,26 @@ void Session::async_recv()
 	_recv_buffer.Normalize();
 	_recv_buffer.EnsureFreeSpace();
 	_socket.async_read_some(boost::asio::buffer(_recv_buffer.GetWritePointer(), _recv_buffer.GetRemainingSpace()), std::bind(&Session::ReadHandlerInternal, this, std::placeholders::_1, std::placeholders::_2));
+}
+
+void Session::ReadHandlerInternal(boost::system::error_code error, size_t transferredBytes)
+{
+	if (error)
+	{
+		close_socket();
+		return;
+	}
+
+	_recv_buffer.WriteCompleted(transferredBytes);
+	on_recv_core();
+}
+
+boost::asio::ip::address Session::GetRemoteIpAddress() const
+{
+	return _remoteAddress;
+}
+
+uint16 Session::GetRemotePort() const
+{
+	return _remotePort;
 }

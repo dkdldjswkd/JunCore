@@ -24,7 +24,7 @@ public:
 	{
 	}
 
-	virtual ~Session()
+	~Session()
 	{
 		_closed = true;
 		boost::system::error_code error;
@@ -66,11 +66,10 @@ public:
 	boost::asio::ip::address GetRemoteIpAddress() const;
 	uint16 GetRemotePort() const;
 
-protected:
-	// todo NetworkCore 멤버 함수로 이동
-	virtual void OnStart() {};
-	virtual void OnClose() {};
-	virtual void OnRecv() {};
+private:
+	std::function<void()> accept_handler = nullptr;
+	void OnClose() {};
+	void OnRecv() {};
 
 	bool async_send_inner();
 
@@ -78,17 +77,7 @@ private:
 	// _send_queue를 모두 처리함 (empty가 될때까지 send)
 	bool process_send_queue();
 
-	void ReadHandlerInternal(boost::system::error_code error, size_t transferredBytes)
-	{
-		if (error)
-		{
-			close_socket();
-			return;
-		}
-
-		_recv_buffer.WriteCompleted(transferredBytes);
-		on_recv_core();
-	}
+	void ReadHandlerInternal(boost::system::error_code error, size_t transferredBytes);
 
 	void on_recv_core() {
 		//if (!is_open())

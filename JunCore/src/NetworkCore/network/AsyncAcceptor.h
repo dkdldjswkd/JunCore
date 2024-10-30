@@ -28,6 +28,6 @@ private:
 
 inline void AsyncAcceptor::accept(tcp::socket& _socket, std::function<void(boost::system::error_code)> _accept_handler)
 {
-	_acceptor.accept(_socket, _accept_handler);
+	_acceptor.async_accept(_socket, _accept_handler);
 }
 #endif

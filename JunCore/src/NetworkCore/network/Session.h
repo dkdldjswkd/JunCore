@@ -15,11 +15,11 @@ using boost::asio::ip::tcp;
 #define READ_BLOCK_SIZE 4096
 
 class NetworkThread;
-class NetworkCore;
+class NetworkManager;
 
 class Session
 {
-	friend NetworkCore;
+	friend NetworkManager;
 	friend NetworkThread;
 
 public:
@@ -42,37 +42,38 @@ private:
 	bool IsOpen() const;
 
 private:
-	// Session 내부 Recv 핸들링 시 사용
+	// Recv 처리
 	void AsyncRecv();
 	void ReadHandler(boost::system::error_code error, size_t transferredBytes);
-	MessageBuffer& get_recv_buffer();
-	void schedule_send();
+	MessageBuffer& GetRecvBuffer();
 
 private:
-	std::function<void()> accept_handler_ = nullptr;
-	std::function<void()> close_handler_  = nullptr;
-	std::function<void()> recv_handler_   = nullptr;
+	// Send 처리
+	bool ProcessSendQueue();
+	void ScheduleSend();
+	void OnSendReady(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/);
 
 private:
-	bool process_send_queue();
-	void WriteHandlerWrapper(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/);
-
-private:
-	tcp::socket _socket;
-	/*ring_buffer*/ MessageBuffer _recv_buffer; // ring_buffer 교체할것.
-	std::queue<MessageBuffer> _send_queue;
+	tcp::socket socket_;
+	/*ring_buffer*/ MessageBuffer recv_buffer_; // ring_buffer 교체할것.
+	std::queue<MessageBuffer> send_queue_;
 
 	// addr
-	boost::asio::ip::address _remoteAddress;
-	uint16 _remotePort;
+	boost::asio::ip::address remote_address_;
+	uint16 remote_port_;
 
 	// state
-	std::atomic<bool> _closed;
-	std::atomic<bool> _is_writing;
+	std::atomic<bool> closed_;
+	std::atomic<bool> is_writing_;
+
+	// callback 핸들러
+	std::function<void()> accept_handler_ = nullptr;
+	std::function<void()> close_handler_ = nullptr;
+	std::function<void()> recv_handler_ = nullptr;
 };
 
-using NetworkSessionPtr		= std::shared_ptr<Session>;
-using NetworkSessionPtrVec	= std::vector<NetworkSessionPtr>;
+using SessionPtr	= std::shared_ptr<Session>;
+using SessionPtrVec	= std::vector<SessionPtr>;
 #endif
 
 //void SetNoDelay(bool enable)

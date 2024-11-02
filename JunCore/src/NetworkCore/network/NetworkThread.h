@@ -25,7 +25,7 @@ public:
 
 public:
 	int32 GetConnectionCount() const;
-	void AddNewSession(NetworkSessionPtr _new_network_session_ptr);
+	void AddNewSession(SessionPtr _new_network_session_ptr);
 	tcp::socket* GetSocketForAccept();
 
 private:
@@ -34,10 +34,10 @@ private:
 
 	std::thread* thread_;
 
-	NetworkSessionPtrVec active_session_vec_;
+	SessionPtrVec active_session_vec_;
 
 	std::mutex new_session_lock;
-	NetworkSessionPtrVec new_session_vec_;
+	SessionPtrVec new_session_vec_;
 
 	boost::asio::io_context io_context_;
 	tcp::socket accept_socket_;

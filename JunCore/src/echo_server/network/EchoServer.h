@@ -1,5 +1,5 @@
-#include <network/NetworkCore.h>
+#include <network/NetworkManager.h>
 
-class EchoServer : public NetworkCore
+class EchoServer : public NetworkManager
 {
 };

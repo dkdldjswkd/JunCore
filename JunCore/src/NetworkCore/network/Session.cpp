@@ -1,17 +1,17 @@
 ﻿#include "Session.h"
 
 Session::Session(tcp::socket&& socket)
-	:	/*socket*/	_socket(std::move(socket)),
-		/*addr*/	_remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port()),
-		/*state*/	_closed(false), _is_writing(false)
+	:	/*socket*/	socket_(std::move(socket)),
+		/*addr*/	remote_address_(socket_.remote_endpoint().address()), remote_port_(socket_.remote_endpoint().port()),
+		/*state*/	closed_(false), is_writing_(false)
 {
 }
 
 Session::~Session()
 {
-	_closed = true;
+	closed_ = true;
 	boost::system::error_code error;
-	_socket.close(error);
+	socket_.close(error);
 }
 
 // NetworkCore::accept()에서 callback
@@ -25,9 +25,9 @@ void Session::AsyncRecv()
 	if (!IsOpen())
 		return;
 
-	_recv_buffer.Normalize();
-	_recv_buffer.EnsureFreeSpace();
-	_socket.async_read_some(boost::asio::buffer(_recv_buffer.GetWritePointer(), _recv_buffer.GetRemainingSpace()), std::bind(&Session::ReadHandler, this, std::placeholders::_1, std::placeholders::_2));
+	recv_buffer_.Normalize();
+	recv_buffer_.EnsureFreeSpace();
+	socket_.async_read_some(boost::asio::buffer(recv_buffer_.GetWritePointer(), recv_buffer_.GetRemainingSpace()), std::bind(&Session::ReadHandler, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void Session::ReadHandler(boost::system::error_code error, size_t transferredBytes)
@@ -38,7 +38,7 @@ void Session::ReadHandler(boost::system::error_code error, size_t transferredByt
 		return;
 	}
 
-	_recv_buffer.WriteCompleted(transferredBytes);
+	recv_buffer_.WriteCompleted(transferredBytes);
 
 	if (!IsOpen())
 		return;
@@ -48,47 +48,52 @@ void Session::ReadHandler(boost::system::error_code error, size_t transferredByt
 	AsyncRecv();
 }
 
+MessageBuffer& Session::GetRecvBuffer()
+{
+	return recv_buffer_;
+}
+
 // NetworkThread::Update()에서 callback
 bool Session::Update()
 {
-	if (_closed)
+	if (closed_)
 		return false;
 
-	if (_is_writing || _send_queue.empty())
+	if (is_writing_ || send_queue_.empty())
 		return true;
 
-	while (process_send_queue());
+	while (ProcessSendQueue());
 	return true;
 }
 
 // ret true : send queue 추가 처리가 가능한 경우, ret false : send queue가 비었거나, 추가 처리가 불가능한 경우 (ex. would_block)
-bool Session::process_send_queue()
+bool Session::ProcessSendQueue()
 {
-	if (_send_queue.empty())
+	if (send_queue_.empty())
 		return false;
 
-	MessageBuffer& _send_msg = _send_queue.front();
+	MessageBuffer& _send_msg = send_queue_.front();
 	std::size_t _send_msg_size = _send_msg.GetActiveSize();
 
 	boost::system::error_code error;
-	std::size_t _complete_send_msg_size = _socket.write_some(boost::asio::buffer(_send_msg.GetReadPointer(), _send_msg_size), error);
+	std::size_t _complete_send_msg_size = socket_.write_some(boost::asio::buffer(_send_msg.GetReadPointer(), _send_msg_size), error);
 
 	if (error)
 	{
 		if (error == boost::asio::error::would_block || error == boost::asio::error::try_again)
 		{
-			schedule_send();
+			ScheduleSend();
 			return false;
 		}
 		else
 		{
-			_send_queue.pop();
+			send_queue_.pop();
 			return false;
 		}
 	}
 	else if (_complete_send_msg_size == 0)
 	{
-		_send_queue.pop();
+		send_queue_.pop();
 		return false;
 	}
 
@@ -97,38 +102,38 @@ bool Session::process_send_queue()
 	{
 		// LOG_ERROR("invalid case");
 		_send_msg.ReadCompleted(_complete_send_msg_size);
-		schedule_send();
+		ScheduleSend();
 		return false;
 	}
 
-	_send_queue.pop();
-	return !_send_queue.empty();
+	send_queue_.pop();
+	return !send_queue_.empty();
 }
 
-void Session::WriteHandlerWrapper(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/)
+void Session::ScheduleSend()
 {
-	_is_writing = false;
-	process_send_queue();
-}
-
-void Session::schedule_send()
-{
-	if (_is_writing)
+	if (is_writing_)
 		return;
 
-	_is_writing = true;
-	_socket.async_write_some(boost::asio::null_buffers(), std::bind(&Session::WriteHandlerWrapper, this, std::placeholders::_1, std::placeholders::_2));
+	is_writing_ = true;
+	socket_.async_write_some(boost::asio::null_buffers(), std::bind(&Session::OnSendReady, this, std::placeholders::_1, std::placeholders::_2));
 	return;
+}
+
+void Session::OnSendReady(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/)
+{
+	is_writing_ = false;
+	ProcessSendQueue();
 }
 
 boost::asio::ip::address Session::GetRemoteIpAddress() const
 {
-	return _remoteAddress;
+	return remote_address_;
 }
 
 uint16 Session::GetRemotePort() const
 {
-	return _remotePort;
+	return remote_port_;
 }
 
 // MessageBuffer에 user에게 데이터를 체워서 넘기게하자
@@ -137,27 +142,22 @@ uint16 Session::GetRemotePort() const
 void Session::SendPacket(MessageBuffer&& buffer)
 {
 	// todo : server core header 세팅
-	_send_queue.push(std::move(buffer));
+	send_queue_.push(std::move(buffer));
 }
 
 bool Session::IsOpen() const 
 { 
-	return !_closed; 
+	return !closed_; 
 }
 
 void Session::CloseSocket()
 {
-	if (_closed.exchange(true))
+	if (closed_.exchange(true))
 		return;
 
 	boost::system::error_code shutdownError;
-	_socket.shutdown(boost::asio::socket_base::shutdown_send, shutdownError); // todo
+	socket_.shutdown(boost::asio::socket_base::shutdown_send, shutdownError); // todo
 
 	// MCHECK_RETURN(!shutdownError, "Session::close_socket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
 	close_handler_();
-}
-
-MessageBuffer& Session::get_recv_buffer() 
-{ 
-	return _recv_buffer; 
 }

@@ -79,7 +79,7 @@ void NetworkThread::Update()
 
 	active_session_vec_.erase(
 		std::remove_if(active_session_vec_.begin(), active_session_vec_.end()
-			, [this](NetworkSessionPtr network_session_ptr)
+			, [this](SessionPtr network_session_ptr)
 			{
 				if (network_session_ptr->Update() == false)
 				{
@@ -121,7 +121,7 @@ int32 NetworkThread::GetConnectionCount() const
 	return connections_;
 }
 
-void NetworkThread::AddNewSession(NetworkSessionPtr _new_network_session_ptr)
+void NetworkThread::AddNewSession(SessionPtr _new_network_session_ptr)
 {
 	std::lock_guard<std::mutex> lock(new_session_lock);
 

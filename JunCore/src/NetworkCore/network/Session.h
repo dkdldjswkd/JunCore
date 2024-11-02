@@ -14,53 +14,50 @@ using boost::asio::ip::tcp;
 
 #define READ_BLOCK_SIZE 4096
 
+class NetworkThread;
+class NetworkCore;
+
 class Session
 {
-public:
-	explicit Session(tcp::socket&& socket)
-		:	/*socket*/	_socket(std::move(socket)),
-			/*addr*/	_remoteAddress(_socket.remote_endpoint().address()), _remotePort(_socket.remote_endpoint().port()),
-			/*state*/	_closed(false), _is_writing(false)
-	{
-	}
-
-	~Session()
-	{
-		_closed = true;
-		boost::system::error_code error;
-		_socket.close(error);
-	}
+	friend NetworkCore;
+	friend NetworkThread;
 
 public:
-	void Start();
-	bool Update();
-	void CloseSocket();
-	bool IsOpen() const;
+	Session(tcp::socket&& socket);
+	~Session();
 
 public:
 	void SendPacket(MessageBuffer&& buffer);
-	// address
+
+public:
+	// addr
 	boost::asio::ip::address GetRemoteIpAddress() const;
 	uint16 GetRemotePort() const;
 
 private:
-	void AsyncRecv();
-	MessageBuffer& get_recv_buffer();
+	// NetworkThread, NetworkCore에서 사용
+	void Start();	// Recv Handler 등록
+	bool Update();	// Send Queue 처리
+	void CloseSocket();
+	bool IsOpen() const;
 
 private:
-	std::function<void()> accept_handler = nullptr;
-	void OnClose() {};
-	void OnRecv() {};
+	// Session 내부 Recv 핸들링 시 사용
+	void AsyncRecv();
+	void ReadHandler(boost::system::error_code error, size_t transferredBytes);
+	MessageBuffer& get_recv_buffer();
+	void schedule_send();
 
-	bool schedule_send();
+private:
+	std::function<void()> accept_handler_ = nullptr;
+	std::function<void()> close_handler_  = nullptr;
+	std::function<void()> recv_handler_   = nullptr;
 
 private:
 	bool process_send_queue();
-	void ReadHandler(boost::system::error_code error, size_t transferredBytes);
 	void WriteHandlerWrapper(boost::system::error_code /*error*/, std::size_t /*transferedBytes*/);
 
 private:
-	// socket
 	tcp::socket _socket;
 	/*ring_buffer*/ MessageBuffer _recv_buffer; // ring_buffer 교체할것.
 	std::queue<MessageBuffer> _send_queue;
@@ -71,7 +68,7 @@ private:
 
 	// state
 	std::atomic<bool> _closed;
-	bool _is_writing; // worker 에서만 사용하므로, 공유자원 x
+	std::atomic<bool> _is_writing;
 };
 
 using NetworkSessionPtr		= std::shared_ptr<Session>;

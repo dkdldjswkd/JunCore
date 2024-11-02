@@ -47,23 +47,31 @@ void NetworkThread::Update()
 	// New Session 처리
 	////////////////////////
 
-	std::lock_guard<std::mutex> lock(new_session_lock);
-
-	if (new_session_vec_.empty())
-		return;
-
-	for (auto _session : new_session_vec_)
+	do
 	{
-		if (!_session->IsOpen())
-		{
-			// callback 고려, SocketRemoved
-			--connections_;
-		}
-		else
-			active_session_vec_.push_back(_session);
-	}
+		std::lock_guard<std::mutex> lock(new_session_lock);
 
-	new_session_vec_.clear();
+		if (new_session_vec_.empty())
+		{
+			break;
+		}
+
+		for (auto _session : new_session_vec_)
+		{
+			if (!_session->IsOpen())
+			{
+				// callback 고려, SocketRemoved
+				--connections_;
+			}
+			else
+			{
+				active_session_vec_.emplace_back(_session);
+			}
+		}
+
+		new_session_vec_.clear();
+	} 
+	while (false);
 
 	////////////////////////
 	// Session Update
@@ -76,7 +84,9 @@ void NetworkThread::Update()
 				if (network_session_ptr->Update() == false)
 				{
 					if (network_session_ptr->IsOpen())
+					{
 						network_session_ptr->CloseSocket();
+					}
 
 					// callbck 고려 SocketRemoved
 

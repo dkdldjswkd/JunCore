@@ -43,7 +43,31 @@ void NetworkThread::Update()
 	update_timer_.expires_from_now(boost::posix_time::milliseconds(1));
 	update_timer_.async_wait([this](boost::system::error_code const&) { Update(); });
 
-	AddNewSockets();
+	////////////////////////
+	// New Session 처리
+	////////////////////////
+
+	std::lock_guard<std::mutex> lock(new_session_lock);
+
+	if (new_session_vec_.empty())
+		return;
+
+	for (auto _session : new_session_vec_)
+	{
+		if (!_session->IsOpen())
+		{
+			// callback 고려, SocketRemoved
+			--connections_;
+		}
+		else
+			active_session_vec_.push_back(_session);
+	}
+
+	new_session_vec_.clear();
+
+	////////////////////////
+	// Session Update
+	////////////////////////
 
 	active_session_vec_.erase(
 		std::remove_if(active_session_vec_.begin(), active_session_vec_.end()
@@ -51,8 +75,8 @@ void NetworkThread::Update()
 			{
 				if (network_session_ptr->Update() == false)
 				{
-					if (network_session_ptr->is_open())
-						network_session_ptr->close_socket();
+					if (network_session_ptr->IsOpen())
+						network_session_ptr->CloseSocket();
 
 					// callbck 고려 SocketRemoved
 
@@ -64,7 +88,7 @@ void NetworkThread::Update()
 			}
 		)
 		, active_session_vec_.end()
-				);
+	);
 }
 
 void NetworkThread::Stop()
@@ -97,24 +121,3 @@ void NetworkThread::AddNewSession(NetworkSessionPtr _new_network_session_ptr)
 }
 
 tcp::socket* NetworkThread::GetSocketForAccept() { return &accept_socket_; }
-
-void NetworkThread::AddNewSockets()
-{
-	std::lock_guard<std::mutex> lock(new_session_lock);
-
-	if (new_session_vec_.empty())
-		return;
-
-	for (auto _session : new_session_vec_)
-	{
-		if (!_session->is_open())
-		{
-			// callback 고려, SocketRemoved
-			--connections_;
-		}
-		else
-			active_session_vec_.push_back(_session);
-	}
-
-	new_session_vec_.clear();
-}

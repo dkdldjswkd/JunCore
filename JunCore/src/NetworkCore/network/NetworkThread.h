@@ -18,18 +18,15 @@ public:
 
 public:
 	bool Start();
+	void Run();
+	void Update();
 	void Stop();
 	void Wait();
+
+public:
 	int32 GetConnectionCount() const;
 	void AddNewSession(NetworkSessionPtr _new_network_session_ptr);
 	tcp::socket* GetSocketForAccept();
-
-protected:
-	void Run();
-	void Update();
-
-private:
-	void AddNewSockets();
 
 private:
 	std::atomic<int32> connections_;
@@ -46,5 +43,4 @@ private:
 	tcp::socket accept_socket_;
 	DeadlineTimer update_timer_;
 };
-
 #endif

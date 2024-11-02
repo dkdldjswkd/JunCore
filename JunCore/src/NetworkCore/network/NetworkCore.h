@@ -16,6 +16,7 @@ public:
 	NetworkCore();
 	virtual ~NetworkCore();
 
+public:
 	bool StartNetwork(std::string const& _bind_ip, uint16 _port, int _worker_cnt);
 	void StopNetwork();
 

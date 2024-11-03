@@ -5,14 +5,14 @@ find_package(Boost REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# echo_server 정의
-add_executable(echo_server 
+# EchoServer 정의
+add_executable(EchoServer 
  "main.cpp"
  "network/EchoServer.h"
 )
 
-# PUBLIC : echo_server를 사용하는 프로젝트에도 포함된다.
-target_include_directories(echo_server 
+# PUBLIC : EchoServer를 사용하는 프로젝트에도 포함된다.
+target_include_directories(EchoServer 
 	PRIVATE 
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${Boost_INCLUDE_DIRS}
@@ -20,8 +20,8 @@ target_include_directories(echo_server
 		NetworkCore
 )
 
-# PUBLIC : echo_server에서 링크한 라이브러리들이 echo_server를 사용하는 프로젝트에게도 링크된다.
-target_link_libraries(echo_server 
+# PUBLIC : EchoServer에서 링크한 라이브러리들이 EchoServer를 사용하는 프로젝트에게도 링크된다.
+target_link_libraries(EchoServer 
 	PRIVATE 
 		${Boost_LIBRARIES}
 		common

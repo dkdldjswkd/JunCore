@@ -119,4 +119,5 @@ private:
     std::vector<uint8> _storage;
 };
 
-#endif /* __MESSAGEBUFFER_H_ */
+using MessageBufferPtr = std::shared_ptr<MessageBuffer>;
+#endif 

@@ -17,6 +17,8 @@ using boost::asio::ip::tcp;
 class NetworkThread;
 class NetworkManager;
 
+
+
 class Session
 {
 	friend NetworkManager;
@@ -27,7 +29,16 @@ public:
 	~Session();
 
 public:
-	void SendPacket(MessageBuffer&& buffer);
+	template <typename T>
+	void SendPacket(const T& buffer)
+	{
+		MessageBufferPtr _message_buffer_ptr = std::make_shared<MessageBuffer>();
+
+		// 헤더 및 Packet 세팅
+
+		// todo : server core header 세팅
+		send_queue_.push(_message_buffer_ptr);
+	}
 
 public:
 	// addr
@@ -56,7 +67,7 @@ private:
 private:
 	tcp::socket socket_;
 	/*ring_buffer*/ MessageBuffer recv_buffer_; // ring_buffer 교체할것.
-	std::queue<MessageBuffer> send_queue_;
+	std::queue<MessageBufferPtr> send_queue_;
 
 	// addr
 	boost::asio::ip::address remote_address_;

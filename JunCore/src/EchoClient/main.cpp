@@ -2,12 +2,12 @@
 #include <boost/asio/post.hpp>
 #include <boost/asio/thread_pool.hpp>
 #include <thread>
-#include "network/EchoServer.h"
+#include "network/EchoClient.h"
 using namespace std;
 
 int main()
 {
-	cout << "2" << endl;
+	cout << "EchoClient" << endl;
 
 	//// 서버 연결 정보 설정
 	//std::string _ip   = "0.0.0.0";  // sConfigMgr->GetStringDefault("BindIP", "0.0.0.0");

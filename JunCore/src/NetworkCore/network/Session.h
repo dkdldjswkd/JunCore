@@ -7,7 +7,6 @@
 #include <atomic>
 #include <boost/asio/ip/tcp.hpp>
 #include "Utilities/MessageBuffer.h"
-#include "../Packets/PacketHeader.h"
 #include <ring_buffer.h>
 
 using boost::asio::ip::tcp;
@@ -16,8 +15,6 @@ using boost::asio::ip::tcp;
 
 class NetworkThread;
 class NetworkManager;
-
-
 
 class Session
 {

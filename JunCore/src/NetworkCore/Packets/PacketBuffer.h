@@ -4,8 +4,20 @@
 #include <Windows.h>
 #include <winnt.h>
 #include <exception>
+#include "PacketHeader.h"
 
 #define MAX_PAYLOAD_LEN 8000
+
+using BYTE = unsigned char;
+
+#pragma pack(push, 1)
+struct PacketHeader {
+	BYTE code;
+	WORD len;
+	BYTE randKey;
+	BYTE checkSum;
+};
+#pragma pack(pop)
 
 struct PacketException : public std::exception {
 public:
@@ -18,7 +30,6 @@ public:
 #define PUT_ERROR 1 // << Error
 };
 
-template<typename PacketHeader>
 class PacketBuffer {
 public:
 	PacketBuffer();
@@ -106,8 +117,8 @@ public:
 	void GetData(char* dst, int size);
 };
 
-template<typename PacketHeader>
-PacketBuffer<PacketHeader>::PacketBuffer()
+
+PacketBuffer::PacketBuffer()
 	: header_len_(sizeof(PacketHeader)), size_(header_len_ + MAX_PAYLOAD_LEN)
 {
 	begin_	= (char*)malloc(size_);
@@ -117,52 +128,52 @@ PacketBuffer<PacketHeader>::PacketBuffer()
 	write_pos_	 = begin_ + header_len_;
 }
 
-template<typename PacketHeader>
-inline PacketBuffer<PacketHeader>::~PacketBuffer() {
+
+inline PacketBuffer::~PacketBuffer() {
 	free((char*)begin_);
 }
 
-template<typename PacketHeader>
-void PacketBuffer<PacketHeader>::Initialization() {
+
+void PacketBuffer::Initialization() {
 	payload_pos_ = begin_ + header_len_;
 	write_pos_ = begin_ + header_len_;
 	encrypted_ = false;
 }
 
-template<typename PacketHeader>
-inline int PacketBuffer<PacketHeader>::GetPacketSize() {
+
+inline int PacketBuffer::GetPacketSize() {
 	return (write_pos_ - payload_pos_) + header_len_;
 }
 
-template<typename PacketHeader>
-inline char* PacketBuffer<PacketHeader>::GetPacketPos() {
+
+inline char* PacketBuffer::GetPacketPos() {
 	return (payload_pos_ - header_len_);
 }
 
-template<typename PacketHeader>
-inline bool PacketBuffer<PacketHeader>::Empty() const {
+
+inline bool PacketBuffer::Empty() const {
 	if (write_pos_ <= payload_pos_) return true;
 	return false;
 }
 
-template<typename PacketHeader>
-bool PacketBuffer<PacketHeader>::Full() const {
+
+bool PacketBuffer::Full() const {
 	if (write_pos_ + 1 == end_) return true;
 	return false;
 }
 
-template<typename PacketHeader>
-inline int PacketBuffer<PacketHeader>::GetFreeSize() const {
+
+inline int PacketBuffer::GetFreeSize() const {
 	return end_ - write_pos_;
 }
 
-template<typename PacketHeader>
-inline int PacketBuffer<PacketHeader>::GetPayloadSize() const {
+
+inline int PacketBuffer::GetPayloadSize() const {
 	return write_pos_ - payload_pos_;
 }
 
-template<typename PacketHeader>
-void PacketBuffer<PacketHeader>::SetNetHeader(BYTE protocol_code, BYTE private_key) 
+
+void PacketBuffer::SetNetHeader(BYTE protocol_code, BYTE private_key) 
 {
 	// 중복 암호화 하지 않기 위함 (이미 암호화 된 패킷)
 	if (encrypted_) return;
@@ -190,8 +201,8 @@ void PacketBuffer<PacketHeader>::SetNetHeader(BYTE protocol_code, BYTE private_k
 }
 
 // 암호패킷을 this에 복호화
-template<typename PacketHeader>
-bool PacketBuffer<PacketHeader>::DecryptPacket(char* encryptPacket, BYTE privateKey) {
+
+bool PacketBuffer::DecryptPacket(char* encryptPacket, BYTE privateKey) {
 	// 복호화 변수
 	const BYTE RK = ((PacketHeader*)encryptPacket)->randKey;
 	const BYTE K = privateKey;
@@ -225,8 +236,8 @@ bool PacketBuffer<PacketHeader>::DecryptPacket(char* encryptPacket, BYTE private
 	return false;
 }
 
-template<typename PacketHeader>
-BYTE PacketBuffer<PacketHeader>::GetChecksum() {
+
+BYTE PacketBuffer::GetChecksum() {
 	WORD len = GetPayloadSize();
 
 	DWORD checkSum = 0;
@@ -242,8 +253,8 @@ BYTE PacketBuffer<PacketHeader>::GetChecksum() {
 //	operator <<
 ///////////////////////////////
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const char& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const char& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -254,8 +265,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const char& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned char& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const unsigned char& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -266,8 +277,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned char& data) 
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const int& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const int& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -278,8 +289,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const int& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned int& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const unsigned int& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -290,8 +301,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned int& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const long& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const long& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -302,8 +313,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const long& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned long& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const unsigned long& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -314,8 +325,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned long& data) 
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const short& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const short& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -326,8 +337,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const short& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned short& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const unsigned short& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -338,8 +349,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned short& data)
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const float& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const float& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -350,8 +361,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const float& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const double& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const double& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -362,8 +373,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const double& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const long long& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const long long& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -374,8 +385,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const long long& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned long long& data) {
+
+PacketBuffer& PacketBuffer::operator<<(const unsigned long long& data) {
 	if (write_pos_ + sizeof(data) <= end_) {
 		memmove(write_pos_, &data, sizeof(data));
 		write_pos_ += sizeof(data);
@@ -390,8 +401,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator<<(const unsigned long long& d
 //	operator >>
 ///////////////////////////////
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(char& data) {
+
+PacketBuffer& PacketBuffer::operator>>(char& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -402,8 +413,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(char& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned char& data) {
+
+PacketBuffer& PacketBuffer::operator>>(unsigned char& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -414,8 +425,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned char& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(int& data) {
+
+PacketBuffer& PacketBuffer::operator>>(int& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -426,8 +437,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(int& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned int& data) {
+
+PacketBuffer& PacketBuffer::operator>>(unsigned int& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -438,8 +449,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned int& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(long& data) {
+
+PacketBuffer& PacketBuffer::operator>>(long& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -450,8 +461,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(long& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned long& data) {
+
+PacketBuffer& PacketBuffer::operator>>(unsigned long& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -462,8 +473,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned long& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(short& data) {
+
+PacketBuffer& PacketBuffer::operator>>(short& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -474,8 +485,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(short& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned short& data) {
+
+PacketBuffer& PacketBuffer::operator>>(unsigned short& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -486,8 +497,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned short& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(float& data) {
+
+PacketBuffer& PacketBuffer::operator>>(float& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -499,8 +510,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(float& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(double& data) {
+
+PacketBuffer& PacketBuffer::operator>>(double& data) {
 	if (payload_pos_ + sizeof(data) <= `) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -511,8 +522,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(double& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(long long& data) {
+
+PacketBuffer& PacketBuffer::operator>>(long long& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -523,8 +534,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(long long& data) {
 	return *this;
 }
 
-template<typename PacketHeader>
-PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned long long& data) {
+
+PacketBuffer& PacketBuffer::operator>>(unsigned long long& data) {
 	if (payload_pos_ + sizeof(data) <= write_pos_) {
 		memmove(&data, payload_pos_, sizeof(data));
 		payload_pos_ += sizeof(data);
@@ -539,8 +550,8 @@ PacketBuffer& PacketBuffer<PacketHeader>::operator>>(unsigned long long& data) {
 //	PUT, GET
 ///////////////////////////////
 
-template<typename PacketHeader>
-void PacketBuffer<PacketHeader>::PutData(const char* src, int size) {
+
+void PacketBuffer::PutData(const char* src, int size) {
 	if (write_pos_ + size <= end_) {
 		memmove(write_pos_, src, size);
 		write_pos_ += size;
@@ -550,8 +561,8 @@ void PacketBuffer<PacketHeader>::PutData(const char* src, int size) {
 	}
 }
 
-template<typename PacketHeader>
-void PacketBuffer<PacketHeader>::GetData(char* dst, int size) {
+
+void PacketBuffer::GetData(char* dst, int size) {
 	if (payload_pos_ + size <= write_pos_) {
 		memmove(dst, payload_pos_, size);
 		payload_pos_ += size;

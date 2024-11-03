@@ -20,11 +20,13 @@ public:
 	bool StartServer(std::string const& _bind_ip, uint16 _port, int _worker_cnt);
 	void StopServer();
 
-	bool StartClient();
-	bool StopClient();
-
 private:
-	void accept();
+	void Accept();
+	virtual void OnAccept(SessionPtr session_ptr);
+
+public:
+	void Connect(const tcp::endpoint& endpoint);
+	virtual void OnConnect(SessionPtr session_ptr);
 
 private:
 	boost::asio::io_context* io_context_ = nullptr;

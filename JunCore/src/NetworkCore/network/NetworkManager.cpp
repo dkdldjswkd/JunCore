@@ -1,4 +1,5 @@
 #include "NetworkManager.h"
+#include "Session.h"
 
 NetworkManager::NetworkManager()
 {
@@ -11,7 +12,7 @@ NetworkManager::~NetworkManager()
 bool NetworkManager::StartServer(std::string const& bind_ip, uint16 port, int worker_cnt)
 {
 	io_context_ = new boost::asio::io_context;
-	acceptor_ = new AsyncAcceptor(*io_context_, bind_ip, port);
+	acceptor_	= new AsyncAcceptor(*io_context_, bind_ip, port);
 
 	// CHECK_RETURN(threadCount > 0, false);
 
@@ -32,9 +33,10 @@ bool NetworkManager::StartServer(std::string const& bind_ip, uint16 port, int wo
 		worker->Start();
 	}
 
-	this->accept();
+	this->Accept();
 	return true;
 }
+
 void NetworkManager::StopServer()
 {
 	// 1. acceptor 종료
@@ -64,7 +66,7 @@ void NetworkManager::StopServer()
 	}
 }
 
-void NetworkManager::accept()
+void NetworkManager::Accept()
 {
 	uint32 min_network_thread_index = 0;
 
@@ -88,12 +90,52 @@ void NetworkManager::accept()
 				SessionPtr new_network_session = std::make_shared<Session>(std::move(*accept_sock));
 				network_threads_[min_network_thread_index]->AddNewSession(new_network_session);
 				new_network_session->Start();
+
+				// 사용자 재정의 callback
+				OnAccept(new_network_session);
 			}
 
 			if (!acceptor_->is_closed())
 			{
-				this->accept();
+				this->Accept();
 			}
 		}
 	);
+}
+
+void NetworkManager::OnAccept(SessionPtr session_ptr)
+{
+}
+
+void NetworkManager::Connect(const tcp::endpoint& endpoint)
+{
+	// NetworkThread에서 Session 가져오기
+	boost::asio::io_context io_context;
+	tcp::socket socket(io_context);
+	auto session_ptr = std::make_shared<Session>(std::move(socket));
+
+	// session에 server session flag 설정
+	// ...
+
+	session_ptr->socket_.async_connect(endpoint,
+		[this, session_ptr](boost::system::error_code ec) {
+			if (!ec)
+			{
+				// NetworkThread에 AddNewSession
+				// session_ptr->StartClient()
+
+				// 사용자 제정의 callback
+				OnConnect(session_ptr);
+			}
+			else
+			{
+				// Timer에 reconnect 시도 등록
+				// ...
+			}
+		}
+	);
+}
+
+void NetworkManager::OnConnect(SessionPtr session_ptr)
+{
 }

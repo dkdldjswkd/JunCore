@@ -3,10 +3,15 @@
 #include <boost/asio/thread_pool.hpp>
 #include <thread>
 #include "network/EchoServer.h"
+#include "packet/packet.pb.h"
 using namespace std;
 
 int main()
 {
+	PacketLib::UG_ECHO_REQ a;
+	a.set_echo("PacketLib::UG_ECHO_REQ");
+	cout << a.echo() << endl;
+
 	cout << "EchoServer" << endl;
 
 	//// 서버 연결 정보 설정

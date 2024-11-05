@@ -7,6 +7,9 @@ class EchoClient : public NetworkManager
 {
 public:
 	static EchoClient& Instance();
+
+public:
+	virtual void OnConnect(SessionPtr session_ptr) override;
 };
 
 #define sEchoClient EchoClient::Instance()

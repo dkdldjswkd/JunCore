@@ -20,6 +20,9 @@ public:
 	bool StartServer(std::string const& _bind_ip, uint16 _port, int _worker_cnt);
 	void StopServer();
 
+	// todo 수정 반드시 필요
+	bool StartClient(int _worker_cnt);
+
 private:
 	void Accept();
 	virtual void OnAccept(SessionPtr session_ptr);

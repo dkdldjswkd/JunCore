@@ -107,15 +107,48 @@ void NetworkManager::OnAccept(SessionPtr session_ptr)
 {
 }
 
+bool NetworkManager::StartClient(int worker_cnt)
+{
+	// CHECK_RETURN(threadCount > 0, false);
+
+	network_threads_.reserve(worker_cnt);
+
+	for (int i = 0; i < worker_cnt; ++i)
+	{
+		auto worker = new NetworkThread();
+		network_threads_.emplace_back(worker);
+
+		worker->Start();
+	}
+
+	return true;
+}
+
 void NetworkManager::Connect(const tcp::endpoint& endpoint)
 {
-	// NetworkThread에서 Session 가져오기
-	boost::asio::io_context io_context;
-	tcp::socket socket(io_context);
-	auto session_ptr = std::make_shared<Session>(std::move(socket));
+	// server session의 경우 server_session_flag = true 등 처리 필요?
+	//		ㄴ server session인걸 알아야하는 경우가 있나?
 
-	// session에 server session flag 설정
-	// ...
+	// server session의 경우 client session과 worker thread 분리 필요?
+	//		ㄴ client session의 메시지가 server session의 메시지 처리에 영향을 주지 않게 하기위해서 분리 필요
+ 
+	////////////////////////////////////////////////////////////////////////
+
+	uint32 min_network_thread_index = 0;
+
+	for (int worker_index = 0; worker_index < network_threads_.size(); ++worker_index)
+	{
+		if (network_threads_[worker_index]->GetConnectionCount() < network_threads_[min_network_thread_index]->GetConnectionCount())
+			min_network_thread_index = worker_index;
+	}
+
+	tcp::socket* connect_sock = network_threads_[min_network_thread_index]->GetSocketForAccept();
+
+	// 비동기 소켓으로 설정
+	connect_sock->non_blocking(true);
+
+	// Session 생성
+	SessionPtr session_ptr = std::make_shared<Session>(std::move(*connect_sock));
 
 	session_ptr->socket_.async_connect(endpoint,
 		[this, session_ptr](boost::system::error_code ec) {

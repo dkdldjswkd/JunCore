@@ -8,21 +8,33 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # EchoClient 정의
 add_executable(EchoClient 
  "main.cpp"
+ "packet/packet.pb.cc"
+ "network/EchoClient.cpp"
 )
+
+if(MSVC) # Windows
+    link_directories(${LIB_DIR})
+    set(LINK_LIBS libprotobufd)
+    link_libraries(${LINK_LIBS})
+endif()
 
 # PUBLIC : EchoClient를 사용하는 프로젝트에도 포함된다.
 target_include_directories(EchoClient 
-	PRIVATE 
-		${CMAKE_CURRENT_SOURCE_DIR}
-		${Boost_INCLUDE_DIRS}
-		common
-		NetworkCore
+    PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${Boost_INCLUDE_DIRS}
+        ${LIB_INCLUDE_DIR}
+        ${Abseil_INCLUDE_DIRS}
+        common
+        NetworkCore
 )
 
 # PUBLIC : EchoClient에서 링크한 라이브러리들이 EchoClient를 사용하는 프로젝트에게도 링크된다.
 target_link_libraries(EchoClient 
-	PRIVATE 
-		${Boost_LIBRARIES}
-		common
-		NetworkCore
+    PRIVATE 
+        ${Boost_LIBRARIES}
+        common
+        NetworkCore
+        C:\\ProjectVic\\vic_server_lib\\lib\\Debug\\libprotobufd.lib
+        # ${LINK_LIBS}
 )

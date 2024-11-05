@@ -1,0 +1,12 @@
+syntax = "proto3";
+package PacketLib;
+
+message UG_ECHO_REQ
+{
+	string echo = 1;
+}
+
+message GU_ECHO_RES
+{
+	string echo = 1;
+}

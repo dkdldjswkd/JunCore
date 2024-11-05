@@ -10,8 +10,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # EchoServer 정의
 add_executable(EchoServer 
     "main.cpp"
-    "network/EchoServer.h"
     "packet/packet.pb.cc"
+    "network/EchoServer.cpp"
 )
 
 if(MSVC) # Windows

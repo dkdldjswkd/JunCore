@@ -142,23 +142,22 @@ void NetworkManager::Connect(const tcp::endpoint& endpoint)
 			min_network_thread_index = worker_index;
 	}
 
-	tcp::socket* connect_sock = network_threads_[min_network_thread_index]->GetSocketForAccept();
+	tcp::socket* connect_sock = network_threads_[min_network_thread_index]->GetSocketForConnect();
 
-	// 비동기 소켓으로 설정
-	connect_sock->non_blocking(true);
-
-	// Session 생성
-	SessionPtr session_ptr = std::make_shared<Session>(std::move(*connect_sock));
-
-	session_ptr->socket_.async_connect(endpoint,
-		[this, session_ptr](boost::system::error_code ec) {
+	connect_sock->async_connect(endpoint,
+		[this, &connect_sock, min_network_thread_index](boost::system::error_code ec) {
 			if (!ec)
 			{
-				// NetworkThread에 AddNewSession
-				// session_ptr->StartClient()
+				// 비동기 소켓으로 설정
+				// connect_sock->non_blocking(true);
+
+				// todo 고려
+				SessionPtr new_network_session = std::make_shared<Session>(std::move(*connect_sock));
+				network_threads_[min_network_thread_index]->AddNewSession(new_network_session);
+				new_network_session->Start();
 
 				// 사용자 제정의 callback
-				OnConnect(session_ptr);
+				OnConnect(new_network_session);
 			}
 			else
 			{

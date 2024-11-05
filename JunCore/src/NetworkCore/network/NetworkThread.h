@@ -27,6 +27,7 @@ public:
 	int32 GetConnectionCount() const;
 	void AddNewSession(SessionPtr _new_network_session_ptr);
 	tcp::socket* GetSocketForAccept();
+	tcp::socket* GetSocketForConnect();
 
 private:
 	std::atomic<int32> connections_;
@@ -41,6 +42,7 @@ private:
 
 	boost::asio::io_context io_context_;
 	tcp::socket accept_socket_;
+	tcp::socket connect_socket_;
 	DeadlineTimer update_timer_;
 };
 #endif

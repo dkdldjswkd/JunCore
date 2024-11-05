@@ -1,6 +1,6 @@
 ﻿#include "NetworkThread.h"
 
-NetworkThread::NetworkThread() : connections_(0), stopped_(false), thread_(nullptr), io_context_(1), accept_socket_(io_context_), update_timer_(io_context_)
+NetworkThread::NetworkThread() : connections_(0), stopped_(false), thread_(nullptr), io_context_(1), accept_socket_(io_context_), connect_socket_(io_context_), update_timer_(io_context_)
 {
 }
 
@@ -130,4 +130,12 @@ void NetworkThread::AddNewSession(SessionPtr _new_network_session_ptr)
 	// callback 고려
 }
 
-tcp::socket* NetworkThread::GetSocketForAccept() { return &accept_socket_; }
+tcp::socket* NetworkThread::GetSocketForAccept() 
+{ 
+	return &accept_socket_; 
+}
+
+tcp::socket* NetworkThread::GetSocketForConnect() 
+{ 
+	return &connect_socket_; 
+}

@@ -9,6 +9,7 @@
 #include "Utilities/MessageBuffer.h"
 #include <RingBuffer.h>
 #include "../Packets/PacketBuffer.h"
+#include <google/protobuf/message.h>
 
 using boost::asio::ip::tcp;
 
@@ -27,8 +28,7 @@ public:
 	~Session();
 
 public:
-	template <typename T>
-	void SendPacket(const T& buffer)
+	void SendPacket(google::protobuf::Message& buffer)
 	{
 		const int32 _payload_size = buffer.ByteSizeLong();
 
@@ -72,7 +72,7 @@ private:
 
 private:
 	tcp::socket socket_;
-	/*RingBuffer*/ MessageBuffer recv_buffer_; // RingBuffer 교체할것.
+	MessageBuffer recv_buffer_;
 	std::queue<PacketBufferPtr> send_queue_; // LFQ로 교체?
 
 	// addr

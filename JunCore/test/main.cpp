@@ -8,22 +8,27 @@
 #include <mutex>
 #include <cstdint>
 #include <cstring>
+#include <iostream>
 
-// 예제 함수
-void exampleFunction(int a, int b, int c)
+class Base {
+public:
+    virtual void show() { std::cout << "Base" << std::endl; }
+};
+
+class Derived : public Base {
+public:
+    void show() override { std::cout << "Derived" << std::endl; }
+};
+
+void f(Base& _base)
 {
-    std::cout << "a: " << a << ", b: " << b << ", c: " << c << std::endl;
+	_base.show();
 }
 
 int main()
 {
-    // std::bind를 사용하여 exampleFunction을 바인딩
-    auto boundFunction = std::bind(exampleFunction, std::placeholders::_1, 2, std::placeholders::_2);
-
-    // boundFunction을 호출하면서 인수를 전달
-    boundFunction(10, 20); // 출력: a: 10, b: 20
-
-    return 0;
+	Derived _derived;
+	f(_derived);
 }
 
 //#include <boost/asio.hpp>

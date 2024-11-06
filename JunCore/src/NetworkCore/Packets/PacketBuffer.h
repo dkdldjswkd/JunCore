@@ -15,6 +15,7 @@ struct PacketHeader {
 	WORD len;
 	BYTE randKey;
 	BYTE checkSum;
+	WORD pid;
 };
 #pragma pack(pop)
 

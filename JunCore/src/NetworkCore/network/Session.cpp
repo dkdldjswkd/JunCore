@@ -32,7 +32,7 @@ void Session::AsyncRecv()
 
 void Session::ReadHandler(boost::system::error_code error, size_t transferredBytes)
 {
-	if (error)
+	if (error || !(0 < transferredBytes))
 	{
 		CloseSocket();
 		return;
@@ -43,8 +43,38 @@ void Session::ReadHandler(boost::system::error_code error, size_t transferredByt
 	if (!IsOpen())
 		return;
 
-	// ... 패킷 처리
+	/////////////////////
+	// 패킷 처리
+	/////////////////////
 
+	for (;;)
+	{
+		const int32 _recv_size = recv_buffer_.GetActiveSize();
+
+		// 1. 헤더 사이즈 체크
+		if (_recv_size < HEADER_SIZE)
+		{
+			recv_buffer_.Normalize();
+			break;
+		}
+
+		PacketHeader* _p_packet_header = (PacketHeader*)recv_buffer_.GetReadPointer();
+
+		// 2. code 검사
+		// ...
+
+		// 3. 페이로드 Size 체크
+		if (_recv_size < (HEADER_SIZE + _p_packet_header->len))
+		{
+			recv_buffer_.Normalize();
+			break;
+		}
+
+		(recv_buffer_.GetReadPointer() + HEADER_SIZE);
+
+	}
+
+	// Recv 예약
 	AsyncRecv();
 }
 

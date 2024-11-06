@@ -72,11 +72,11 @@ bool Session::ProcessSendQueue()
 	if (send_queue_.empty())
 		return false;
 
-	MessageBufferPtr _send_msg_ptr = send_queue_.front();
-	std::size_t _send_msg_size = _send_msg_ptr->GetActiveSize();
+	PacketBufferPtr _send_msg_ptr = send_queue_.front();
+	std::size_t _send_msg_size = _send_msg_ptr->GetPacketSize();
 
 	boost::system::error_code error;
-	std::size_t _complete_send_msg_size = socket_.write_some(boost::asio::buffer(_send_msg_ptr->GetReadPointer(), _send_msg_size), error);
+	std::size_t _complete_send_msg_size = socket_.write_some(boost::asio::buffer(_send_msg_ptr->GetPacketPos(), _send_msg_size), error);
 
 	if (error)
 	{
@@ -101,7 +101,7 @@ bool Session::ProcessSendQueue()
 	if (_complete_send_msg_size < _send_msg_size)
 	{
 		// LOG_ERROR("invalid case");
-		_send_msg_ptr->ReadCompleted(_complete_send_msg_size);
+		// read pos 전진
 		ScheduleSend();
 		return false;
 	}

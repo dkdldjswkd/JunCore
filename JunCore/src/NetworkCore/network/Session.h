@@ -8,7 +8,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include "Utilities/MessageBuffer.h"
 #include <ring_buffer.h>
-#include "Packets/PacketBuffer.h"
+#include "../Packets/PacketBuffer.h"
 
 using boost::asio::ip::tcp;
 
@@ -42,29 +42,8 @@ public:
 		buffer.SerializeToArray(_packet_buffer_ptr->GetWritePos(), _payload_size);
 		_packet_buffer_ptr->MoveWp(_payload_size);
 		_packet_buffer_ptr->SetHeader();
-		//// 헤더 및 Packet 세팅
-		//{
-		//	// CHECK_RETURN(true == check_remain_size(_packet_size), false);
-		//	_packet_header._size = _packet_size;
-		//	_packet_header._seq = _crypt.advance_send_seq();
-		//	CHECK_RETURN(_pid < MAX_PACKET_NUMBER, false);
-		//	_packet_header._pid = _pid;
-		//	_packet_header._check = server_config::header_match_value;
-		//	_packet_header._option = packet_option{ _b_comp };
-		//	_packet_header._compression_msg_size = _compression_msg_size;
-		//	_packet_header._msg_size = _msg_size;
 
-		//	memcpy(_buffer.data(), reinterpret_cast<const char*>(&_packet_header), _header_size);
-
-		// 암호화
-		//	_crypt.encrypt(_buffer.data(), _packet_size);
-		//	_write_positon += _packet_size;
-		//}
-
-
-
-		// todo : server core header 세팅
-//		send_queue_.push(_packet_buffer_ptr);
+		send_queue_.push(_packet_buffer_ptr);
 	}
 
 public:
@@ -94,7 +73,7 @@ private:
 private:
 	tcp::socket socket_;
 	/*ring_buffer*/ MessageBuffer recv_buffer_; // ring_buffer 교체할것.
-	std::queue<MessageBufferPtr> send_queue_;
+	std::queue<PacketBufferPtr> send_queue_; // LFQ로 교체?
 
 	// addr
 	boost::asio::ip::address remote_address_;

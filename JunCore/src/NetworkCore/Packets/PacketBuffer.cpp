@@ -23,11 +23,8 @@ void PacketBuffer::Initialization()
 	encrypted_ = false;
 }
 
-int PacketBuffer::GetPacketSize() {
-	return (write_pos_ - payload_pos_) + HEADER_SIZE;
-}
-
-char* PacketBuffer::GetPacketPos() {
+char* PacketBuffer::GetPacketPos() const 
+{
 	return begin_;
 }
 
@@ -47,6 +44,9 @@ int PacketBuffer::GetFreeSize() const {
 	return end_ - write_pos_;
 }
 
+int PacketBuffer::GetPacketSize() const {
+	return write_pos_ - begin_;
+}
 
 int PacketBuffer::GetPayloadSize() const {
 	return write_pos_ - payload_pos_;

@@ -53,12 +53,6 @@ private:
 	// 패킷 복호화
 	bool DecryptPacket(char* encryptPacket, BYTE privateKey);
 
-	// 헤더 포함 패킷 시작 주소 반환 (payLoadPos - headerLen)
-	char* GetPacketPos();
-
-	// 패킷 사이즈 반환 (패킷 헤더 사이즈 포함)
-	int GetPacketSize();
-
 	// 체크섬 반환
 	BYTE GetChecksum();
 
@@ -74,9 +68,11 @@ public:
 	bool Full() const;
 
 	// Getter
-	int GetFreeSize()const;
-	int GetPayloadSize() const;
+	char* GetPacketPos() const;
 	char* GetWritePos() const;
+	int GetFreeSize()const;
+	int GetPacketSize() const;
+	int GetPayloadSize() const;
 
 	// move pos
 	void MoveWp(int size) { write_pos_ += size; }

@@ -96,6 +96,8 @@ void NetworkManager::AsyncAccept()
 		{
 			if (!error)
 			{
+				std::cout << "AsyncAccept callback" << std::endl;
+
 				// 비동기 소켓으로 생성
 				accept_sock->non_blocking(true);
 

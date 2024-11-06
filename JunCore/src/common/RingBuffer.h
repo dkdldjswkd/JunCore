@@ -13,10 +13,10 @@
 #define MASKING_BIT(n)		MASKING_13BIT(n)
 #define BUF_SIZE			8192
 
-class ring_buffer {
+class RingBuffer {
 public:
-	ring_buffer();
-	~ring_buffer();
+	RingBuffer();
+	~RingBuffer();
 
 private:
 	char* begin;
@@ -61,19 +61,19 @@ public:
 	int Peek(void* dst, size_t size) const;
 };
 
-inline int ring_buffer::MustEnqueue(const void* src, size_t size) {
+inline int RingBuffer::MustEnqueue(const void* src, size_t size) {
 	memmove(writePos, src, size);
 	MoveRear(size);
 	return size;
 }
 
-inline int ring_buffer::MustDequeue(void* dst, size_t size) {
+inline int RingBuffer::MustDequeue(void* dst, size_t size) {
 	memmove(dst, readPos, size);
 	MoveFront(size);
 	return size;
 }
 
-inline void ring_buffer::Clear() {
+inline void RingBuffer::Clear() {
 	front = begin;
 	rear = begin;
 
@@ -88,30 +88,30 @@ inline void ring_buffer::Clear() {
 // 다시 begin 부터 첫번째 벽(wp, rp)까지 계산해야함
 ///////////////////////////////////////////////////////////////////////
 
-inline int ring_buffer::DirectEnqueueSize() const {
+inline int RingBuffer::DirectEnqueueSize() const {
 	if (front < writePos) return end - writePos; // 첫번째 벽 (front) 이후
 	else return front - writePos;
 }
 
-inline int ring_buffer::RemainEnqueueSize() const {
+inline int RingBuffer::RemainEnqueueSize() const {
 	if (writePos <= front) return 0; // 첫번째 벽 이전
 	else return front - begin;
 }
 
-inline int ring_buffer::DirectDequeueSize() const {
+inline int RingBuffer::DirectDequeueSize() const {
 	if (writePos < readPos) return end - readPos; // 첫번째 벽  (write pos) 이후
 	else return writePos - readPos;
 }
 
-inline int ring_buffer::RemainDequeueSize() const {
+inline int RingBuffer::RemainDequeueSize() const {
 	if (readPos <= writePos) return 0; // 첫번째 벽 이전
 	else return writePos - begin;
 }
 
-int ring_buffer::GetFreeSize() const {
+int RingBuffer::GetFreeSize() const {
 	return  DirectEnqueueSize() + RemainEnqueueSize();
 }
-inline int ring_buffer::GetUseSize() const {
+inline int RingBuffer::GetUseSize() const {
 	return  DirectDequeueSize() + RemainDequeueSize();
 };
 

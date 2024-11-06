@@ -7,7 +7,7 @@
 #include <atomic>
 #include <boost/asio/ip/tcp.hpp>
 #include "Utilities/MessageBuffer.h"
-#include <ring_buffer.h>
+#include <RingBuffer.h>
 #include "../Packets/PacketBuffer.h"
 
 using boost::asio::ip::tcp;
@@ -72,7 +72,7 @@ private:
 
 private:
 	tcp::socket socket_;
-	/*ring_buffer*/ MessageBuffer recv_buffer_; // ring_buffer 교체할것.
+	/*RingBuffer*/ MessageBuffer recv_buffer_; // RingBuffer 교체할것.
 	std::queue<PacketBufferPtr> send_queue_; // LFQ로 교체?
 
 	// addr

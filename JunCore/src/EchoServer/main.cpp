@@ -8,7 +8,9 @@ using namespace std;
 
 void main()
 {
-	cout << "EchoServer" << "오후 6:08 2024-11-05" << endl;
+	cout << "EchoServer" 
+		<< "오후 11:09 2024-11-06" 
+		<< endl;
 
 	PacketLib::UG_ECHO_REQ a;
 	a.set_echo("PacketLib::UG_ECHO_REQ");

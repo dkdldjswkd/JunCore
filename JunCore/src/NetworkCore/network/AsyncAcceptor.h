@@ -15,19 +15,14 @@ public:
 	~AsyncAcceptor();
 
 public:
-	bool Bind();
-	inline void accept(tcp::socket& _socket, std::function<void(boost::system::error_code)> _accept_handler);
-	void close();
-	bool is_closed() const;
+	bool Listen();
+	void AsyncAccept(tcp::socket& _socket, std::function<void(boost::system::error_code)> _accept_handler);
+	void Close();
+	bool IsClosed() const;
 
 private:
 	tcp::acceptor _acceptor;
 	tcp::endpoint _endpoint;
 	std::atomic<bool> _closed;
 };
-
-inline void AsyncAcceptor::accept(tcp::socket& _socket, std::function<void(boost::system::error_code)> _accept_handler)
-{
-	_acceptor.async_accept(_socket, _accept_handler);
-}
 #endif

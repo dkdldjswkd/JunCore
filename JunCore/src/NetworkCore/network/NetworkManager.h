@@ -7,6 +7,7 @@
 #include "Session.h"
 #include <boost/asio/ip/tcp.hpp>
 #include <memory>
+#include <thread>
 
 using boost::asio::ip::tcp;
 
@@ -24,7 +25,7 @@ public:
 	bool StartClient(int _worker_cnt);
 
 private:
-	void Accept();
+	void AsyncAccept();
 	virtual void OnAccept(SessionPtr session_ptr);
 
 public:
@@ -32,8 +33,12 @@ public:
 	virtual void OnConnect(SessionPtr session_ptr);
 
 private:
-	boost::asio::io_context* io_context_ = nullptr;
+	// acceptor
 	AsyncAcceptor* acceptor_ = nullptr;
+	boost::asio::io_context* io_context_ = nullptr; 
+	std::thread accept_thread_;
+
+	// worker
 	std::vector<NetworkThread*> network_threads_;
 };
 

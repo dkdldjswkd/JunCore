@@ -11,20 +11,25 @@ NetworkManager::~NetworkManager()
 
 bool NetworkManager::StartServer(std::string const& bind_ip, uint16 port, int worker_cnt)
 {
+	// CHECK_RETURN(0 < worker_cnt, false);
+
+	// 1. acceptor 생성
 	io_context_ = new boost::asio::io_context;
 	acceptor_	= new AsyncAcceptor(*io_context_, bind_ip, port);
 
-	// CHECK_RETURN(threadCount > 0, false);
-
-	if (!acceptor_->Bind())
+	// 2. liten
+	if (!acceptor_->Listen())
 	{
 		// LOG_ERROR
+
 		delete acceptor_;
+		delete io_context_;
 		return false;
 	}
 
 	network_threads_.reserve(worker_cnt);
 
+	// 3. worker thread 생성
 	for (int i = 0; i < worker_cnt; ++i)
 	{
 		auto worker = new NetworkThread();
@@ -33,40 +38,47 @@ bool NetworkManager::StartServer(std::string const& bind_ip, uint16 port, int wo
 		worker->Start();
 	}
 
-	this->Accept();
+	// 4. Accept
+	this->AsyncAccept();
+
+	// 5. Accept thread 생성
+	accept_thread_ = std::thread([this]() { io_context_->run(); });
 	return true;
 }
 
 void NetworkManager::StopServer()
 {
 	// 1. acceptor 종료
-	acceptor_->close();
+	acceptor_->Close();
 
 	// 2. acceptor ioconext stop
 	io_context_->stop();
 
-	// 3. acceptor 정리
+	// 3. accept thread join wait
+	accept_thread_.join();
+
+	// 4. acceptor 정리
 	delete acceptor_;
 	acceptor_ = nullptr;
 
-	// 4. acceptor ioconext 정리
+	// 5. acceptor ioconext 정리
 	delete io_context_;
 	io_context_ = nullptr;
 
-	// 5. workers ioconext stop
+	// 6. workers ioconext stop
 	for (const auto& worker : network_threads_)
 	{
 		worker->Stop();
 	}
 
-	// 6. workers join wait
+	// 7. workers join wait
 	for (const auto& worker : network_threads_)
 	{
 		worker->Wait();
 	}
 }
 
-void NetworkManager::Accept()
+void NetworkManager::AsyncAccept()
 {
 	uint32 min_network_thread_index = 0;
 
@@ -78,7 +90,7 @@ void NetworkManager::Accept()
 
 	tcp::socket* accept_sock = network_threads_[min_network_thread_index]->GetSocketForAccept();
 
-	acceptor_->accept(*accept_sock
+	acceptor_->AsyncAccept(*accept_sock
 		// accept handler
 		, [this, accept_sock, min_network_thread_index](boost::system::error_code error)
 		{
@@ -95,9 +107,9 @@ void NetworkManager::Accept()
 				OnAccept(new_network_session);
 			}
 
-			if (!acceptor_->is_closed())
+			if (!acceptor_->IsClosed())
 			{
-				this->Accept();
+				this->AsyncAccept();
 			}
 		}
 	);

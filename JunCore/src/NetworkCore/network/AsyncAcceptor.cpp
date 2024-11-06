@@ -9,7 +9,7 @@ AsyncAcceptor::~AsyncAcceptor()
 {
 }
 
-bool AsyncAcceptor::Bind()
+bool AsyncAcceptor::Listen()
 {
 	boost::system::error_code _error_code;
 	_acceptor.open(_endpoint.protocol(), _error_code);
@@ -43,16 +43,21 @@ bool AsyncAcceptor::Bind()
 	return true;
 }
 
-void AsyncAcceptor::close()
+void AsyncAcceptor::Close()
 {
 	if (_closed.exchange(true))
 		return;
 
 	boost::system::error_code err;
-	_acceptor.close(err);
+	_acceptor.close(OUT err);
 }
 
-bool AsyncAcceptor::is_closed() const
+bool AsyncAcceptor::IsClosed() const
 {
 	return _closed.load();
+}
+
+void AsyncAcceptor::AsyncAccept(tcp::socket& _socket, std::function<void(boost::system::error_code)> _accept_handler)
+{
+	_acceptor.async_accept(_socket, _accept_handler);
 }

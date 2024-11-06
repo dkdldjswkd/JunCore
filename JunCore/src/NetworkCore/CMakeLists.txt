@@ -11,6 +11,7 @@ add_library(NetworkCore
  "network/Session.cpp"
  "network/NetworkThread.cpp" 
  "network/NetworkManager.cpp"
+ "Packets/PacketBuffer.cpp"
  )
 
 # PUBLIC : NetworkCore를 사용하는 프로젝트에도 포함된다.

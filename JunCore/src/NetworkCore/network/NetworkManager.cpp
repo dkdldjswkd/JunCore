@@ -145,11 +145,11 @@ void NetworkManager::Connect(const tcp::endpoint& endpoint)
 	tcp::socket* connect_sock = network_threads_[min_network_thread_index]->GetSocketForConnect();
 
 	connect_sock->async_connect(endpoint,
-		[this, &connect_sock, min_network_thread_index](boost::system::error_code ec) {
+		[this, connect_sock, min_network_thread_index](boost::system::error_code ec) {
 			if (!ec)
 			{
-				// 비동기 소켓으로 설정
-				// connect_sock->non_blocking(true);
+				 //비동기 소켓으로 설정
+				 connect_sock->non_blocking(true);
 
 				// todo 고려
 				SessionPtr new_network_session = std::make_shared<Session>(std::move(*connect_sock));

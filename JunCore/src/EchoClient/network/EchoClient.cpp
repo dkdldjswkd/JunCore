@@ -9,4 +9,5 @@ EchoClient& EchoClient::Instance()
 void EchoClient::OnConnect(SessionPtr session_ptr)
 {
 	std::cout << "EchoClient::OnConnect()" << std::endl;
+	session_ptr_ = session_ptr;
 }

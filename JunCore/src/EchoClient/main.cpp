@@ -3,11 +3,14 @@
 #include <boost/asio/thread_pool.hpp>
 #include <thread>
 #include "network/EchoClient.h"
+#include "packet/packet.pb.h"
 using namespace std;
 
 void main()
 {
-	cout << "EchoClient" << "오후 6:08 2024-11-05" << endl;
+	cout << "EchoClient" << 
+		"오후 2:15 2024-11-06" 
+		<< endl;
 
 	// 서버 연결 정보 설정
 	std::string		_ip		= "127.0.0.1"; // sConfigMgr->GetStringDefault("BindIP", "0.0.0.0");
@@ -30,6 +33,14 @@ void main()
 		std::string _input_str;
 		std::cin >> _input_str;
 		if (_input_str.compare("close") == 0)
+		{
 			break;
+		}
+		else
+		{
+			PacketLib::UG_ECHO_REQ _echo_req;
+			_echo_req.set_echo(std::move(_input_str));
+			sEchoClient.session_ptr_->SendPacket(_echo_req);
+		}
 	}
 }

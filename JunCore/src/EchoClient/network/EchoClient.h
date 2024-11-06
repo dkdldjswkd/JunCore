@@ -10,6 +10,9 @@ public:
 
 public:
 	virtual void OnConnect(SessionPtr session_ptr) override;
+
+public:
+	SessionPtr session_ptr_ = nullptr;
 };
 
 #define sEchoClient EchoClient::Instance()

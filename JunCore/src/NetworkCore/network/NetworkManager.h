@@ -43,6 +43,20 @@ private:
 	}
 
 public:
+	void HandlePacket(SessionPtr session, int32 packet_id, const std::vector<char>& _serialized_packet) 
+	{
+		auto it = packet_handler_.find(packet_id);
+		if (it != packet_handler_.end())
+		{
+			it->second(session, _serialized_packet);
+		}
+		else
+		{
+			// LOG_ERROR
+		}
+	}
+
+public:
 	void Connect(const tcp::endpoint& endpoint);
 	virtual void OnConnect(SessionPtr session_ptr);
 

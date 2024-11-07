@@ -101,7 +101,7 @@ void NetworkManager::AsyncAccept()
 				// 비동기 소켓으로 생성
 				accept_sock->non_blocking(true);
 
-				SessionPtr new_network_session = std::make_shared<Session>(std::move(*accept_sock));
+				SessionPtr new_network_session = std::make_shared<Session>(std::move(*accept_sock), this);
 				network_threads_[min_network_thread_index]->AddNewSession(new_network_session);
 				new_network_session->Start();
 
@@ -166,7 +166,7 @@ void NetworkManager::Connect(const tcp::endpoint& endpoint)
 				 connect_sock->non_blocking(true);
 
 				// todo 고려
-				SessionPtr new_network_session = std::make_shared<Session>(std::move(*connect_sock));
+				SessionPtr new_network_session = std::make_shared<Session>(std::move(*connect_sock), this);
 				network_threads_[min_network_thread_index]->AddNewSession(new_network_session);
 				new_network_session->Start();
 

@@ -1,9 +1,11 @@
 ﻿#include "Session.h"
+#include "../network/NetworkManager.h"
 
-Session::Session(tcp::socket&& socket)
-	:	/*socket*/	socket_(std::move(socket)),
+Session::Session(tcp::socket&& _socket, NetworkManager* _network_manager)
+	:	/*socket*/	socket_(std::move(_socket)),
 		/*addr*/	remote_address_(socket_.remote_endpoint().address()), remote_port_(socket_.remote_endpoint().port()),
-		/*state*/	closed_(false), is_writing_(false)
+		/*state*/	closed_(false), is_writing_(false),
+		/*network_manager*/ network_manager_(_network_manager)
 {
 }
 
@@ -70,10 +72,11 @@ void Session::ReadHandler(boost::system::error_code error, size_t transferredByt
 			break;
 		}
 
-		(recv_buffer_.GetReadPointer() + HEADER_SIZE);
+		// 4. serialized packet 추출
+		std::vector<char> _serialized_packet(_p_packet_header->len); // !! 수정 필요
 
-		// NetworkManager의 packet handler 호출
-
+		// NetworkManager의 packet handler 호출 // qweqwe 링킹 이슈 해결
+		// network_manager_->HandlePacket(shared_from_this(), _p_packet_header->pid, _serialized_packet);
 	}
 
 	// Recv 예약

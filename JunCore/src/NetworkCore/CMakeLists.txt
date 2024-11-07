@@ -1,7 +1,5 @@
 ﻿# Boost 라이브러리 찾기
 find_package(Boost REQUIRED)
-find_package(Protobuf REQUIRED)
-find_package(absl REQUIRED)
 
  # C++17 표준 설정
 set(CMAKE_CXX_STANDARD 17)
@@ -21,8 +19,6 @@ target_include_directories(NetworkCore
 	PUBLIC 
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${Boost_INCLUDE_DIRS}
-		${Protobuf_INCLUDE_DIRS}
-        ${Abseil_INCLUDE_DIRS}
 		common
 )
 
@@ -31,6 +27,4 @@ target_link_libraries(NetworkCore
 	PUBLIC 
 		${Boost_LIBRARIES}
 		common
-		protobuf::libprotobuf
-        absl::base
 )

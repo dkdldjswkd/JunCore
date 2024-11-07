@@ -17,13 +17,13 @@ using boost::asio::ip::tcp;
 class NetworkThread;
 class NetworkManager;
 
-class Session
+class Session : public std::enable_shared_from_this<Session>
 {
 	friend NetworkManager;
 	friend NetworkThread;
 
 public:
-	Session(tcp::socket&& socket);
+	Session(tcp::socket&& _socket, NetworkManager* _network_manager);
 	~Session();
 
 public:
@@ -87,6 +87,9 @@ private:
 	std::function<void()> accept_handler_ = nullptr;
 	std::function<void()> close_handler_ = nullptr;
 	std::function<void()> recv_handler_ = nullptr;
+
+	// network manager
+	NetworkManager* network_manager_ = nullptr;
 };
 
 using SessionPtr	= std::shared_ptr<Session>;

@@ -76,7 +76,7 @@ void Session::ReadHandler(boost::system::error_code error, size_t transferredByt
 		std::vector<char> _serialized_packet(_p_packet_header->len); // !! 수정 필요
 
 		// NetworkManager의 packet handler 호출 // qweqwe 링킹 이슈 해결
-		// network_manager_->HandlePacket(shared_from_this(), _p_packet_header->pid, _serialized_packet);
+		 network_manager_->HandlePacket(shared_from_this(), _p_packet_header->pid, _serialized_packet);
 	}
 
 	// Recv 예약

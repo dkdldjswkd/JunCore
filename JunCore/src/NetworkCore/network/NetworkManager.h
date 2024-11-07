@@ -70,7 +70,7 @@ private:
 	std::vector<NetworkThread*> network_threads_;
 
 	// packet handler
-	static std::unordered_map<int32, std::function<void(SessionPtr /*session ptr*/, const std::vector<char>&/*serialized packet*/)>> packet_handler_;
+	std::unordered_map<int32, std::function<void(SessionPtr /*session ptr*/, const std::vector<char>&/*serialized packet*/)>> packet_handler_;
 };
 
 #endif // SocketMgr_h__

@@ -9,7 +9,6 @@
 #include "Utilities/MessageBuffer.h"
 #include <RingBuffer.h>
 #include "../Packets/PacketBuffer.h"
-#include <google/protobuf/message.h>
 
 using boost::asio::ip::tcp;
 
@@ -28,7 +27,8 @@ public:
 	~Session();
 
 public:
-	void SendPacket(google::protobuf::Message& buffer)
+	template <typename T>
+	void SendPacket(const T& buffer)
 	{
 		const int32 _payload_size = buffer.ByteSizeLong();
 

@@ -38,10 +38,13 @@ bool NetworkManager::StartServer(std::string const& bind_ip, uint16 port, int wo
 		worker->Start();
 	}
 
-	// 4. Accept
+	// 4. Packet Hnadler 초기화
+	InitPacketHandlers();
+
+	// 5. Accept
 	this->AsyncAccept();
 
-	// 5. Accept thread 생성
+	// 6. Accept thread 생성
 	accept_thread_ = std::thread([this]() { io_context_->run(); });
 	return true;
 }

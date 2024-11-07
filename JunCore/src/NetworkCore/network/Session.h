@@ -28,9 +28,9 @@ public:
 
 public:
 	template <typename T>
-	void SendPacket(const T& buffer)
+	void SendPacket(int32 _packet_id, const T& _packet)
 	{
-		const int32 _payload_size = buffer.ByteSizeLong();
+		const int32 _payload_size = _packet.ByteSizeLong();
 
 		PacketBufferPtr _packet_buffer_ptr = std::make_shared<PacketBuffer>();
 		if (_packet_buffer_ptr->GetFreeSize() < _payload_size)
@@ -39,9 +39,9 @@ public:
 			return;
 		}
 
-		buffer.SerializeToArray(_packet_buffer_ptr->GetWritePos(), _payload_size);
+		_packet.SerializeToArray(_packet_buffer_ptr->GetWritePos(), _payload_size);
 		_packet_buffer_ptr->MoveWp(_payload_size);
-		_packet_buffer_ptr->SetHeader();
+		_packet_buffer_ptr->SetHeader(_packet_id);
 
 		send_queue_.push(_packet_buffer_ptr);
 	}

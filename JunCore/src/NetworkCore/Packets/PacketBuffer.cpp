@@ -58,17 +58,18 @@ char* PacketBuffer::GetWritePos() const
 }
 
 // todo : 작업 중!!
-void PacketBuffer::SetHeader()
+void PacketBuffer::SetHeader(int32 _packet_id)
 {
 	// 중복 암호화 하지 않기 위함 (이미 암호화 된 패킷)
 	if (encrypted_) return;
 	encrypted_ = true;
 
 	PacketHeader *_header = (PacketHeader*)GetPacketPos();
-	//netHeader.code = protocol_code;
 	_header->len = GetPayloadSize();
+	_header->pid = _packet_id;
+	//netHeader.code = protocol_code;
 	//netHeader->randKey = (rand() & 0xFF);
-	_header->checkSum = GetChecksum();
+	//_header->checkSum = GetChecksum();
 	//memmove(GetPacketPos(), &netHeader, HEADER_SIZE); // 
 
 	// todo : 암호화!!

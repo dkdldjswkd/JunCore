@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <winnt.h>
 #include <exception>
+#include <Define.h>
 
 #define MAX_PAYLOAD_LEN 8000
 
@@ -62,7 +63,7 @@ public:
 	void Initialization();
 
 	// 헤더 셋팅
-	void SetHeader();
+	void SetHeader(int32 _packet_id);
 
 	// Empty & Full
 	bool Empty() const;

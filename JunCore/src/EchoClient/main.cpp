@@ -40,7 +40,7 @@ void main()
 		{
 			PacketLib::UG_ECHO_REQ _echo_req;
 			_echo_req.set_echo(std::move(_input_str));
-			sEchoClient.session_ptr_->SendPacket(_echo_req);
+			sEchoClient.session_ptr_->SendPacket(1, _echo_req);
 		}
 	}
 }

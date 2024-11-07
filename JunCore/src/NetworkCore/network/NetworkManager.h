@@ -31,6 +31,7 @@ private:
 	void AsyncAccept();
 	virtual void OnAccept(SessionPtr session_ptr);
 
+public:
 	template<typename T>
 	void RegisterPacketHandler(int32 _packet_id, std::function<void(SessionPtr, const T&)> _packet_handle)
 	{
@@ -42,7 +43,6 @@ private:
 		};
 	}
 
-public:
 	void HandlePacket(SessionPtr session, int32 packet_id, const std::vector<char>& _serialized_packet) 
 	{
 		auto it = packet_handler_.find(packet_id);
@@ -55,6 +55,8 @@ public:
 			// LOG_ERROR
 		}
 	}
+
+	virtual void InitPacketHandlers() {}
 
 public:
 	void Connect(const tcp::endpoint& endpoint);

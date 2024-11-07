@@ -8,6 +8,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <memory>
 #include <thread>
+#include <iostream>
 
 using boost::asio::ip::tcp;
 
@@ -53,6 +54,7 @@ public:
 		else
 		{
 			// LOG_ERROR
+			std::cout << "HandlePacket Error!!!!" << std::endl;
 		}
 	}
 

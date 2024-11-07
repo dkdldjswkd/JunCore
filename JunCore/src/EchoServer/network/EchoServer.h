@@ -2,6 +2,7 @@
 #define _ECHO_SERVER_H_
 #include <network/NetworkManager.h>
 #include "../packet/packet.pb.h"
+#include <iostream>
 
 class EchoServer : public NetworkManager
 {

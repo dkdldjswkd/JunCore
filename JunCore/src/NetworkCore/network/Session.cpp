@@ -72,9 +72,10 @@ void Session::ReadHandler(boost::system::error_code error, size_t transferredByt
 			break;
 		}
 
-		// 4. serialized packet 추출
+		// 4. serialized packet 추출 및 read pos 전진
 		std::vector<char> _serialized_packet(_p_packet_header->len);
 		std::memcpy(_serialized_packet.data(), recv_buffer_.GetReadPointer(), _p_packet_header->len);
+		recv_buffer_.ReadCompleted(HEADER_SIZE + _p_packet_header->len);
 
 		// NetworkManager의 packet handler 호출
 		network_manager_->HandlePacket(shared_from_this(), _p_packet_header->pid, _serialized_packet);

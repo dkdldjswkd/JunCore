@@ -126,7 +126,8 @@ void NetworkManager::OnAccept(SessionPtr session_ptr)
 
 bool NetworkManager::StartClient(int worker_cnt)
 {
-	// CHECK_RETURN(threadCount > 0, false);
+	// Packet Hnadler 초기화
+	InitPacketHandlers();
 
 	network_threads_.reserve(worker_cnt);
 

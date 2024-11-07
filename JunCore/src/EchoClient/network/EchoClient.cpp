@@ -1,4 +1,5 @@
 #include "EchoClient.h"
+#include "../packet/packet.pb.h"
 
 EchoClient& EchoClient::Instance()
 {
@@ -10,4 +11,19 @@ void EchoClient::OnConnect(SessionPtr session_ptr)
 {
 	std::cout << "EchoClient::OnConnect()" << std::endl;
 	session_ptr_ = session_ptr;
+}
+
+void EchoClient::InitPacketHandlers()
+{
+    // 에코 패킷 핸들러 등록
+    RegisterPacketHandler<PacketLib::GU_ECHO_RES>(
+        // packet id
+        PacketLib::PACKET_ID::PACKET_ID_GU_ECHO_RES
+
+        // packet handler
+        , [this](SessionPtr _session_ptr, const PacketLib::GU_ECHO_RES& _packet) 
+        {
+            std::cout << "recv : " << _packet.echo() << std::endl;
+        }
+    );
 }

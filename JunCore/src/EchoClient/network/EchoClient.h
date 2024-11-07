@@ -11,6 +11,8 @@ public:
 public:
 	virtual void OnConnect(SessionPtr session_ptr) override;
 
+	virtual void InitPacketHandlers() override;
+
 public:
 	SessionPtr session_ptr_ = nullptr;
 };

@@ -14,7 +14,7 @@ add_executable(EchoClient
     "main.cpp"
     "packet/packet.pb.cc"
     "network/EchoClient.cpp"
-)
+ "packet/packet.pb.h")
 
 if(MSVC) # Windows
     link_directories(${LIB_DIR})

@@ -72,6 +72,8 @@ void Session::ReadHandler(boost::system::error_code error, size_t transferredByt
 
 		(recv_buffer_.GetReadPointer() + HEADER_SIZE);
 
+		// NetworkManager의 packet handler 호출
+
 	}
 
 	// Recv 예약

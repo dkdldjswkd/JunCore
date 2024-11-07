@@ -14,6 +14,9 @@ using boost::asio::ip::tcp;
 class NetworkManager
 {
 public:
+	friend Session;
+
+public:
 	NetworkManager();
 	virtual ~NetworkManager();
 
@@ -28,6 +31,17 @@ private:
 	void AsyncAccept();
 	virtual void OnAccept(SessionPtr session_ptr);
 
+	template<typename T>
+	void RegisterPacketHandler(int32 _packet_id, std::function<void(SessionPtr, const T&)> _packet_handle)
+	{
+		packet_handler_[_packet_id] = [_packet_handle](SessionPtr _session_ptr, const std::vector<char>& _serialized_packet) {
+			T message;
+			if (message.ParseFromArray(_serialized_packet.data(), _serialized_packet.size())) {
+				_packet_handle(_session_ptr, message);
+			}
+		};
+	}
+
 public:
 	void Connect(const tcp::endpoint& endpoint);
 	virtual void OnConnect(SessionPtr session_ptr);
@@ -40,6 +54,9 @@ private:
 
 	// worker
 	std::vector<NetworkThread*> network_threads_;
+
+	// packet handler
+	static std::unordered_map<int32, std::function<void(SessionPtr /*session ptr*/, const std::vector<char>&/*serialized packet*/)>> packet_handler_;
 };
 
 #endif // SocketMgr_h__

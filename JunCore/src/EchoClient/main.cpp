@@ -31,6 +31,7 @@ void main()
 	while (true)
 	{
 		std::string _input_str;
+		std::cout << ">> ";
 		std::cin >> _input_str;
 		if (_input_str.compare("close") == 0)
 		{
@@ -40,6 +41,7 @@ void main()
 		{
 			PacketLib::UG_ECHO_REQ _echo_req;
 			_echo_req.set_echo(std::move(_input_str));
+			std::cout << "input : " << _echo_req.echo() << std::endl;
 			sEchoClient.session_ptr_->SendPacket(1, _echo_req);
 		}
 	}

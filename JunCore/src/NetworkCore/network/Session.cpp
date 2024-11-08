@@ -1,5 +1,7 @@
 ﻿#include "Session.h"
 #include "../network/NetworkManager.h"
+#include <functional>
+#include <iostream>
 
 Session::Session(tcp::socket&& _socket, NetworkManager* _network_manager)
 	:	/*socket*/	socket_(std::move(_socket)),
@@ -7,6 +9,9 @@ Session::Session(tcp::socket&& _socket, NetworkManager* _network_manager)
 		/*state*/	closed_(false), is_writing_(false),
 		/*network_manager*/ network_manager_(_network_manager)
 {
+	this->disconnect_handler_ = [](SessionPtr) {
+		std::cout << "default disconnect handler" << std::endl;
+		};
 }
 
 Session::~Session()
@@ -183,4 +188,6 @@ void Session::CloseSocket()
 
 	boost::system::error_code error;
 	socket_.close(error);
+
+	disconnect_handler_(shared_from_this());
 }

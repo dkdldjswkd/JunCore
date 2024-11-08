@@ -3,6 +3,7 @@
 #include <network/NetworkManager.h>
 #include "../packet/packet.pb.h"
 #include <iostream>
+#include <mutex>
 
 class EchoServer : public NetworkManager
 {
@@ -11,8 +12,13 @@ public:
 
 public:
 	virtual void OnAccept(SessionPtr session_ptr) override;
+	virtual void OnSessionClose(SessionPtr session_ptr) override;
 
 	virtual void InitPacketHandlers() override;
+
+public:
+	std::mutex session_mutex_;
+	std::set<SessionPtr> session_set_;
 };
 
 #define sEchoServer EchoServer::Instance()

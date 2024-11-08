@@ -31,6 +31,7 @@ public:
 private:
 	void AsyncAccept();
 	virtual void OnAccept(SessionPtr session_ptr);
+	virtual void OnSessionClose(SessionPtr session_ptr);
 
 public:
 	template<typename T>

@@ -9,7 +9,6 @@ EchoClient& EchoClient::Instance()
 
 void EchoClient::OnConnect(SessionPtr session_ptr)
 {
-	std::cout << "EchoClient::OnConnect()" << std::endl;
 	session_ptr_ = session_ptr;
 }
 
@@ -22,7 +21,7 @@ void EchoClient::InitPacketHandlers()
         // packet handler
         , [this](SessionPtr _session_ptr, const PacketLib::GU_ECHO_RES& _packet) 
         {
-            std::cout << "recv : " << _packet.echo() << std::endl;
+            std::cout << "??? : " << _packet.echo() << std::endl;
         }
     );
 }

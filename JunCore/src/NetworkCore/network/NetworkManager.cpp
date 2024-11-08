@@ -101,10 +101,17 @@ void NetworkManager::AsyncAccept()
 			{
 				std::cout << "AsyncAccept callback" << std::endl;
 
-				// 비동기 소켓으로 생성
+				// 비동기 소켓 설정
 				accept_sock->non_blocking(true);
 
+				// 세션 생성
 				SessionPtr new_network_session = std::make_shared<Session>(std::move(*accept_sock), this);
+
+				// callback bind
+				new_network_session->disconnect_handler_ = [this](SessionPtr session_ptr) {
+					this->OnSessionClose(session_ptr);
+				};
+
 				network_threads_[min_network_thread_index]->AddNewSession(new_network_session);
 				new_network_session->Start();
 
@@ -121,6 +128,10 @@ void NetworkManager::AsyncAccept()
 }
 
 void NetworkManager::OnAccept(SessionPtr session_ptr)
+{
+}
+
+void NetworkManager::OnSessionClose(SessionPtr session_ptr)
 {
 }
 

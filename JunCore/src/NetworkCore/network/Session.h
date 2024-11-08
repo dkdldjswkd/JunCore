@@ -84,7 +84,7 @@ private:
 	std::atomic<bool> is_writing_;
 
 	// callback 핸들러
-	// ...
+	std::function<void(std::shared_ptr<Session>)> disconnect_handler_ = nullptr;
 
 	// network manager
 	NetworkManager* network_manager_ = nullptr;

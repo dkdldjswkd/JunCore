@@ -11,9 +11,7 @@ Session::Session(tcp::socket&& _socket, NetworkManager* _network_manager)
 
 Session::~Session()
 {
-	closed_ = true;
-	boost::system::error_code error;
-	socket_.close(error);
+	CloseSocket();
 }
 
 // NetworkCore::accept()에서 callback
@@ -183,9 +181,6 @@ void Session::CloseSocket()
 	if (closed_.exchange(true))
 		return;
 
-	boost::system::error_code shutdownError;
-	socket_.shutdown(boost::asio::socket_base::shutdown_send, shutdownError); // todo
-
-	// MCHECK_RETURN(!shutdownError, "Session::close_socket: {} errored when shutting down socket: {} ({})", GetRemoteIpAddress().to_string(), shutdownError.value(), shutdownError.message());
-	close_handler_();
+	boost::system::error_code error;
+	socket_.close(error);
 }

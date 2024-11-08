@@ -15,10 +15,9 @@ void EchoClient::OnConnect(SessionPtr session_ptr)
 
 void EchoClient::InitPacketHandlers()
 {
-    // 에코 패킷 핸들러 등록
     RegisterPacketHandler<PacketLib::GU_ECHO_RES>(
         // packet id
-        PacketLib::PACKET_ID::PACKET_ID_GU_ECHO_RES
+        101 // PacketLib::PACKET_ID::PACKET_ID_GU_ECHO_RES
 
         // packet handler
         , [this](SessionPtr _session_ptr, const PacketLib::GU_ECHO_RES& _packet) 

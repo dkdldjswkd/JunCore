@@ -1,15 +1,19 @@
-﻿# Boost 라이브러리 찾기
-find_package(Boost REQUIRED)
+﻿# 개발환경 대응 cmake
 
- # C++17 표준 설정
+# 라이브러리 찾기
+find_package(Boost REQUIRED)
+find_package(Protobuf REQUIRED)
+find_package(absl REQUIRED)
+
+# C++17 표준 설정
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # EchoClient 정의
 add_executable(EchoClient 
- "main.cpp"
- "packet/packet.pb.cc"
- "network/EchoClient.cpp"
+    "main.cpp"
+    "packet/packet.pb.cc"
+    "network/EchoClient.cpp"
 )
 
 if(MSVC) # Windows
@@ -24,6 +28,7 @@ target_include_directories(EchoClient
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${Boost_INCLUDE_DIRS}
         ${LIB_INCLUDE_DIR}
+        ${Protobuf_INCLUDE_DIRS}
         ${Abseil_INCLUDE_DIRS}
         common
         NetworkCore
@@ -35,6 +40,6 @@ target_link_libraries(EchoClient
         ${Boost_LIBRARIES}
         common
         NetworkCore
-        C:\\ProjectVic\\vic_server_lib\\lib\\Debug\\libprotobufd.lib
-        # ${LINK_LIBS}
+        protobuf::libprotobuf
+        absl::base
 )

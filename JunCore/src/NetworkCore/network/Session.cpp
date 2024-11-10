@@ -112,6 +112,7 @@ bool Session::ProcessSendQueue()
 	if (send_queue_.empty())
 		return false;
 
+	// 여기서 _send_msg_ptr가 nullptr인 상황이 있다??
 	PacketBufferPtr _send_msg_ptr = send_queue_.front();
 	std::size_t _send_msg_size = _send_msg_ptr->GetPacketSize();
 

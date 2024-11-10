@@ -31,20 +31,20 @@ void EchoServer::InitPacketHandlers()
 			PacketLib::GU_ECHO_RES _res;
             _res.set_echo(_packet.echo());
 
-            // 핑퐁
-			// _session_ptr->SendPacket(101 /*PacketLib::PACKET_ID::PACKET_ID_GU_ECHO_RES*/, _res);
+             //핑퐁
+			 _session_ptr->SendPacket(101 /*PacketLib::PACKET_ID::PACKET_ID_GU_ECHO_RES*/, _res);
 
-            // 채팅서버 용
-            {
-				std::lock_guard<std::mutex> _lock(session_mutex_);
-                for (auto _el_session_ptr : session_set_)
-                {
-                    if (_el_session_ptr == _session_ptr)
-                        continue;
+    //        // 채팅서버 용
+    //        {
+				//std::lock_guard<std::mutex> _lock(session_mutex_);
+    //            for (auto _el_session_ptr : session_set_)
+    //            {
+    //                if (_el_session_ptr == _session_ptr)
+    //                    continue;
 
-                    _el_session_ptr->SendPacket(101 /*PacketLib::PACKET_ID::PACKET_ID_GU_ECHO_RES*/, _res);
-                }
-            }
+    //                _el_session_ptr->SendPacket(101 /*PacketLib::PACKET_ID::PACKET_ID_GU_ECHO_RES*/, _res);
+    //            }
+    //        }
         }
     );
 }

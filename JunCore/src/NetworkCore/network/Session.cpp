@@ -99,7 +99,7 @@ bool Session::Update()
 	if (closed_)
 		return false;
 
-	if (is_writing_ || send_queue_.empty())
+	if (is_writing_)
 		return true;
 
 	while (ProcessSendQueue());
@@ -109,11 +109,17 @@ bool Session::Update()
 // ret true : send queue 추가 처리가 가능한 경우, ret false : send queue가 비었거나, 추가 처리가 불가능한 경우 (ex. would_block)
 bool Session::ProcessSendQueue()
 {
-	if (send_queue_.empty())
-		return false;
+	PacketBufferPtr _send_msg_ptr = nullptr;
 
-	// 여기서 _send_msg_ptr가 nullptr인 상황이 있다??
-	PacketBufferPtr _send_msg_ptr = send_queue_.front();
+	{
+		std::lock_guard<std::mutex> lock(send_queue_lock_);
+
+		if (send_queue_.empty())
+			return false;
+
+		_send_msg_ptr = send_queue_.front();
+	}
+
 	std::size_t _send_msg_size = _send_msg_ptr->GetPacketSize();
 
 	boost::system::error_code error;
@@ -128,12 +134,16 @@ bool Session::ProcessSendQueue()
 		}
 		else
 		{
+			std::lock_guard<std::mutex> lock(send_queue_lock_);
+
 			send_queue_.pop();
 			return false;
 		}
 	}
 	else if (_complete_send_msg_size == 0)
 	{
+		std::lock_guard<std::mutex> lock(send_queue_lock_);
+
 		send_queue_.pop();
 		return false;
 	}
@@ -146,6 +156,8 @@ bool Session::ProcessSendQueue()
 		ScheduleSend();
 		return false;
 	}
+
+	std::lock_guard<std::mutex> lock(send_queue_lock_);
 
 	send_queue_.pop();
 	return !send_queue_.empty();

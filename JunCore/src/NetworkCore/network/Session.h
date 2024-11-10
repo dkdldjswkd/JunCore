@@ -43,7 +43,11 @@ public:
 		_packet_buffer_ptr->MoveWp(_payload_size);
 		_packet_buffer_ptr->SetHeader(_packet_id);
 
-		send_queue_.push(_packet_buffer_ptr);
+		{
+			std::lock_guard<std::mutex> lock(send_queue_lock_);
+
+			send_queue_.push(_packet_buffer_ptr);
+		}
 	}
 
 public:
@@ -73,6 +77,7 @@ private:
 private:
 	tcp::socket socket_;
 	MessageBuffer recv_buffer_;
+	std::mutex send_queue_lock_;
 	std::queue<PacketBufferPtr> send_queue_; // LFQ로 교체?
 
 	// addr

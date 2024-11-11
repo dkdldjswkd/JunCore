@@ -7,11 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # common 라이브러리 정의
 add_library(common
- "Common.h"
  "Common.cpp"
- "Define.h"
- "Utilities/MessageBuffer.h"
- "RingBuffer.h"
  "RingBuffer.cpp"
 )
 
@@ -28,5 +24,4 @@ target_include_directories(common
 target_link_libraries(common 
 	PUBLIC 
 		${Boost_LIBRARIES}
-        ${LIB_DIR}/libboost_date_time-vc142-mt-gd-x64-1_76.lib # 개발 환경 대응
 )

@@ -16,7 +16,7 @@ int g_last_number = -1;
 
 bool RandomStringChecker(std::string _str)
 {
-	// ¹®ÀÚ¿­ÀÌ ºñ¾úÀ¸¸é ¾ÈµÇ°í,
+	// ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÇ°ï¿½,
 	if (_str.empty())
 	{
 		return false;
@@ -49,7 +49,7 @@ void EchoClient::InitPacketHandlers()
         // packet handler
         , [this](SessionPtr _session_ptr, const PacketLib::GU_ECHO_RES& _packet) 
         {
-			// Ã¤ÆÃ Å¬¶óÀÌ¾ðÆ®
+			// Ã¤ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®
             //std::cout << "??? : " << _packet.echo() << std::endl;
 
 			if (false == RandomStringChecker(_packet.echo()))

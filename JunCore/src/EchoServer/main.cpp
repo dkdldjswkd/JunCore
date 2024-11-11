@@ -9,7 +9,7 @@ using namespace std;
 void main()
 {
 	cout << "EchoServer" 
-		<< "오후 11:09 2024-11-06" 
+		<< "오후 17:09 2024-11-06" 
 		<< endl;
 
 	PacketLib::UG_ECHO_REQ a;

@@ -1,6 +1,4 @@
-﻿# 개발 환경 대응
-
-# Boost 라이브러리 찾기
+﻿# Boost 라이브러리 찾기
 find_package(Boost REQUIRED)
 
  # C++17 표준 설정
@@ -30,4 +28,5 @@ target_include_directories(common
 target_link_libraries(common 
 	PUBLIC 
 		${Boost_LIBRARIES}
+        ${LIB_DIR}/libboost_date_time-vc142-mt-gd-x64-1_76.lib # 개발 환경 대응
 )

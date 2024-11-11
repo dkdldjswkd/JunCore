@@ -4,6 +4,7 @@
 #include <thread>
 #include "network/EchoClient.h"
 #include "packet/packet.pb.h"
+#include <random>
 using namespace std;
 
 class RandomStringGenerator {

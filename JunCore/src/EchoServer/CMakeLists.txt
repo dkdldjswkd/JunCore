@@ -1,9 +1,7 @@
-﻿# 개발환경 대응 cmake
-
-# 라이브러리 찾기
+﻿# 라이브러리 찾기
 find_package(Boost REQUIRED)
-find_package(Protobuf REQUIRED)
-find_package(absl REQUIRED)
+# find_package(Protobuf REQUIRED)
+# find_package(absl REQUIRED)
 
 # C++17 표준 설정
 set(CMAKE_CXX_STANDARD 17)
@@ -14,7 +12,7 @@ add_executable(EchoServer
     "main.cpp"
     "packet/packet.pb.cc"
     "network/EchoServer.cpp"
-)
+ "packet/PacketDefinitions.h")
 
 if(MSVC) # Windows
     link_directories(${LIB_DIR})
@@ -28,7 +26,6 @@ target_include_directories(EchoServer
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${Boost_INCLUDE_DIRS}
         ${LIB_INCLUDE_DIR}
-        ${Protobuf_INCLUDE_DIRS}
         ${Abseil_INCLUDE_DIRS}
         common
         NetworkCore
@@ -40,6 +37,6 @@ target_link_libraries(EchoServer
         ${Boost_LIBRARIES}
         common
         NetworkCore
-        protobuf::libprotobuf
-        absl::base
+        C:\\ProjectVic\\vic_server_lib\\lib\\Debug\\libprotobufd.lib
+        # ${LINK_LIBS}
 )

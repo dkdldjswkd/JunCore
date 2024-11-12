@@ -6,28 +6,28 @@ find_package(Protobuf REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# EchoClient 정의
-add_executable(EchoClient 
+# echo_client 정의
+add_executable(echo_client 
  "main.cpp"
  "packet/packet.pb.cc"
  "network/EchoClient.cpp"
 )
 
-# PUBLIC : EchoClient를 사용하는 프로젝트에도 포함된다.
-target_include_directories(EchoClient 
+# PUBLIC : echo_client를 사용하는 프로젝트에도 포함된다.
+target_include_directories(echo_client 
     PRIVATE 
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${Boost_INCLUDE_DIRS}
         common
-        NetworkCore
+        network_core
         ${Protobuf_INCLUDE_DIRS}
 )
 
-# PUBLIC : EchoClient에서 링크한 라이브러리들이 EchoClient를 사용하는 프로젝트에게도 링크된다.
-target_link_libraries(EchoClient 
+# PUBLIC : echo_client에서 링크한 라이브러리들이 echo_client를 사용하는 프로젝트에게도 링크된다.
+target_link_libraries(echo_client 
     PRIVATE 
         ${Boost_LIBRARIES}
         common
-        NetworkCore
+        network_core
         protobuf::libprotobuf
 )

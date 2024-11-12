@@ -5,25 +5,25 @@ find_package(Boost REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# NetworkCore 라이브러리 정의
-add_library(NetworkCore 
+# network_core 라이브러리 정의
+add_library(network_core 
  "network/AsyncAcceptor.cpp"
  "network/Session.cpp"
  "network/NetworkThread.cpp" 
  "network/NetworkManager.cpp"
- "Packets/PacketBuffer.cpp"
+ "packet/PacketBuffer.cpp"
  )
 
-# PUBLIC : NetworkCore를 사용하는 프로젝트에도 포함된다.
-target_include_directories(NetworkCore 
+# PUBLIC : network_core를 사용하는 프로젝트에도 포함된다.
+target_include_directories(network_core 
 	PUBLIC 
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${Boost_INCLUDE_DIRS}
 		common
 )
 
-# PUBLIC : NetworkCore에서 링크한 라이브러리들이 NetworkCore를 링크한 프로젝트에도 링크된다.
-target_link_libraries(NetworkCore 
+# PUBLIC : network_core에서 링크한 라이브러리들이 network_core를 링크한 프로젝트에도 링크된다.
+target_link_libraries(network_core 
 	PUBLIC 
 		${Boost_LIBRARIES}
 		common

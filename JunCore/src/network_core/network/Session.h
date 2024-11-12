@@ -7,7 +7,7 @@
 #include <atomic>
 #include <boost/asio/ip/tcp.hpp>
 #include "Utilities/MessageBuffer.h"
-#include "../Packets/PacketBuffer.h"
+#include "../Packet/PacketBuffer.h"
 
 using boost::asio::ip::tcp;
 
@@ -55,7 +55,7 @@ public:
 	uint16 GetRemotePort() const;
 
 private:
-	// NetworkThread, NetworkCore에서 사용
+	// NetworkThread, network_core에서 사용
 	void Start();	// Recv Handler 등록
 	bool Update();	// Send Queue 처리
 	void CloseSocket();

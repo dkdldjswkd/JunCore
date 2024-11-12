@@ -19,7 +19,7 @@ Session::~Session()
 	CloseSocket();
 }
 
-// NetworkCore::accept()에서 callback
+// network_core::accept()에서 callback
 void Session::Start()
 {
 	AsyncRecv();

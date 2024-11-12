@@ -2,7 +2,7 @@
 #define __ASYNCACCEPT_H_
 
 #include <boost/asio/ip/tcp.hpp>
-#include <common/Define.h>
+#include <common/types.h>
 #include <atomic>
 #include <functional>
 

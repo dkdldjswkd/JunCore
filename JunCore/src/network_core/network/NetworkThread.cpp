@@ -26,7 +26,7 @@ bool NetworkThread::Start()
 void NetworkThread::Run()
 {
 	// TC_LOG_DEBUG("misc", "Network Thread Starting");
-	update_timer_.expires_from_now(boost::posix_time::milliseconds(1));
+	update_timer_.expires_from_now(std::chrono::milliseconds(1));
 	update_timer_.async_wait([this](boost::system::error_code const&) { Update(); });
 	io_context_.run();
 
@@ -40,7 +40,7 @@ void NetworkThread::Update()
 	if (stopped_)
 		return;
 
-	update_timer_.expires_from_now(boost::posix_time::milliseconds(1));
+	update_timer_.expires_from_now(std::chrono::milliseconds(1));
 	update_timer_.async_wait([this](boost::system::error_code const&) { Update(); });
 
 	////////////////////////

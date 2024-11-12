@@ -2,7 +2,6 @@
 #define NetworkThread_h__
 
 #include <boost/asio/ip/tcp.hpp>
-#include <common/data_type.h>
 #include <thread>
 #include <mutex>
 #include <iostream>
@@ -43,6 +42,6 @@ private:
 	boost::asio::io_context io_context_;
 	tcp::socket accept_socket_;
 	tcp::socket connect_socket_;
-	DeadlineTimer update_timer_;
+	boost::asio::steady_timer update_timer_;
 };
 #endif

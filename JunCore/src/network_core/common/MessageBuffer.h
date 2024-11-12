@@ -1,7 +1,7 @@
 #ifndef __MESSAGEBUFFER_H_
 #define __MESSAGEBUFFER_H_
 
-#include <common/Define.h>
+#include <common/types.h>
 #include <vector>
 #include <cstring>
 

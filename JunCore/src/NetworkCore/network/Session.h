@@ -7,7 +7,6 @@
 #include <atomic>
 #include <boost/asio/ip/tcp.hpp>
 #include "Utilities/MessageBuffer.h"
-#include <RingBuffer.h>
 #include "../Packets/PacketBuffer.h"
 
 using boost::asio::ip::tcp;

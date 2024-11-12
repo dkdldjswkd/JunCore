@@ -19,12 +19,10 @@ target_include_directories(network_core
 	PUBLIC 
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${Boost_INCLUDE_DIRS}
-		common
 )
 
 # PUBLIC : network_core에서 링크한 라이브러리들이 network_core를 링크한 프로젝트에도 링크된다.
 target_link_libraries(network_core 
 	PUBLIC 
 		${Boost_LIBRARIES}
-		common
 )

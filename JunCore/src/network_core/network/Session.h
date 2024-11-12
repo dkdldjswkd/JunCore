@@ -1,12 +1,12 @@
 ﻿#ifndef __SOCKET_H__
 #define __SOCKET_H__
 
-#include <Define.h>
+#include <common/Define.h>
 #include <vector>
 #include <queue>
 #include <atomic>
 #include <boost/asio/ip/tcp.hpp>
-#include "Utilities/MessageBuffer.h"
+#include <common/MessageBuffer.h>
 #include "../Packet/PacketBuffer.h"
 
 using boost::asio::ip::tcp;

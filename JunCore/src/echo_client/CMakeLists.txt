@@ -18,7 +18,6 @@ target_include_directories(echo_client
     PRIVATE 
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${Boost_INCLUDE_DIRS}
-        common
         network_core
         ${Protobuf_INCLUDE_DIRS}
 )
@@ -27,7 +26,6 @@ target_include_directories(echo_client
 target_link_libraries(echo_client 
     PRIVATE 
         ${Boost_LIBRARIES}
-        common
         network_core
         protobuf::libprotobuf
 )

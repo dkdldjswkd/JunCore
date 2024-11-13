@@ -1,5 +1,4 @@
-#ifndef _ECHO_SERVER_H_
-#define _ECHO_SERVER_H_
+#pragma once
 #include <network/NetworkManager.h>
 #include "../packet/packet.pb.h"
 #include <iostream>
@@ -22,4 +21,3 @@ public:
 };
 
 #define sEchoServer EchoServer::Instance()
-#endif

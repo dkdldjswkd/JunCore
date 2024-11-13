@@ -9,13 +9,13 @@ NetworkManager::~NetworkManager()
 {
 }
 
-bool NetworkManager::StartServer(std::string const& bind_ip, uint16 port, int worker_cnt)
+bool NetworkManager::StartServer(std::string const& _bind_ip, uint16 _port, int _worker_cnt)
 {
 	// CHECK_RETURN(0 < worker_cnt, false);
 
 	// 1. acceptor 생성
 	io_context_ = new boost::asio::io_context;
-	acceptor_	= new AsyncAcceptor(*io_context_, bind_ip, port);
+	acceptor_	= new AsyncAcceptor(*io_context_, _bind_ip, _port);
 
 	// 2. liten
 	if (!acceptor_->Listen())
@@ -27,15 +27,15 @@ bool NetworkManager::StartServer(std::string const& bind_ip, uint16 port, int wo
 		return false;
 	}
 
-	network_threads_.reserve(worker_cnt);
+	network_threads_.reserve(_worker_cnt);
 
 	// 3. worker thread 생성
-	for (int i = 0; i < worker_cnt; ++i)
+	for (int i = 0; i < _worker_cnt; ++i)
 	{
-		auto worker = new NetworkThread();
-		network_threads_.emplace_back(worker);
+		auto _worker = new NetworkThread();
+		network_threads_.emplace_back(_worker);
 
-		worker->Start();
+		_worker->Start();
 	}
 
 	// 4. Packet Hnadler 초기화

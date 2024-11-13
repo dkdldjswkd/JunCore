@@ -1,6 +1,4 @@
-#ifndef __MESSAGEBUFFER_H_
-#define __MESSAGEBUFFER_H_
-
+#pragma once
 #include <common/types.h>
 #include <vector>
 #include <cstring>
@@ -120,4 +118,3 @@ private:
 };
 
 using MessageBufferPtr = std::shared_ptr<MessageBuffer>;
-#endif 

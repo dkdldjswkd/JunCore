@@ -1,6 +1,4 @@
-﻿#ifndef SocketMgr_h__
-#define SocketMgr_h__
-
+﻿#pragma once
 #include "AsyncAcceptor.h"
 #include "Errors.h"
 #include "NetworkThread.h"
@@ -77,5 +75,3 @@ private:
 	// packet handler
 	std::unordered_map<int32, std::function<void(SessionPtr /*session ptr*/, const std::vector<char>&/*serialized packet*/)>> packet_handler_;
 };
-
-#endif // SocketMgr_h__

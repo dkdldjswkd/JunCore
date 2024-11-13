@@ -1,6 +1,4 @@
-﻿#ifndef __ASYNCACCEPT_H_
-#define __ASYNCACCEPT_H_
-
+﻿#pragma once
 #include <boost/asio/ip/tcp.hpp>
 #include <common/types.h>
 #include <atomic>
@@ -25,4 +23,3 @@ private:
 	tcp::endpoint _endpoint;
 	std::atomic<bool> _closed;
 };
-#endif

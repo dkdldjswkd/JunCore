@@ -17,7 +17,9 @@ NetworkThread::~NetworkThread()
 bool NetworkThread::Start()
 {
 	if (thread_)
+	{
 		return false;
+	}
 
 	thread_ = new std::thread(&NetworkThread::Run, this);
 	return true;
@@ -25,12 +27,12 @@ bool NetworkThread::Start()
 
 void NetworkThread::Run()
 {
-	// TC_LOG_DEBUG("misc", "Network Thread Starting");
+	// LOG_DEBUG("Network Thread Starting");
 	update_timer_.expires_from_now(std::chrono::milliseconds(1));
-	update_timer_.async_wait([this](boost::system::error_code const&) { Update(); });
+	update_timer_.async_wait([this](const boost::system::error_code&) { Update(); });
 	io_context_.run();
 
-	// TC_LOG_DEBUG("misc", "Network Thread exits");
+	// LOG_DEBUG("Network Thread exits");
 	new_session_vec_.clear();
 	active_session_vec_.clear();
 }
@@ -41,7 +43,7 @@ void NetworkThread::Update()
 		return;
 
 	update_timer_.expires_from_now(std::chrono::milliseconds(1));
-	update_timer_.async_wait([this](boost::system::error_code const&) { Update(); });
+	update_timer_.async_wait([this](const boost::system::error_code&) { Update(); });
 
 	////////////////////////
 	// New Session 처리

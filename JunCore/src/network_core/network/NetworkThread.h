@@ -1,6 +1,4 @@
-﻿#ifndef NetworkThread_h__
-#define NetworkThread_h__
-
+﻿#pragma once
 #include <boost/asio/ip/tcp.hpp>
 #include <thread>
 #include <mutex>
@@ -44,4 +42,3 @@ private:
 	tcp::socket connect_socket_;
 	boost::asio::steady_timer update_timer_;
 };
-#endif

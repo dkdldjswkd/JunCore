@@ -1,6 +1,4 @@
-﻿#ifndef __SOCKET_H__
-#define __SOCKET_H__
-
+﻿#pragma once
 #include <common/types.h>
 #include <vector>
 #include <queue>
@@ -93,10 +91,8 @@ private:
 	// network manager
 	NetworkManager* network_manager_ = nullptr;
 };
-
 using SessionPtr	= std::shared_ptr<Session>;
 using SessionPtrVec	= std::vector<SessionPtr>;
-#endif
 
 //void SetNoDelay(bool enable)
 //{
@@ -106,7 +102,7 @@ using SessionPtrVec	= std::vector<SessionPtr>;
 //       // todo : error handling
 //	//if (err)
 //	//{
-//	//	// TC_LOG_DEBUG("network", "Session::SetNoDelay: failed to set_option(boost::asio::ip::tcp::no_delay) for {} - {} ({})",
+// 	 //    // LOG_ERROR
 //	//}
 
 //	GetRemoteIpAddress().to_string(), err.value(), err.message());

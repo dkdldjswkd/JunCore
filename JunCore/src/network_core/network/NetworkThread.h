@@ -34,7 +34,7 @@ private:
 
 	SessionPtrVec active_session_vec_;
 
-	std::mutex new_session_lock;
+	std::shared_mutex new_session_lock_;
 	SessionPtrVec new_session_vec_;
 
 	boost::asio::io_context io_context_;

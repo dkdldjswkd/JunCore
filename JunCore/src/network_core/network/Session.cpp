@@ -11,7 +11,7 @@ Session::Session(tcp::socket&& _socket, NetworkManager* _network_manager)
 {
 	this->disconnect_handler_ = [](SessionPtr) {
 		std::cout << "default disconnect handler" << std::endl;
-		};
+	};
 }
 
 Session::~Session()
@@ -112,7 +112,7 @@ bool Session::ProcessSendQueue()
 	PacketBufferPtr _send_msg_ptr = nullptr;
 
 	{
-		std::lock_guard<std::mutex> lock(send_queue_lock_);
+		std::lock_guard<std::mutex> _lock(send_queue_lock_);
 
 		if (send_queue_.empty())
 			return false;
@@ -134,7 +134,7 @@ bool Session::ProcessSendQueue()
 		}
 		else
 		{
-			std::lock_guard<std::mutex> lock(send_queue_lock_);
+			std::lock_guard<std::mutex> _lock(send_queue_lock_);
 
 			send_queue_.pop();
 			return false;
@@ -142,7 +142,7 @@ bool Session::ProcessSendQueue()
 	}
 	else if (_complete_send_msg_size == 0)
 	{
-		std::lock_guard<std::mutex> lock(send_queue_lock_);
+		std::lock_guard<std::mutex> _lock(send_queue_lock_);
 
 		send_queue_.pop();
 		return false;
@@ -157,7 +157,7 @@ bool Session::ProcessSendQueue()
 		return false;
 	}
 
-	std::lock_guard<std::mutex> lock(send_queue_lock_);
+	std::lock_guard<std::mutex> _lock(send_queue_lock_);
 
 	send_queue_.pop();
 	return !send_queue_.empty();

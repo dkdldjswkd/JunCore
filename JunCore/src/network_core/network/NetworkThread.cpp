@@ -51,7 +51,7 @@ void NetworkThread::Update()
 
 	do
 	{
-		std::lock_guard<std::mutex> lock(new_session_lock);
+		std::unique_lock<std::shared_mutex> _lock(new_session_lock_);
 
 		if (new_session_vec_.empty())
 		{
@@ -125,7 +125,7 @@ int32 NetworkThread::GetConnectionCount() const
 
 void NetworkThread::AddNewSession(SessionPtr _new_network_session_ptr)
 {
-	std::lock_guard<std::mutex> lock(new_session_lock);
+	std::unique_lock<std::shared_mutex> _lock(new_session_lock_);
 
 	++connections_;
 	new_session_vec_.emplace_back(_new_network_session_ptr);

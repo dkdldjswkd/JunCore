@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "AsyncAcceptor.h"
-#include "Errors.h"
 #include "NetworkThread.h"
 #include "Session.h"
 #include <boost/asio/ip/tcp.hpp>

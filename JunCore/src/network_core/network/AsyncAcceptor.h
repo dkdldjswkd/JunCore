@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <boost/asio/ip/tcp.hpp>
-#include <common/types.h>
+#include <common/define.h>
 #include <atomic>
 #include <functional>
 

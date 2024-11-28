@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include <winnt.h>
 #include <exception>
-#include <common/types.h>
+#include <common/define.h>
 
 #define MAX_PAYLOAD_LEN 8000
 

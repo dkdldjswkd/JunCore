@@ -1,0 +1,49 @@
+# 빌드를 위한 베이스 이미지
+FROM ubuntu:latest as builder
+
+# 필요한 패키지 설치
+RUN apt-get update && apt-get install -y \
+    git \
+    cmake \
+    g++ \
+    make \
+    coreutils \
+    bash \
+    libboost-all-dev \
+    libprotobuf-dev \
+    protobuf-compiler \
+    && rm -rf /var/lib/apt/lists/*
+
+# clone 디렉터리 설정
+WORKDIR /app
+
+# git clone
+RUN git clone https://github.com/dkdldjswkd/JunCore . && \
+    git pull
+
+# JunCore 프로젝트로 이동
+WORKDIR /app/JunCore
+
+# CMake 빌드
+RUN cmake -B build && \
+    cmake --build build
+
+# 실행 스테이지
+FROM ubuntu:latest
+
+# 필요한 패키지 설치
+RUN apt-get update && apt-get install -y \
+    bash \
+    coreutils \
+    libboost-all-dev \
+    libprotobuf-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 빌드된 실행 파일 복사
+COPY --from=builder /app/JunCore/build/JunCore /app/JunCore
+
+# 실행 디렉토리로 이동
+WORKDIR /app/JunCore
+
+# 실행 파일 실행
+ENTRYPOINT ["./JunCore"]

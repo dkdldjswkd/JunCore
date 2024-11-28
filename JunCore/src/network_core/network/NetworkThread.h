@@ -2,6 +2,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <thread>
 #include <mutex>
+#include <shared_mutex>
 #include <iostream>
 #include <network/Session.h>
 

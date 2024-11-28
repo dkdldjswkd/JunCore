@@ -20,7 +20,8 @@ WORKDIR /app
 # git clone
 RUN git clone https://github.com/dkdldjswkd/JunCore . && \
     git fetch --all && \
-    git reset --hard origin/main
+    git reset --hard origin/main && \
+	git pull
 
 # JunCore 프로젝트로 이동
 WORKDIR /app/JunCore

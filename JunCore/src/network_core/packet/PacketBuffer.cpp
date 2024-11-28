@@ -1,459 +1,152 @@
-#pragma once
 #include "PacketBuffer.h"
+#include <cstring> // memcpy, memset 등을 위한 헤더
 
+// 생성자: 초기 버퍼 할당 및 설정
 PacketBuffer::PacketBuffer()
-	: size_(HEADER_SIZE + MAX_PAYLOAD_LEN), encrypted_(false)
+    : size_(HEADER_SIZE + MAX_PAYLOAD_LEN), encrypted_(false)
 {
-	begin_	= (char*)malloc(size_);
-	end_	= begin_ + size_;
+    // 동적 메모리 할당
+    begin_ = new char[size_];
+    end_ = begin_ + size_;
 
-	payload_pos_ = begin_ + HEADER_SIZE;
-	write_pos_	 = begin_ + HEADER_SIZE;
+    // 초기 포인터 위치 설정
+    payload_pos_ = begin_ + HEADER_SIZE;
+    write_pos_ = begin_ + HEADER_SIZE;
 }
 
+// 소멸자: 동적 할당된 메모리 해제
 PacketBuffer::~PacketBuffer()
 {
-	free((char*)begin_);
+    delete[] begin_;
 }
 
+// 패킷 버퍼 초기화
 void PacketBuffer::Initialization()
 {
-	payload_pos_ = begin_ + HEADER_SIZE;
-	write_pos_ = begin_ + HEADER_SIZE;
-	encrypted_ = false;
+    payload_pos_ = begin_ + HEADER_SIZE;
+    write_pos_ = begin_ + HEADER_SIZE;
+    encrypted_ = false;
 }
 
-char* PacketBuffer::GetPacketPos() const 
+// 패킷 시작 위치 반환
+char* PacketBuffer::GetPacketPos() const
 {
-	return begin_;
+    return begin_;
 }
 
+// 버퍼가 비어있는지 확인
 bool PacketBuffer::Empty() const {
-	if (write_pos_ <= payload_pos_) return true;
-	return false;
+    return write_pos_ <= payload_pos_;
 }
 
-
+// 버퍼가 가득 찼는지 확인
 bool PacketBuffer::Full() const {
-	if (write_pos_ + 1 == end_) return true;
-	return false;
+    return write_pos_ + 1 == end_;
 }
 
-
-int PacketBuffer::GetFreeSize() const {
-	return end_ - write_pos_;
+// 남은 버퍼 공간 크기 반환
+size_t PacketBuffer::GetFreeSize() const {
+    return end_ - write_pos_;
 }
 
-int PacketBuffer::GetPacketSize() const {
-	return write_pos_ - begin_;
+// 전체 패킷 크기 반환
+size_t PacketBuffer::GetPacketSize() const {
+    return write_pos_ - begin_;
 }
 
-int PacketBuffer::GetPayloadSize() const {
-	return write_pos_ - payload_pos_;
+// 페이로드 크기 반환
+size_t PacketBuffer::GetPayloadSize() const {
+    return write_pos_ - payload_pos_;
 }
 
+// 현재 쓰기 위치 반환
 char* PacketBuffer::GetWritePos() const
 {
-	return write_pos_;
+    return write_pos_;
 }
 
-// todo : 작업 중!!
-void PacketBuffer::SetHeader(int32 _packet_id)
+// 패킷 헤더 설정 (암호화 준비)
+void PacketBuffer::SetHeader(int32_t packet_id)
 {
-	// 중복 암호화 하지 않기 위함 (이미 암호화 된 패킷)
-	if (encrypted_) return;
-	encrypted_ = true;
+    // 이미 암호화된 패킷은 다시 처리하지 않음
+    if (encrypted_) return;
+    encrypted_ = true;
 
-	PacketHeader *_header = (PacketHeader*)GetPacketPos();
-	_header->len = GetPayloadSize();
-	_header->pid = _packet_id;
-	//netHeader.code = protocol_code;
-	//netHeader->randKey = (rand() & 0xFF);
-	//_header->checkSum = GetChecksum();
-	//memmove(GetPacketPos(), &netHeader, HEADER_SIZE); // 
+    // 패킷 헤더 설정
+    PacketHeader* header = reinterpret_cast<PacketHeader*>(GetPacketPos());
+    header->len = static_cast<uint16_t>(GetPayloadSize());
+    header->pid = static_cast<uint16_t>(packet_id);
 
-	// todo : 암호화!!
-
-	//char* encryptPos = payload_pos_ - 1;	// 암호화'될' 주소
-	//short encrypt_len = _header.len + 1;	// 암호화될 길이
-	//BYTE RK = _header.randKey;			// 랜덤 키
-	//BYTE K = private_key;					// 고정 키
-	//BYTE P = 0, E = 0;						// 암호화 변수
-
-	//// 암호화
-	//for (int i = 0; i < encrypt_len; i++, encryptPos++) {
-	//	P = (*encryptPos) ^ (P + RK + (i + 1));
-	//	E = P ^ (E + K + (i + 1));
-	//	*((BYTE*)encryptPos) = E;
-	//}
+    // TODO: 실제 암호화 로직 구현 필요
 }
 
-// 암호패킷을 this에 복호화
-
+// 패킷 복호화 메서드
 bool PacketBuffer::DecryptPacket(char* encryptPacket, BYTE privateKey) {
-	// 복호화 변수
-	const BYTE RK = ((PacketHeader*)encryptPacket)->randKey;
-	const BYTE K = privateKey;
-	BYTE P = 0, LP = 0, LE = 0;
+    // 복호화 변수 초기화
+    const BYTE RK = reinterpret_cast<PacketHeader*>(encryptPacket)->randKey;
+    const BYTE K = privateKey;
+    BYTE P = 0, LP = 0, LE = 0;
 
-	// 복호화 준비
-	char* const packetPos = GetPacketPos();						// this 패킷 주소
-	char* decryptPos = packetPos + (HEADER_SIZE - 1);			// this 복호화'될' 주소 (복호화 부 : checksum + payload)
-	char* encryptPos = encryptPacket + (HEADER_SIZE - 1);		// 암호화 부
-	const short encryptLen = ((PacketHeader*)encryptPacket)->len + 1;	// 암호화 부 길이 (checksum + payload)
-	memmove(packetPos, encryptPacket, HEADER_SIZE - 1);			// 암호화 되어있지 않은 부분 복사
+    // 복호화 위치 설정
+    char* const packetPos = GetPacketPos();
+    char* decryptPos = packetPos + (HEADER_SIZE - 1);
+    char* encryptPos = encryptPacket + (HEADER_SIZE - 1);
+    const uint16_t encryptLen = reinterpret_cast<PacketHeader*>(encryptPacket)->len + 1;
 
-	// 복호화
-	for (int i = 0; i < encryptLen; ++i) { // 복호화
-		// BYTE 단위 복호화
-		P = (*encryptPos) ^ (LE + K + (i + 1));
-		*((BYTE*)decryptPos) = P ^ (LP + RK + (i + 1));
+    // 헤더 부분 복사
+    memcpy(packetPos, encryptPacket, HEADER_SIZE - 1);
 
-		// 다음 루프 준비
-		LE = *encryptPos;
-		LP = P;
-		encryptPos++;
-		decryptPos++;
-	}
-	MoveWp(encryptLen - 1); // 복호화 중 복사된 페이로드 부 만큼 move
+    // 복호화 진행
+    for (size_t i = 0; i < encryptLen; ++i) {
+        P = (*encryptPos) ^ (LE + K + (i + 1));
+        *reinterpret_cast<BYTE*>(decryptPos) = P ^ (LP + RK + (i + 1));
 
-	// 암호패킷의 신뢰성 결과 반환
-	if (((PacketHeader*)packetPos)->checkSum == GetChecksum()) {
-		return true;
-	}
-	return false;
+        // 다음 반복을 위한 변수 업데이트
+        LE = *encryptPos;
+        LP = P;
+        encryptPos++;
+        decryptPos++;
+    }
+
+    // 쓰기 포인터 이동
+    MoveWp(encryptLen - 1);
+
+    // 체크섬 검증
+    return reinterpret_cast<PacketHeader*>(packetPos)->checkSum == GetChecksum();
 }
 
-
+// 체크섬 계산
 BYTE PacketBuffer::GetChecksum() {
-	WORD len = GetPayloadSize();
+    uint16_t len = static_cast<uint16_t>(GetPayloadSize());
+    uint32_t checkSum = 0;
+    char* cpy_readPos = payload_pos_;
 
-	DWORD checkSum = 0;
-	char* cpy_readPos = payload_pos_;
-	for (int i = 0; i < len; i++) {
-		checkSum += *cpy_readPos;
-		cpy_readPos++;
-	}
-	return (BYTE)(checkSum & 0xFF);
+    for (size_t i = 0; i < len; i++) {
+        checkSum += static_cast<BYTE>(*cpy_readPos);
+        cpy_readPos++;
+    }
+
+    return static_cast<BYTE>(checkSum & 0xFF);
 }
 
-///////////////////////////////
-//	operator <<
-///////////////////////////////
-
-
-PacketBuffer& PacketBuffer::operator<<(const char& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
+// 원시 데이터 삽입
+void PacketBuffer::PutData(const char* src, size_t size) {
+    if (write_pos_ + size <= end_) {
+        memcpy(write_pos_, src, size);
+        write_pos_ += size;
+    }
+    else {
+        throw PacketException(PacketException::PUT_ERROR);
+    }
 }
 
-
-PacketBuffer& PacketBuffer::operator<<(const unsigned char& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const int& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const unsigned int& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const long& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const unsigned long& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const short& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const unsigned short& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const float& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const double& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const long long& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator<<(const unsigned long long& data) {
-	if (write_pos_ + sizeof(data) <= end_) {
-		memmove(write_pos_, &data, sizeof(data));
-		write_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-	return *this;
-}
-
-///////////////////////////////
-//	operator >>
-///////////////////////////////
-
-
-PacketBuffer& PacketBuffer::operator>>(char& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(unsigned char& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(int& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(unsigned int& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(long& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(unsigned long& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(short& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(unsigned short& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(float& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(double& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(long long& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-
-PacketBuffer& PacketBuffer::operator>>(unsigned long long& data) {
-	if (payload_pos_ + sizeof(data) <= write_pos_) {
-		memmove(&data, payload_pos_, sizeof(data));
-		payload_pos_ += sizeof(data);
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
-	return *this;
-}
-
-///////////////////////////////
-//	PUT, GET
-///////////////////////////////
-
-void PacketBuffer::PutData(const char* src, int size) {
-	if (write_pos_ + size <= end_) {
-		memmove(write_pos_, src, size);
-		write_pos_ += size;
-	}
-	else {
-		throw PacketException(PUT_ERROR);
-	}
-}
-
-void PacketBuffer::GetData(char* dst, int size) {
-	if (payload_pos_ + size <= write_pos_) {
-		memmove(dst, payload_pos_, size);
-		payload_pos_ += size;
-	}
-	else {
-		throw PacketException(GET_ERROR);
-	}
+// 원시 데이터 읽기
+void PacketBuffer::GetData(char* dst, size_t size) {
+    if (payload_pos_ + size <= write_pos_) {
+        memcpy(dst, payload_pos_, size);
+        payload_pos_ += size;
+    }
+    else {
+        throw PacketException(PacketException::GET_ERROR);
+    }
 }

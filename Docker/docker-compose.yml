@@ -1,7 +1,12 @@
 services:
   juncore:
-    container_name : juncore
+    container_name: juncore
     image: juncore-image
     build:
       context: .
       dockerfile: dockerfile
+
+    # server 프로세스 termiated 시에도 컨테이너 유지하기 위함
+    stdin_open: true
+    tty: true
+    command: /bin/bash

@@ -49,7 +49,7 @@ void AsyncAcceptor::Close()
 		return;
 
 	boost::system::error_code err;
-	_acceptor.close(OUT err);
+	_acceptor.close(err);
 }
 
 bool AsyncAcceptor::IsClosed() const

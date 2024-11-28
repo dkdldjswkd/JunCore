@@ -1,37 +1,45 @@
-# 빌드를 위한 베이스 이미지
+# 베이스 이미지
 FROM ubuntu:latest as builder
 
-# 필요한 패키지 설치
+# 필수 패키지 설치
 RUN apt-get update && apt-get install -y \
     git \
     cmake \
     g++ \
     make \
-    coreutils \
-    bash \
-    libboost-all-dev \
-    libprotobuf-dev \
-    protobuf-compiler \
+    curl \
+    zip \
+    unzip \
+    tar \
+    libssl-dev \
+    bzip2 \
     && rm -rf /var/lib/apt/lists/*
+	
+# vcpkg 설치
+WORKDIR /vcpkg
+RUN git clone https://github.com/microsoft/vcpkg.git . && \
+    ./bootstrap-vcpkg.sh
 
-# clone 디렉터리 설정
+# vcpkg 환경 변수 설정
+ENV VCPKG_ROOT=/vcpkg
+ENV PATH="$VCPKG_ROOT:$PATH"
+
+# 필요한 라이브러리 설치 (Boost 및 Protobuf)
+RUN vcpkg install boost:x64-linux && \
+    vcpkg install protobuf:x64-linux
+
+# JunCore 프로젝트 복제
 WORKDIR /app
-
-# git clone
 RUN git clone https://github.com/dkdldjswkd/JunCore . && \
     git fetch --all && \
     git reset --hard origin/main && \
-	git pull
-	
-RUN git pull
+    git pull
 
-# JunCore 프로젝트로 이동
+# CMake 빌드 설정
 WORKDIR /app/JunCore
-
-# CMake 빌드
-RUN cmake -B build && \
+RUN cmake -B build -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake && \
     cmake --build build
-
+	
 # 실행 스테이지
 FROM ubuntu:latest
 

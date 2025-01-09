@@ -5,6 +5,7 @@ FROM ubuntu:22.04
 RUN apt-get update && apt-get install -y \
     git \
     cmake \
+    ninja-build \
     g++ \
     make \
     curl \
@@ -23,7 +24,7 @@ RUN apt-get update && apt-get install -y \
     python3-setuptools \
     python3-distutils \
     && rm -rf /var/lib/apt/lists/*
-	
+
 # vcpkg 설치
 WORKDIR /vcpkg
 RUN git clone https://github.com/microsoft/vcpkg.git . && \
@@ -41,16 +42,13 @@ RUN vcpkg install boost:x64-linux && \
 WORKDIR /app
 RUN git clone https://github.com/dkdldjswkd/JunCore .
 
-# # CMake 빌드 설정
-# WORKDIR /app/JunCore
-# RUN cmake -B build -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake && \
-#    cmake --build build
-	
-# # 빌드된 실행 파일 복사
-# COPY --from=builder /app/JunCore/build/JunCore /app/JunCore
+# CMake로 Release 빌드
+WORKDIR /app/JunCore
+RUN cmake --preset x64-release-linux && \
+    cmake --build --preset x64-release-linux
 
-# 실행 디렉토리로 이동
-# WORKDIR /app/JunCore
+# 빌드 후 실행 디렉토리로 이동
+WORKDIR /app/JunCore/out/build/x64-release-linux/src/echo_server
 
 # 실행 파일 실행
-# ENTRYPOINT ["./JunCore"]
+ENTRYPOINT ["./echo_server"]

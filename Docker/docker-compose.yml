@@ -1,6 +1,6 @@
 services:
   juncore:
-    container_name: juncore
+    container_name: juncore-container
     image: juncore-image
     build:
       context: .

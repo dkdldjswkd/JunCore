@@ -6,16 +6,11 @@ find_package(Protobuf REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-include_directories(${Protobuf_INCLUDE_DIRS})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS packet.proto)
-
 # echo_server 정의
 add_executable(echo_server 
     "main.cpp"
-    # "packet/packet.pb.cc"
+    "packet/packet.pb.cc"
     "network/EchoServer.cpp"
-    ${PROTO_SRCS}
 )
 
 # PUBLIC : echo_server를 사용하는 프로젝트에도 포함된다.

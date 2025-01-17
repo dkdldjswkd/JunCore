@@ -31,7 +31,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "/usr/bin/gcc",
         "CMAKE_CXX_COMPILER": "/usr/bin/g++",
-        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/conan_toolchain.cmake"
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/conan/build/Release/generators/conan_toolchain.cmake"
       },
       "condition": {
         "type": "equals",

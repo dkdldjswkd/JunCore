@@ -1,10 +1,9 @@
 # 베이스 이미지
 FROM ubuntu:22.04
 
-# 필수 패키지 설치
+# 필수 패키지 및 최신 CMake 설치
 RUN apt-get update && apt-get install -y \
     git \
-    cmake \
     ninja-build \
     g++ \
     make \
@@ -23,29 +22,25 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     python3-setuptools \
     python3-distutils \
-    && rm -rf /var/lib/apt/lists/*
+    python3-pip \
+    cmake && \
+    rm -rf /var/lib/apt/lists/*
 
-# vcpkg 설치
-WORKDIR /vcpkg
-RUN git clone https://github.com/microsoft/vcpkg.git . && \
-    ./bootstrap-vcpkg.sh
-
-# vcpkg 환경 변수 설정
-ENV VCPKG_ROOT=/vcpkg
-ENV PATH="$VCPKG_ROOT:$PATH"
-
-# 필요한 라이브러리 설치 (Boost 및 Protobuf)
-RUN vcpkg install boost:x64-linux && \
-    vcpkg install protobuf:x64-linux
+# Conan 설치
+RUN pip3 install conan
 
 # JunCore 프로젝트 복제
 WORKDIR /app
 RUN git clone https://github.com/dkdldjswkd/JunCore .
 
-# CMake로 Release 빌드
+# Conan 의존성 설치
 WORKDIR /app/JunCore
-RUN cmake --preset x64-release-linux && \
-    cmake --build --preset x64-release-linux
+RUN conan profile detect
+RUN conan install . --build=missing --output-folder=conan --generator=CMakeDeps
+RUN rm CMakeUserPresets.json
+
+RUN cmake --preset x64-release-linux
+RUN cmake --build --preset x64-release-linux
 
 # 빌드 후 실행 디렉토리로 이동
 WORKDIR /app/JunCore/out/build/x64-release-linux/src/echo_server

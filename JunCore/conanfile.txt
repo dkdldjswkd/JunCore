@@ -1,8 +1,0 @@
-﻿[requires]
-boost/1.86.0
-protobuf/5.27.0
-[generators]
-CMakeDeps
-CMakeToolchain
-[layout]
-cmake_layout

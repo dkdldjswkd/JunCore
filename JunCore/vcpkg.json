@@ -1,0 +1,13 @@
+﻿{
+    "dependencies": [
+      {
+        "name": "protobuf",
+        "version>=": "4.25.1"
+      },
+          {
+              "name": "boost",
+              "version>=": "1.86.0"
+          }
+    ],
+    "builtin-baseline": "3508985146f1b1d248c67ead13f8f54be5b4f5da"
+  }

@@ -455,3 +455,6 @@ FodyWeavers.xsd
 
 #Jun
 out/
+
+# vcpkg installed directory
+vcpkg_installed/

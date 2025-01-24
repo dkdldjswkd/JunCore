@@ -47,7 +47,7 @@ RUN cmake --preset x64-release-linux && \
     cmake --build --preset x64-release-linux .
 
 # 빌드 후 실행 디렉토리로 이동
-# #WORKDIR /app/JunCore/out/build/x64-release-linux/src/echo_server
+WORKDIR /app/JunCore/out/build/x64-release-linux/src/echo_server
 
 # 실행 파일 실행
-#ENTRYPOINT ["./echo_server"]
+ENTRYPOINT ["./echo_server"]

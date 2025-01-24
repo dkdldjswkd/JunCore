@@ -6,7 +6,7 @@
 #include "packet/packet.pb.h"
 using namespace std;
 
-void main()
+int main()
 {
 	cout << "EchoServer" 
 		<< "오후 17:09 2024-11-06" 
@@ -26,7 +26,7 @@ void main()
 	if (!sEchoServer.StartServer(_ip, _port, networkThreads))
 	{
 		// LOG_ERROR
-		return;
+		return 0;
 	}
 
 	// 임시

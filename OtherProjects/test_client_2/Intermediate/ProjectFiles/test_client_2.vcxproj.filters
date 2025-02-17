@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\test_client_2.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\test_client_2.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\test_client_2Editor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.vsconfig" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\test_client_2">
+      <UniqueIdentifier>{334F3737-1101-3DD1-A7E2-6AB47A915344}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\test_client_2\MyGameInstance.cpp">
+      <Filter>Source\test_client_2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\test_client_2\MyGameInstance.h">
+      <Filter>Source\test_client_2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\test_client_2\NetworkClient.cpp">
+      <Filter>Source\test_client_2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\test_client_2\NetworkClient.h">
+      <Filter>Source\test_client_2</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\test_client_2\test_client_2.Build.cs">
+      <Filter>Source\test_client_2</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\test_client_2\test_client_2.cpp">
+      <Filter>Source\test_client_2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\test_client_2\test_client_2.h">
+      <Filter>Source\test_client_2</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"C:\\rpos\\test_client_2\\Source\\test_client_2\\test_client_2.Build.cs",
+		"C:\\rpos\\test_client_2\\Source\\test_client_2.Target.cs",
+		"C:\\rpos\\test_client_2\\Source\\test_client_2Editor.Target.cs"
+	],
+	"EngineVersion": "5.4.4"
+}
